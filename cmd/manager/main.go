@@ -344,6 +344,7 @@ func main() {
 
 	size := 1<<31 - 1
 	log.Printf("Start Katib manager: %s", port)
+	log.Printf("Hello from Achal's own Katib!")
 	s := grpc.NewServer(grpc.MaxRecvMsgSize(size), grpc.MaxSendMsgSize(size))
 	api_pb.RegisterManagerServer(s, &server{})
 	health_pb.RegisterHealthServer(s, &server{})
