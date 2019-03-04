@@ -524,6 +524,14 @@ message GetWorkerFullInfoRequest {
     bool only_latest_log = 4;
 }
 
+/**
+ * Metrics of a worker with timestamp
+ */
+message MetricsValueTime {
+    string time = 1; /// Timestamp RFC3339 format.
+    string value = 2; /// Value of metrics. Double float.
+}
+
 message MetricsLog {
     string name = 1;  /// Name of metrics.
     repeated MetricsValueTime values = 2; /// Log of metrics. Ordered by time series.
