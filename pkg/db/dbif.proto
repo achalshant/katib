@@ -1,9 +1,9 @@
 /**
- * Katib API
+ * DBIF API
  */
 syntax = "proto3";
 
-package api;
+package db;
 
 import "google/api/annotations.proto";
 
@@ -146,12 +146,6 @@ service DBIF {
     rpc GetSuggestionParameterList(GetSuggestionParameterListRequest) returns (GetSuggestionParameterListReply){
         option (google.api.http) = {
             get: "/api/DB/GetSuggestionParameterList/{study_id}"
-        };
-    };
-    rpc SetEarlyStoppingParameters(SetEarlyStoppingParametersRequest) returns (SetEarlyStoppingParametersReply){
-        option (google.api.http) = {
-            post: "/api/DB/SetEarlyStoppingParameters"
-            body: "*"
         };
     };
 
@@ -309,6 +303,17 @@ message Worker {
 /**
 TODO: Review with Manasi
 **/
+/**
+ * NasConfig contains a config of NAS job
+ */
+ message NasConfig {
+    GraphConfig graph_config = 1; /// Config of DAG
+    message Operations {
+        repeated Operation operation = 1;
+    }
+    Operations operations = 2; /// List of Operation
+}
+
 /**
  * GraphConfig contains a config of DAG
  */
@@ -519,6 +524,11 @@ message GetWorkerFullInfoRequest {
     bool only_latest_log = 4;
 }
 
+message MetricsLog {
+    string name = 1;  /// Name of metrics.
+    repeated MetricsValueTime values = 2; /// Log of metrics. Ordered by time series.
+}
+
 message WorkerFullInfo {
     Worker Worker = 1;
     repeated Parameter parameter_set = 2;
@@ -541,6 +551,10 @@ message GetSuggestionsReply {
     repeated Trial trials = 1;
 }
 
+message Metrics {
+    string name = 1; /// Name of metrics.
+    string value = 2; /// Value of metrics. Double float.
+}
 
 message ModelInfo {
     string study_name = 1;  
