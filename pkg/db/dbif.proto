@@ -5,8 +5,6 @@ syntax = "proto3";
 
 package db;
 
-import "google/api/annotations.proto";
-
 /**
  * Service for Main API for Katib
  * For each RPC service, we define mapping to HTTP REST API method.
@@ -19,105 +17,76 @@ service DBIF {
      * Generate a unique ID and store the Study to DB.
      */
     rpc CreateStudy(CreateStudyRequest) returns (CreateStudyReply){
-        option (google.api.http) = {
-            post: "/api/DB/CreateStudy"
-            body: "study_config"
-        };
+        
     };
     /** 
      * Get a Study Config from DB by ID of Study.
      */
     rpc GetStudy(GetStudyRequest) returns (GetStudyReply){
-        option (google.api.http) = {
-            get: "/api/DB/GetStudy/{study_id}"
-        };
+        
     };
     /** 
      * Delete a Study from DB by Study ID.
      */
     rpc DeleteStudy(DeleteStudyRequest) returns (DeleteStudyReply){
-        option (google.api.http) = {
-            get: "/api/DB/DeleteStudy/{study_id}"
-        };
+        
     };
     /**
      * Get all Study Configs from DB.
      */
     rpc GetStudyList(GetStudyListRequest) returns (GetStudyListReply){
-        option (google.api.http) = {
-            get: "/api/DB/GetStudyList"
-        };
+       
     };
     /**
      * Create a Trial from Trial Config.
      * Generate a unique ID and store the Trial to DB.
      */
     rpc CreateTrial(CreateTrialRequest) returns (CreateTrialReply){
-        option (google.api.http) = {
-            post: "/api/DB/CreateTrial"
-            body: "trial"
-        };
+       
     };
     /** 
      * Get a Trial Configs from DB by ID of Study.
      */
     rpc GetTrials(GetTrialsRequest) returns (GetTrialsReply){
-        option (google.api.http) = {
-            get: "/api/DB/GetTrials/{study_id}"
-        };
+       
     };
     /**
      * Get a Trial Configuration from DB by ID of Trial.
      */
     rpc GetTrial(GetTrialRequest) returns (GetTrialReply){
-        option (google.api.http) = {
-            get: "/api/DB/GetTrial/{trial_id}"
-        };
+       
     };
     /**
      * Create a Worker from Worker Config.
      * Generate a unique ID and store the Worker to DB.
      */
     rpc RegisterWorker(RegisterWorkerRequest) returns (RegisterWorkerReply){
-        option (google.api.http) = {
-            post: "/api/DB/RegisterWorker"
-            body: "worker"
-        };
+       
     };
     /** 
      * Get a Worker Configs and Status from DB by ID of Study, Trial or Worker.
      */
     rpc GetWorkers(GetWorkersRequest) returns (GetWorkersReply){
-        option (google.api.http) = {
-            get: "/api/DB/GetWorkers"
-        };
+        
     };
     /** 
      * Update a Status of Worker.
      */
     rpc UpdateWorkerState(UpdateWorkerStateRequest) returns (UpdateWorkerStateReply){
-        option (google.api.http) = {
-            put: "/api/DB/UpdateWorkerState",
-            body: "*"
-        };
+        
     };
     /** 
      * Get full information related to specified Workers.
      * It includes Worker Config, HyperParameters and Metrics Logs.
      */
     rpc GetWorkerFullInfo(GetWorkerFullInfoRequest) returns (GetWorkerFullInfoReply){
-        option (google.api.http) = {
-            get: "/api/DB/GetWorkerFullInfo"
-        };
+       
     };
     /** 
      * Get Suggestions from a Suggestion service.
      */
     rpc GetSuggestions(GetSuggestionsRequest) returns (GetSuggestionsReply){
-        option (google.api.http) = {
-            post: "/api/DB/GetSuggestions"
-            body: "*"
-        };
+       
     }
     
     /**
@@ -127,56 +96,35 @@ service DBIF {
      * The parameters are key-value format.
      */
     rpc SetSuggestionParameters(SetSuggestionParametersRequest) returns (SetSuggestionParametersReply){
-        option (google.api.http) = {
-            post: "/api/DB/SetSuggestionParameters"
-            body: "*"
-        };
+        
     };
     /**
      * Get suggestion parameter set from DB specified.
      */
     rpc GetSuggestionParameters(GetSuggestionParametersRequest) returns (GetSuggestionParametersReply){
-        option (google.api.http) = {
-            get: "/api/DB/GetSuggestionParameters/{param_id}"
-        };
+       
     };
     /**
      * Get all suggestion parameter sets from DB.
      */
     rpc GetSuggestionParameterList(GetSuggestionParameterListRequest) returns (GetSuggestionParameterListReply){
-        option (google.api.http) = {
-            get: "/api/DB/GetSuggestionParameterList/{study_id}"
-        };
+       
     };
 
 
     rpc SaveStudy(SaveStudyRequest) returns(SaveStudyReply){
-        option (google.api.http) = {
-            post: "/api/DB/SaveStudy"
-            body: "*"
-        };
+       
     };
     rpc SaveModel(SaveModelRequest) returns(SaveModelReply){
-        option (google.api.http) = {
-            post: "/api/DB/SaveModel"
-            body: "*"
-        };
+       
     };
 
     rpc GetSavedStudies(GetSavedStudiesRequest) returns(GetSavedStudiesReply){
-        option (google.api.http) = {
-            get: "/api/DB/GetSavedStudies"
-        };
+       
     };
     rpc GetSavedModels(GetSavedModelsRequest) returns(GetSavedModelsReply){
-        option (google.api.http) = {
-            get: "/api/DB/GetSavedModels"
-        };
+       
     };
-}
-
-service Suggestion {
-    rpc GetSuggestions(GetSuggestionsRequest) returns (GetSuggestionsReply);
 }
 
 /**
