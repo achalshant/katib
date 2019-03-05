@@ -1,6 +1,10 @@
-package db
+package main
 
 import (
+	"log"
+	"net"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	crand "crypto/rand"
 	"database/sql"
 	"errors"
@@ -11,14 +15,12 @@ import (
 	"os"
 	"strings"
 	"time"
-
 	"github.com/golang/protobuf/jsonpb"
-
+	api "github.com/kubeflow/katib/pkg/api"
 	dbif "github.com/kubeflow/katib/pkg/db"
-
 	_ "github.com/go-sql-driver/mysql"
 )
-/**
+
 const (
 	dbDriver     = "mysql"
 	dbNameTmpl   = "root:%s@tcp(vizier-db:3306)/vizier?timeout=5s"
@@ -41,51 +43,123 @@ type WorkerLog struct {
 	Name  string
 	Value string
 }
-**/
-type VizierDBInterface interface {
-	DBInit()
-	SelectOne() error
 
-	GetStudy(string) (*dbif.StudyConfig, error)
-	GetStudyList() ([]string, error)
+const (
+	port = "0.0.0.0:6789"
+)
 
-	CreateStudy(*dbif.StudyConfig) (string, error)
-	UpdateStudy(string, *dbif.StudyConfig) error
-	DeleteStudy(string) error
-
-	GetTrial(string) (*dbif.Trial, error)
-	GetTrialList(string) ([]*dbif.Trial, error)
-	CreateTrial(*dbif.Trial) error
-	UpdateTrial(*dbif.Trial) error
-	DeleteTrial(string) error
-
-	GetWorker(string) (*dbif.Worker, error)
-	GetWorkerStatus(string) (*dbif.State, error)
-	GetWorkerList(string, string) ([]*dbif.Worker, error)
-	GetWorkerLogs(string, *GetWorkerLogOpts) ([]*WorkerLog, error)
-	GetWorkerTimestamp(string) (*time.Time, error)
-	StoreWorkerLogs(string, []*dbif.MetricsLog) error
-	CreateWorker(*dbif.Worker) (string, error)
-	UpdateWorker(string, dbif.State) error
-	DeleteWorker(string) error
-	GetWorkerFullInfo(string, string, string, bool) (*dbif.GetWorkerFullInfoReply, error)
-
-	SetSuggestionParam(string, string, []*dbif.SuggestionParameter) (string, error)
-	UpdateSuggestionParam(string, []*dbif.SuggestionParameter) error
-	GetSuggestionParam(string) ([]*dbif.SuggestionParameter, error)
-	GetSuggestionParamList(string) ([]*dbif.SuggestionParameterSet, error)
-	SetEarlyStopParam(string, string, []*dbif.EarlyStoppingParameter) (string, error)
-	UpdateEarlyStopParam(string, []*dbif.EarlyStoppingParameter) error
-	GetEarlyStopParam(string) ([]*dbif.EarlyStoppingParameter, error)
-	GetEarlyStopParamList(string) ([]*dbif.EarlyStoppingParameterSet, error)
-}
-
-/**
-type dbConn struct {
+type DBIFServer struct {
 	db *sql.DB
 }
 
 var rs1Letters = []rune("abcdefghijklmnopqrstuvwxyz")
+
+func (d *DBIFServer) DBInit() {
+	db := d.db
+
+	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS studies
+		(id CHAR(16) PRIMARY KEY,
+		name VARCHAR(255),
+		owner VARCHAR(255),
+		optimization_type TINYINT,
+		optimization_goal DOUBLE,
+		parameter_configs TEXT,
+		tags TEXT,
+		objective_value_name VARCHAR(255),
+		metrics TEXT,
+		nasconfig TEXT,
+		job_id TEXT,
+		job_type TEXT)`)
+
+	if err != nil {
+		log.Fatalf("Error creating studies table: %v", err)
+	}
+
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS study_permissions
+		(study_id CHAR(16) NOT NULL,
+		access_permission VARCHAR(255),
+		PRIMARY KEY (study_id, access_permission),
+		FOREIGN KEY(study_id) REFERENCES studies(id) ON DELETE CASCADE)`)
+	if err != nil {
+		log.Fatalf("Error creating study_permissions table: %v", err)
+	}
+
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS trials
+		(id CHAR(16) PRIMARY KEY,
+		study_id CHAR(16),
+		parameters TEXT,
+		objective_value VARCHAR(255),
+		tags TEXT,
+		time DATETIME(6),
+		FOREIGN KEY(study_id) REFERENCES studies(id) ON DELETE CASCADE)`)
+	if err != nil {
+		log.Fatalf("Error creating trials table: %v", err)
+	}
+
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS workers
+		(id CHAR(16) PRIMARY KEY,
+		study_id CHAR(16),
+		trial_id CHAR(16),
+		type VARCHAR(255),
+		status TINYINT,
+		template_path TEXT,
+		tags TEXT,
+		FOREIGN KEY(study_id) REFERENCES studies(id) ON DELETE CASCADE,
+		FOREIGN KEY(trial_id) REFERENCES trials(id) ON DELETE CASCADE)`)
+	if err != nil {
+		log.Fatalf("Error creating workers table: %v", err)
+	}
+
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS worker_metrics
+		(worker_id CHAR(16) NOT NULL,
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		time DATETIME(6),
+		name VARCHAR(255),
+		value TEXT,
+		is_objective TINYINT,
+		FOREIGN KEY (worker_id) REFERENCES workers(id) ON DELETE CASCADE)`)
+	if err != nil {
+		log.Fatalf("Error creating worker_metrics table: %v", err)
+	}
+
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS worker_lastlogs
+		(worker_id CHAR(16) PRIMARY KEY,
+		time DATETIME(6),
+		FOREIGN KEY (worker_id) REFERENCES workers(id) ON DELETE CASCADE)`)
+	if err != nil {
+		log.Fatalf("Error creating worker_lastlogs table: %v", err)
+	}
+
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS suggestion_param
+		(id CHAR(16) PRIMARY KEY,
+		suggestion_algo TEXT,
+		study_id CHAR(16),
+		parameters TEXT,
+		FOREIGN KEY(study_id) REFERENCES studies(id) ON DELETE CASCADE)`)
+	if err != nil {
+		log.Fatalf("Error creating suggestion_param table: %v", err)
+	}
+
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS earlystop_param
+		(id CHAR(16) PRIMARY KEY,
+		earlystop_argo TEXT,
+		study_id CHAR(16),
+		parameters TEXT,
+		FOREIGN KEY(study_id) REFERENCES studies(id) ON DELETE CASCADE)`)
+	if err != nil {
+		log.Fatalf("Error creating earlystop_param table: %v", err)
+	}
+
+}
+
+func (d *DBIFServer) SelectOne() error {
+	db := d.db
+	_, err := db.Exec(`SELECT 1`)
+	if err != nil {
+		return fmt.Errorf("Error `SELECT 1` probing: %v", err)
+	}
+	return nil
+}
 
 func getDbName() string {
 	dbPass := os.Getenv("MYSQL_ROOT_PASSWORD")
@@ -121,7 +195,7 @@ func openSQLConn(driverName string, dataSourceName string, interval time.Duratio
 }
 
 func NewWithSQLConn(db *sql.DB) (VizierDBInterface, error) {
-	d := new(dbConn)
+	d := new(DBIFServer)
 	d.db = db
 	seed, err := crand.Int(crand.Reader, big.NewInt(1<<63-1))
 	if err != nil {
@@ -134,7 +208,7 @@ func NewWithSQLConn(db *sql.DB) (VizierDBInterface, error) {
 	return d, nil
 }
 
-func (d *dbConn) GetStudyMetrics(id string) ([]string, error) {
+func (d *DBIFServer) GetStudyMetrics(id string) ([]string, error) {
 	row := d.db.QueryRow("SELECT metrics FROM studies WHERE id = ?", id)
 	var metrics string
 	err := row.Scan(&metrics)
@@ -145,9 +219,9 @@ func (d *dbConn) GetStudyMetrics(id string) ([]string, error) {
 	return retMetrics, nil
 }
 
-func (d *dbConn) GetStudy(StudyID string) (*api.StudyConfig, error) {
+func (d *DBIFServer) GetStudy(StudyID string) (*dbif.StudyConfig, error) {
 	row := d.db.QueryRow("SELECT * FROM studies WHERE id = ?", StudyID)
-	study := new(api.StudyConfig)
+	study := new(dbif.StudyConfig)
 	var dummyID, nasConfig, parameters, tags, metrics string
 	err := row.Scan(&dummyID,
 		&study.Name,
@@ -166,14 +240,14 @@ func (d *dbConn) GetStudy(StudyID string) (*api.StudyConfig, error) {
 		return nil, err
 	}
 	if parameters != "" {
-		study.ParameterConfigs = new(api.StudyConfig_ParameterConfigs)
+		study.ParameterConfigs = new(dbif.StudyConfig_ParameterConfigs)
 		err = jsonpb.UnmarshalString(parameters, study.ParameterConfigs)
 		if err != nil {
 			return nil, err
 		}
 	}
 	if nasConfig != "" {
-		study.NasConfig = new(api.NasConfig)
+		study.NasConfig = new(dbif.NasConfig)
 		err = jsonpb.UnmarshalString(nasConfig, study.NasConfig)
 		if err != nil {
 			log.Printf("Failed to unmarshal NasConfig")
@@ -185,9 +259,9 @@ func (d *dbConn) GetStudy(StudyID string) (*api.StudyConfig, error) {
 	if len(tags) > 0 {
 		tagsArray = strings.Split(tags, ",\n")
 	}
-	study.Tags = make([]*api.Tag, len(tagsArray))
+	study.Tags = make([]*dbif.Tag, len(tagsArray))
 	for i, j := range tagsArray {
-		tag := new(api.Tag)
+		tag := new(dbif.Tag)
 		err = jsonpb.UnmarshalString(j, tag)
 		if err != nil {
 			log.Printf("err unmarshal %s", j)
@@ -226,7 +300,7 @@ func isDBDuplicateError(err error) bool {
 	return false
 }
 
-func (d *dbConn) GetStudyList() ([]string, error) {
+func (d *DBIFServer) GetStudyList() ([]string, error) {
 	rows, err := d.db.Query("SELECT id FROM studies")
 	if err != nil {
 		return nil, err
@@ -246,7 +320,7 @@ func (d *dbConn) GetStudyList() ([]string, error) {
 	return result, nil
 }
 
-func (d *dbConn) CreateStudy(in *api.StudyConfig) (string, error) {
+func (d *DBIFServer) CreateStudy(in *dbif.StudyConfig) (string, error) {
 	if in.JobId != "" {
 		var temporaryId string
 		err := d.db.QueryRow("SELECT id FROM studies WHERE job_id = ?", in.JobId).Scan(&temporaryId)
@@ -281,7 +355,7 @@ func (d *dbConn) CreateStudy(in *api.StudyConfig) (string, error) {
 		}
 	}
 
-	// WE PROBABLY DON'T NEED METRICS AND ALSO THIS LOGIC IS KIND OF CONFUSING 
+	/* WE PROBABLY DON'T NEED METRICS AND ALSO THIS LOGIC IS KIND OF CONFUSING */
 	var isin bool = false
 	for _, m := range in.Metrics {
 		if m == in.ObjectiveValueName {
@@ -330,9 +404,9 @@ func (d *dbConn) CreateStudy(in *api.StudyConfig) (string, error) {
 // UpdateStudy updates the corresponding row in the DB.
 // It only updates name, owner, tags and job_id.
 // Other columns are silently ignored.
-func (d *dbConn) UpdateStudy(studyID string, in *api.StudyConfig) error {
+func (d *DBIFServer) UpdateStudy(studyID string, in *dbif.StudyConfig) error {
 
-	// THINK ABOUT TRIALS 
+	/* THINK ABOUT TRIALS */
 	var err error
 
 	tags := make([]string, len(in.Tags))
@@ -353,12 +427,12 @@ func (d *dbConn) UpdateStudy(studyID string, in *api.StudyConfig) error {
 	return err
 }
 
-func (d *dbConn) DeleteStudy(id string) error {
+func (d *DBIFServer) DeleteStudy(id string) error {
 	_, err := d.db.Exec("DELETE FROM studies WHERE id = ?", id)
 	return err
 }
 
-func (d *dbConn) getTrials(trialID string, studyID string) ([]*api.Trial, error) {
+func (d *DBIFServer) getTrials(trialID string, studyID string) ([]*dbif.Trial, error) {
 	var rows *sql.Rows
 	var err error
 
@@ -374,9 +448,9 @@ func (d *dbConn) getTrials(trialID string, studyID string) ([]*api.Trial, error)
 		return nil, err
 	}
 
-	var result []*api.Trial
+	var result []*dbif.Trial
 	for rows.Next() {
-		trial := new(api.Trial)
+		trial := new(dbif.Trial)
 
 		var parameters, tags string
 		var timeStamp string
@@ -391,12 +465,12 @@ func (d *dbConn) getTrials(trialID string, studyID string) ([]*api.Trial, error)
 			return nil, err
 		}
 		params := strings.Split(parameters, ",\n")
-		p := make([]*api.Parameter, len(params))
+		p := make([]*dbif.Parameter, len(params))
 		for i, pstr := range params {
 			if pstr == "" {
 				continue
 			}
-			p[i] = &api.Parameter{}
+			p[i] = &dbif.Parameter{}
 			err := jsonpb.UnmarshalString(pstr, p[i])
 			if err != nil {
 				return nil, err
@@ -404,9 +478,9 @@ func (d *dbConn) getTrials(trialID string, studyID string) ([]*api.Trial, error)
 		}
 		trial.ParameterSet = p
 		taglist := strings.Split(tags, ",\n")
-		t := make([]*api.Tag, len(taglist))
+		t := make([]*dbif.Tag, len(taglist))
 		for i, tstr := range taglist {
-			t[i] = &api.Tag{}
+			t[i] = &dbif.Tag{}
 			if tstr == "" {
 				continue
 			}
@@ -422,7 +496,7 @@ func (d *dbConn) getTrials(trialID string, studyID string) ([]*api.Trial, error)
 	return result, nil
 }
 
-func (d *dbConn) GetTrial(id string) (*api.Trial, error) {
+func (d *DBIFServer) GetTrial(id string) (*dbif.Trial, error) {
 	trials, err := d.getTrials(id, "")
 	if err != nil {
 		return nil, err
@@ -437,13 +511,13 @@ func (d *dbConn) GetTrial(id string) (*api.Trial, error) {
 	return trials[0], nil
 }
 
-func (d *dbConn) GetTrialList(id string) ([]*api.Trial, error) {
+func (d *DBIFServer) GetTrialList(id string) ([]*dbif.Trial, error) {
 	trials, err := d.getTrials("", id)
 
 	return trials, err
 }
 
-func marshalTrial(trial *api.Trial) ([]string, []string, error) {
+func marshalTrial(trial *dbif.Trial) ([]string, []string, error) {
 	var err, lastErr error
 
 	params := make([]string, len(trial.ParameterSet))
@@ -471,8 +545,8 @@ func marshalTrial(trial *api.Trial) ([]string, []string, error) {
 // As a side-effect, it generates and sets trial.TrialId.
 // Users should not overwrite TrialId.
 
-// TODO FIX CREATE_TRIAL & DELETE_TRIAL IN CASE OF NAS, SINCE WE WANT TRIALS 
-func (d *dbConn) CreateTrial(trial *api.Trial) error {
+/* TODO FIX CREATE_TRIAL & DELETE_TRIAL IN CASE OF NAS, SINCE WE WANT TRIALS */
+func (d *DBIFServer) CreateTrial(trial *dbif.Trial) error {
 	params, tags, lastErr := marshalTrial(trial)
 
 	var trialID string
@@ -499,7 +573,7 @@ func (d *dbConn) CreateTrial(trial *api.Trial) error {
 
 // UpdateTrial updates the corresponding row in the DB.
 // It only updates parameters and tags. Other columns are silently ignored.
-func (d *dbConn) UpdateTrial(trial *api.Trial) error {
+func (d *DBIFServer) UpdateTrial(trial *dbif.Trial) error {
 	params, tags, lastErr := marshalTrial(trial)
 	_, err := d.db.Exec(`UPDATE trials SET parameters = ?, tags = ?,
 		WHERE id = ?`,
@@ -511,12 +585,12 @@ func (d *dbConn) UpdateTrial(trial *api.Trial) error {
 	return lastErr
 }
 
-func (d *dbConn) DeleteTrial(id string) error {
+func (d *DBIFServer) DeleteTrial(id string) error {
 	_, err := d.db.Exec("DELETE FROM trials WHERE id = ?", id)
 	return err
 }
 
-func (d *dbConn) GetWorkerLogs(id string, opts *GetWorkerLogOpts) ([]*WorkerLog, error) {
+func (d *DBIFServer) GetWorkerLogs(id string, opts *GetWorkerLogOpts) ([]*WorkerLog, error) {
 	qstr := ""
 	qfield := []interface{}{id}
 	order := ""
@@ -565,7 +639,7 @@ func (d *dbConn) GetWorkerLogs(id string, opts *GetWorkerLogOpts) ([]*WorkerLog,
 	return result, nil
 }
 
-func (d *dbConn) getWorkerLastlogs(id string) (time.Time, []*WorkerLog, error) {
+func (d *DBIFServer) getWorkerLastlogs(id string) (time.Time, []*WorkerLog, error) {
 	var timeStr string
 	var timeVal time.Time
 	var err error
@@ -614,7 +688,7 @@ func (d *dbConn) getWorkerLastlogs(id string) (time.Time, []*WorkerLog, error) {
 	return timeVal, result, nil
 }
 
-func (d *dbConn) GetWorkerTimestamp(id string) (*time.Time, error) {
+func (d *DBIFServer) GetWorkerTimestamp(id string) (*time.Time, error) {
 	var lastTimestamp string
 
 	row := d.db.QueryRow("SELECT time FROM worker_lastlogs WHERE worker_id = ?", id)
@@ -636,7 +710,7 @@ func (d *dbConn) GetWorkerTimestamp(id string) (*time.Time, error) {
 	}
 }
 
-func (d *dbConn) storeWorkerLog(workerID string, time string, metricsName string, metricsValue string, objectiveValueName string) error {
+func (d *DBIFServer) storeWorkerLog(workerID string, time string, metricsName string, metricsValue string, objectiveValueName string) error {
 	isObjective := 0
 	if metricsName == objectiveValueName {
 		isObjective = 1
@@ -649,7 +723,7 @@ func (d *dbConn) storeWorkerLog(workerID string, time string, metricsName string
 	return nil
 }
 
-func (d *dbConn) StoreWorkerLogs(workerID string, logs []*api.MetricsLog) error {
+func (d *DBIFServer) StoreWorkerLogs(workerID string, logs []*dbif.MetricsLog) error {
 	var lasterr error
 
 	dbT, lastLogs, err := d.getWorkerLastlogs(workerID)
@@ -731,7 +805,7 @@ func (d *dbConn) StoreWorkerLogs(workerID string, logs []*api.MetricsLog) error 
 	return err
 }
 
-func (d *dbConn) getWorkers(workerID string, trialID string, studyID string) ([]*api.Worker, error) {
+func (d *DBIFServer) getWorkers(workerID string, trialID string, studyID string) ([]*dbif.Worker, error) {
 	var rows *sql.Rows
 	var err error
 
@@ -749,9 +823,9 @@ func (d *dbConn) getWorkers(workerID string, trialID string, studyID string) ([]
 		return nil, err
 	}
 
-	var result []*api.Worker
+	var result []*dbif.Worker
 	for rows.Next() {
-		worker := new(api.Worker)
+		worker := new(dbif.Worker)
 
 		var tags string
 		err := rows.Scan(
@@ -768,9 +842,9 @@ func (d *dbConn) getWorkers(workerID string, trialID string, studyID string) ([]
 		}
 
 		taglist := strings.Split(tags, ",\n")
-		t := make([]*api.Tag, len(taglist))
+		t := make([]*dbif.Tag, len(taglist))
 		for i, tstr := range taglist {
-			t[i] = &api.Tag{}
+			t[i] = &dbif.Tag{}
 			if tstr == "" {
 				continue
 			}
@@ -785,7 +859,7 @@ func (d *dbConn) getWorkers(workerID string, trialID string, studyID string) ([]
 	return result, nil
 }
 
-func (d *dbConn) GetWorker(id string) (*api.Worker, error) {
+func (d *DBIFServer) GetWorker(id string) (*dbif.Worker, error) {
 	workers, err := d.getWorkers(id, "", "")
 	if err != nil {
 		return nil, err
@@ -800,8 +874,8 @@ func (d *dbConn) GetWorker(id string) (*api.Worker, error) {
 
 }
 
-func (d *dbConn) GetWorkerStatus(id string) (*api.State, error) {
-	status := api.State_ERROR
+func (d *DBIFServer) GetWorkerStatus(id string) (*dbif.State, error) {
+	status := dbif.State_ERROR
 	row := d.db.QueryRow("SELECT status FROM workers WHERE id = ?", id)
 	err := row.Scan(&status)
 	if err != nil {
@@ -810,12 +884,12 @@ func (d *dbConn) GetWorkerStatus(id string) (*api.State, error) {
 	return &status, nil
 }
 
-func (d *dbConn) GetWorkerList(sid string, tid string) ([]*api.Worker, error) {
+func (d *DBIFServer) GetWorkerList(sid string, tid string) ([]*dbif.Worker, error) {
 	workers, err := d.getWorkers("", tid, sid)
 	return workers, err
 }
 
-func (d *dbConn) CreateWorker(worker *api.Worker) (string, error) {
+func (d *DBIFServer) CreateWorker(worker *dbif.Worker) (string, error) {
 	// Users should not overwrite worker.id
 	var err, lastErr error
 	tags := make([]string, len(worker.Tags))
@@ -834,7 +908,7 @@ func (d *dbConn) CreateWorker(worker *api.Worker) (string, error) {
 		workerID = generateRandid()
 		_, err = d.db.Exec("INSERT INTO workers VALUES (?, ?, ?, ?, ?, ?, ?)",
 			workerID, worker.StudyId, worker.TrialId, worker.Type,
-			api.State_PENDING, worker.TemplatePath, strings.Join(tags, ",\n"))
+			dbif.State_PENDING, worker.TemplatePath, strings.Join(tags, ",\n"))
 		if err == nil {
 			worker.WorkerId = workerID
 			break
@@ -847,23 +921,22 @@ func (d *dbConn) CreateWorker(worker *api.Worker) (string, error) {
 		return "", err
 	}
 	return worker.WorkerId, lastErr
-
 }
 
-func (d *dbConn) UpdateWorker(id string, newstatus api.State) error {
+func (d *DBIFServer) UpdateWorker(id string, newstatus dbif.State) error {
 	_, err := d.db.Exec("UPDATE workers SET status = ? WHERE id = ?", newstatus, id)
 	return err
 }
 
-func (d *dbConn) DeleteWorker(id string) error {
+func (d *DBIFServer) DeleteWorker(id string) error {
 	_, err := d.db.Exec("DELETE FROM workers WHERE id = ?", id)
 	return err
 }
 
-func (d *dbConn) GetWorkerFullInfo(studyId string, trialId string, workerId string, OnlyLatestLog bool) (*api.GetWorkerFullInfoReply, error) {
-	ret := &api.GetWorkerFullInfoReply{}
+func (d *DBIFServer) GetWorkerFullInfo(studyId string, trialId string, workerId string, OnlyLatestLog bool) (*dbif.GetWorkerFullInfoReply, error) {
+	ret := &dbif.GetWorkerFullInfoReply{}
 	var err error
-	ws := []*api.Worker{}
+	ws := []*dbif.Worker{}
 
 	if workerId != "" {
 		w, err := d.GetWorker(workerId)
@@ -887,12 +960,12 @@ func (d *dbConn) GetWorkerFullInfo(studyId string, trialId string, workerId stri
 		return ret, err
 	}
 
-	plist := make(map[string][]*api.Parameter)
+	plist := make(map[string][]*dbif.Parameter)
 	for _, t := range ts {
 		plist[t.TrialId] = t.ParameterSet
 	}
 
-	wfilist := make([]*api.WorkerFullInfo, len(ws))
+	wfilist := make([]*dbif.WorkerFullInfo, len(ws))
 	var qstr, id string
 	if OnlyLatestLog {
 		qstr = `
@@ -963,7 +1036,7 @@ func (d *dbConn) GetWorkerFullInfo(studyId string, trialId string, workerId stri
 		log.Printf("SQL query: %v", err)
 		return ret, err
 	}
-	metricslist := make(map[string]map[string][]*api.MetricsValueTime, len(ws))
+	metricslist := make(map[string]map[string][]*dbif.MetricsValueTime, len(ws))
 	for rows.Next() {
 		var name, value, timeStr, wid string
 		err := rows.Scan(&wid, &timeStr, &name, &value)
@@ -977,26 +1050,26 @@ func (d *dbConn) GetWorkerFullInfo(studyId string, trialId string, workerId stri
 			continue
 		}
 		if _, ok := metricslist[wid]; ok {
-			metricslist[wid][name] = append(metricslist[wid][name], &api.MetricsValueTime{
+			metricslist[wid][name] = append(metricslist[wid][name], &dbif.MetricsValueTime{
 				Value: value,
 				Time:  ptime.UTC().Format(time.RFC3339Nano),
 			})
 		} else {
-			metricslist[wid] = make(map[string][]*api.MetricsValueTime, len(metrics))
-			metricslist[wid][name] = append(metricslist[wid][name], &api.MetricsValueTime{
+			metricslist[wid] = make(map[string][]*dbif.MetricsValueTime, len(metrics))
+			metricslist[wid][name] = append(metricslist[wid][name], &dbif.MetricsValueTime{
 				Value: value,
 				Time:  ptime.UTC().Format(time.RFC3339Nano),
 			})
 		}
 	}
 	for i, w := range ws {
-		wfilist[i] = &api.WorkerFullInfo{
+		wfilist[i] = &dbif.WorkerFullInfo{
 			Worker:       w,
 			ParameterSet: plist[w.TrialId],
 		}
 		for _, m := range metrics {
 			if v, ok := metricslist[w.WorkerId][m]; ok {
-				wfilist[i].MetricsLogs = append(wfilist[i].MetricsLogs, &api.MetricsLog{
+				wfilist[i].MetricsLogs = append(wfilist[i].MetricsLogs, &dbif.MetricsLog{
 					Name:   m,
 					Values: v,
 				},
@@ -1008,7 +1081,7 @@ func (d *dbConn) GetWorkerFullInfo(studyId string, trialId string, workerId stri
 	return ret, nil
 }
 
-func (d *dbConn) SetSuggestionParam(algorithm string, studyID string, params []*api.SuggestionParameter) (string, error) {
+func (d *DBIFServer) SetSuggestionParam(algorithm string, studyID string, params []*dbif.SuggestionParameter) (string, error) {
 	var err error
 	ps := make([]string, len(params))
 	for i, elem := range params {
@@ -1032,7 +1105,7 @@ func (d *dbConn) SetSuggestionParam(algorithm string, studyID string, params []*
 	return paramID, err
 }
 
-func (d *dbConn) UpdateSuggestionParam(paramID string, params []*api.SuggestionParameter) error {
+func (d *DBIFServer) UpdateSuggestionParam(paramID string, params []*dbif.SuggestionParameter) error {
 	var err error
 	ps := make([]string, len(params))
 	for i, elem := range params {
@@ -1047,7 +1120,7 @@ func (d *dbConn) UpdateSuggestionParam(paramID string, params []*api.SuggestionP
 	return err
 }
 
-func (d *dbConn) GetSuggestionParam(paramID string) ([]*api.SuggestionParameter, error) {
+func (d *DBIFServer) GetSuggestionParam(paramID string) ([]*dbif.SuggestionParameter, error) {
 	var params string
 	row := d.db.QueryRow("SELECT parameters FROM suggestion_param WHERE id = ?", paramID)
 	err := row.Scan(&params)
@@ -1060,9 +1133,9 @@ func (d *dbConn) GetSuggestionParam(paramID string) ([]*api.SuggestionParameter,
 	} else {
 		return nil, nil
 	}
-	ret := make([]*api.SuggestionParameter, len(pArray))
+	ret := make([]*dbif.SuggestionParameter, len(pArray))
 	for i, j := range pArray {
-		p := new(api.SuggestionParameter)
+		p := new(dbif.SuggestionParameter)
 		err = jsonpb.UnmarshalString(j, p)
 		if err != nil {
 			log.Printf("err unmarshal %s", j)
@@ -1074,14 +1147,14 @@ func (d *dbConn) GetSuggestionParam(paramID string) ([]*api.SuggestionParameter,
 	return ret, nil
 }
 
-func (d *dbConn) GetSuggestionParamList(studyID string) ([]*api.SuggestionParameterSet, error) {
+func (d *DBIFServer) GetSuggestionParamList(studyID string) ([]*dbif.SuggestionParameterSet, error) {
 	var rows *sql.Rows
 	var err error
 	rows, err = d.db.Query("SELECT id, suggestion_algo, parameters FROM suggestion_param WHERE study_id = ?", studyID)
 	if err != nil {
 		return nil, err
 	}
-	var result []*api.SuggestionParameterSet
+	var result []*dbif.SuggestionParameterSet
 	for rows.Next() {
 		var id string
 		var algorithm string
@@ -1096,9 +1169,9 @@ func (d *dbConn) GetSuggestionParamList(studyID string) ([]*api.SuggestionParame
 		} else {
 			return nil, nil
 		}
-		suggestparams := make([]*api.SuggestionParameter, len(pArray))
+		suggestparams := make([]*dbif.SuggestionParameter, len(pArray))
 		for i, j := range pArray {
-			p := new(api.SuggestionParameter)
+			p := new(dbif.SuggestionParameter)
 			err = jsonpb.UnmarshalString(j, p)
 			if err != nil {
 				log.Printf("err unmarshal %s", j)
@@ -1106,7 +1179,7 @@ func (d *dbConn) GetSuggestionParamList(studyID string) ([]*api.SuggestionParame
 			}
 			suggestparams[i] = p
 		}
-		result = append(result, &api.SuggestionParameterSet{
+		result = append(result, &dbif.SuggestionParameterSet{
 			ParamId:              id,
 			SuggestionAlgorithm:  algorithm,
 			SuggestionParameters: suggestparams,
@@ -1115,7 +1188,7 @@ func (d *dbConn) GetSuggestionParamList(studyID string) ([]*api.SuggestionParame
 	return result, nil
 }
 
-func (d *dbConn) SetEarlyStopParam(algorithm string, studyID string, params []*api.EarlyStoppingParameter) (string, error) {
+func (d *DBIFServer) SetEarlyStopParam(algorithm string, studyID string, params []*dbif.EarlyStoppingParameter) (string, error) {
 	ps := make([]string, len(params))
 	var err error
 	for i, elem := range params {
@@ -1139,7 +1212,7 @@ func (d *dbConn) SetEarlyStopParam(algorithm string, studyID string, params []*a
 	return paramID, nil
 }
 
-func (d *dbConn) UpdateEarlyStopParam(paramID string, params []*api.EarlyStoppingParameter) error {
+func (d *DBIFServer) UpdateEarlyStopParam(paramID string, params []*dbif.EarlyStoppingParameter) error {
 	ps := make([]string, len(params))
 	var err error
 	for i, elem := range params {
@@ -1154,7 +1227,7 @@ func (d *dbConn) UpdateEarlyStopParam(paramID string, params []*api.EarlyStoppin
 	return err
 }
 
-func (d *dbConn) GetEarlyStopParam(paramID string) ([]*api.EarlyStoppingParameter, error) {
+func (d *DBIFServer) GetEarlyStopParam(paramID string) ([]*dbif.EarlyStoppingParameter, error) {
 	var params string
 	row := d.db.QueryRow("SELECT parameters FROM earlystopping_param WHERE id = ?", paramID)
 	err := row.Scan(&params)
@@ -1167,9 +1240,9 @@ func (d *dbConn) GetEarlyStopParam(paramID string) ([]*api.EarlyStoppingParamete
 	} else {
 		return nil, nil
 	}
-	ret := make([]*api.EarlyStoppingParameter, len(pArray))
+	ret := make([]*dbif.EarlyStoppingParameter, len(pArray))
 	for i, j := range pArray {
-		p := new(api.EarlyStoppingParameter)
+		p := new(dbif.EarlyStoppingParameter)
 		err = jsonpb.UnmarshalString(j, p)
 		if err != nil {
 			log.Printf("err unmarshal %s", j)
@@ -1180,14 +1253,14 @@ func (d *dbConn) GetEarlyStopParam(paramID string) ([]*api.EarlyStoppingParamete
 	return ret, nil
 }
 
-func (d *dbConn) GetEarlyStopParamList(studyID string) ([]*api.EarlyStoppingParameterSet, error) {
+func (d *DBIFServer) GetEarlyStopParamList(studyID string) ([]*dbif.EarlyStoppingParameterSet, error) {
 	var rows *sql.Rows
 	var err error
 	rows, err = d.db.Query("SELECT id, earlystop_algo, parameters FROM earlystopping_param WHERE study_id = ?", studyID)
 	if err != nil {
 		return nil, err
 	}
-	var result []*api.EarlyStoppingParameterSet
+	var result []*dbif.EarlyStoppingParameterSet
 	for rows.Next() {
 		var id string
 		var algorithm string
@@ -1202,9 +1275,9 @@ func (d *dbConn) GetEarlyStopParamList(studyID string) ([]*api.EarlyStoppingPara
 		} else {
 			return nil, nil
 		}
-		esparams := make([]*api.EarlyStoppingParameter, len(pArray))
+		esparams := make([]*dbif.EarlyStoppingParameter, len(pArray))
 		for i, j := range pArray {
-			p := new(api.EarlyStoppingParameter)
+			p := new(dbif.EarlyStoppingParameter)
 			err = jsonpb.UnmarshalString(j, p)
 			if err != nil {
 				log.Printf("err unmarshal %s", j)
@@ -1212,7 +1285,7 @@ func (d *dbConn) GetEarlyStopParamList(studyID string) ([]*api.EarlyStoppingPara
 			}
 			esparams[i] = p
 		}
-		result = append(result, &api.EarlyStoppingParameterSet{
+		result = append(result, &dbif.EarlyStoppingParameterSet{
 			ParamId:                 id,
 			EarlyStoppingAlgorithm:  algorithm,
 			EarlyStoppingParameters: esparams,
@@ -1220,4 +1293,19 @@ func (d *dbConn) GetEarlyStopParamList(studyID string) ([]*api.EarlyStoppingPara
 	}
 	return result, nil
 }
-**/
+
+
+func main() {
+	listener, err := net.Listen("tcp", port)
+	if err != nil {
+		log.Fatalf("Failed to listen: %v", err)
+	}
+	size := 1<<31 - 1
+	s := grpc.NewServer(grpc.MaxRecvMsgSize(size), grpc.MaxSendMsgSize(size))
+	dbif_pb.RegisterDBIFServer(s, &DBIFServer{})
+	reflection.Register(s)
+	log.Printf("DBIF Service\n")
+	if err = s.Serve(listener); err != nil {
+		log.Fatalf("Failed to serve: %v", err)
+	}
+}

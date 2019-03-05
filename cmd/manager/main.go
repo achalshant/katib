@@ -331,11 +331,15 @@ func (s *server) Check(ctx context.Context, in *health_pb.HealthCheckRequest) (*
 func main() {
 	flag.Parse()
 	var err error
-
-	dbIf, err = kdb.New()
+	conn, err := grpc.Dial("katib-dbif:6789", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Failed to open db connection: %v", err)
 	}
+	defer conn.Close()
+	dbIf = kdb.DBIFClient(conn)
+	
+	//dbIf, err = kdb.New()
+	
 	dbIf.DBInit()
 	listener, err := net.Listen("tcp", port)
 	if err != nil {
