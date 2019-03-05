@@ -1,5 +1,5 @@
 package db
-
+/**
 import (
 	"fmt"
 	"log"
@@ -111,3 +111,4 @@ func (d *dbConn) SelectOne() error {
 	}
 	return nil
 }
+**/

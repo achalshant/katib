@@ -44,11 +44,9 @@ type VizierDBInterface interface {
 	GetWorker(string) (Worker, error)
 	GetWorkerStatus(string) (State, error)
 	GetWorkerList(string, string) ([]Worker, error)
-	GetWorkerLogs(string, *GetWorkerLogOpts) ([]*WorkerLog, error)
-	GetWorkerTimestamp(string) (*time.Time, error)
 	StoreWorkerLogs(string, []MetricsLog) error
 	CreateWorker(Worker) (string, error)
-	UpdateWorker(string, dbif.State) error
+	UpdateWorker(string, State) error
 	DeleteWorker(string) error
 	GetWorkerFullInfo(string, string, string, bool) (GetWorkerFullInfoReply, error)
 
@@ -56,10 +54,6 @@ type VizierDBInterface interface {
 	UpdateSuggestionParam(string, []SuggestionParameter) error
 	GetSuggestionParam(string) ([]SuggestionParameter, error)
 	GetSuggestionParamList(string) ([]SuggestionParameterSet, error)
-	SetEarlyStopParam(string, string, []EarlyStoppingParameter) (string, error)
-	UpdateEarlyStopParam(string, []EarlyStoppingParameter) error
-	GetEarlyStopParam(string) ([]EarlyStoppingParameter, error)
-	GetEarlyStopParamList(string) ([]EarlyStoppingParameterSet, error)
 }
 
 /**
@@ -263,7 +257,7 @@ func (d *dbConn) CreateStudy(in *api.StudyConfig) (string, error) {
 		}
 	}
 
-	// WE PROBABLY DON'T NEED METRICS AND ALSO THIS LOGIC IS KIND OF CONFUSING 
+	// WE PROBABLY DON'T NEED METRICS AND ALSO THIS LOGIC IS KIND OF CONFUSING
 	var isin bool = false
 	for _, m := range in.Metrics {
 		if m == in.ObjectiveValueName {
@@ -314,7 +308,7 @@ func (d *dbConn) CreateStudy(in *api.StudyConfig) (string, error) {
 // Other columns are silently ignored.
 func (d *dbConn) UpdateStudy(studyID string, in *api.StudyConfig) error {
 
-	// THINK ABOUT TRIALS 
+	// THINK ABOUT TRIALS
 	var err error
 
 	tags := make([]string, len(in.Tags))
@@ -453,7 +447,7 @@ func marshalTrial(trial *api.Trial) ([]string, []string, error) {
 // As a side-effect, it generates and sets trial.TrialId.
 // Users should not overwrite TrialId.
 
-// TODO FIX CREATE_TRIAL & DELETE_TRIAL IN CASE OF NAS, SINCE WE WANT TRIALS 
+// TODO FIX CREATE_TRIAL & DELETE_TRIAL IN CASE OF NAS, SINCE WE WANT TRIALS
 func (d *dbConn) CreateTrial(trial *api.Trial) error {
 	params, tags, lastErr := marshalTrial(trial)
 
@@ -878,51 +872,51 @@ func (d *dbConn) GetWorkerFullInfo(studyId string, trialId string, workerId stri
 	var qstr, id string
 	if OnlyLatestLog {
 		qstr = `
-		SELECT 
-			WM.worker_id, WM.time, WM.name, WM.value 
+		SELECT
+			WM.worker_id, WM.time, WM.name, WM.value
 		FROM (
-			SELECT 
+			SELECT
 				Master.worker_id, Master.time,  Master.name,  Master.value
 			FROM (
-				SELECT 
-					worker_id, name, 
+				SELECT
+					worker_id, name,
 					MAX(id) AS MaxID
-				FROM 
-					worker_metrics 
-				GROUP BY 
+				FROM
+					worker_metrics
+				GROUP BY
 					worker_id, name
 				) AS LATEST
 				JOIN worker_metrics AS Master
 				ON Master.id = LATEST.MaxID
-		) AS WM 
-		JOIN workers AS WS 
-		ON WM.worker_id = WS.id 
+		) AS WM
+		JOIN workers AS WS
+		ON WM.worker_id = WS.id
 		AND`
 	} else {
 		qstr = `
-		SELECT 
-			WM.worker_id, WM.time, WM.name, WM.value 
-		FROM 
-			worker_metrics AS WM 
-		JOIN workers AS WS 
-		ON WM.worker_id = WS.id 
+		SELECT
+			WM.worker_id, WM.time, WM.name, WM.value
+		FROM
+			worker_metrics AS WM
+		JOIN workers AS WS
+		ON WM.worker_id = WS.id
 		AND`
 	}
 	if workerId != "" {
 		if OnlyLatestLog {
 			qstr = `
-			SELECT 
-			WM.worker_id, WM.time, WM.name, WM.value 
+			SELECT
+			WM.worker_id, WM.time, WM.name, WM.value
 			FROM (
-				SELECT 
+				SELECT
 					Master.worker_id, Master.time,  Master.name,  Master.value
 				FROM (
-					SELECT 
-						worker_id, name, 
+					SELECT
+						worker_id, name,
 						MAX(id) AS MaxID
-					FROM 
-						worker_metrics 
-					GROUP BY 
+					FROM
+						worker_metrics
+					GROUP BY
 						worker_id, name
 				) AS LATEST
 				JOIN worker_metrics AS Master
