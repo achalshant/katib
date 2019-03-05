@@ -3,7 +3,7 @@
  */
 syntax = "proto3";
 
-package api;
+package db;
 
 /**
  * Service for Main API for Katib
