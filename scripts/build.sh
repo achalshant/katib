@@ -31,6 +31,9 @@ docker build -t ${PREFIX}/studyjob-controller -f ${CMD_PREFIX}/studyjobcontrolle
 docker build -t ${PREFIX}/metrics-collector -f ${CMD_PREFIX}/metricscollector/Dockerfile .
 docker build -t ${PREFIX}/tfevent-metrics-collector -f ${CMD_PREFIX}/tfevent-metricscollector/Dockerfile .
 
+echo "Building DBIF image..."
+docker build -t ${PREFIX}/katib-dbif -f ${CMD_PREFIX}/dbif/katib/Dockerfile .
+
 echo "Building REST API for core image..."
 docker build -t ${PREFIX}/vizier-core-rest -f ${CMD_PREFIX}/manager-rest/Dockerfile .
 
