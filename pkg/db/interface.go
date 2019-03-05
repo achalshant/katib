@@ -1,20 +1,5 @@
 package db
 
-import (
-	crand "crypto/rand"
-	"database/sql"
-	"errors"
-	"fmt"
-	"log"
-	"math/big"
-	"math/rand"
-	"os"
-	"strings"
-	"time"
-
-	"github.com/golang/protobuf/jsonpb"
-	_ "github.com/go-sql-driver/mysql"
-)
 /**
 const (
 	dbDriver     = "mysql"
