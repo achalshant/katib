@@ -1,9 +1,9 @@
 /**
- * DBIF API
+ * Katib API
  */
 syntax = "proto3";
 
-package db;
+package api;
 
 /**
  * Service for Main API for Katib
@@ -35,20 +35,20 @@ service DBIF {
      * Get all Study Configs from DB.
      */
     rpc GetStudyList(GetStudyListRequest) returns (GetStudyListReply){
-       
+        
     };
     /**
      * Create a Trial from Trial Config.
      * Generate a unique ID and store the Trial to DB.
      */
     rpc CreateTrial(CreateTrialRequest) returns (CreateTrialReply){
-       
+      
     };
     /** 
      * Get a Trial Configs from DB by ID of Study.
      */
     rpc GetTrials(GetTrialsRequest) returns (GetTrialsReply){
-       
+        
     };
     /**
      * Get a Trial Configuration from DB by ID of Trial.
@@ -61,19 +61,19 @@ service DBIF {
      * Generate a unique ID and store the Worker to DB.
      */
     rpc RegisterWorker(RegisterWorkerRequest) returns (RegisterWorkerReply){
-       
+     
     };
     /** 
      * Get a Worker Configs and Status from DB by ID of Study, Trial or Worker.
      */
     rpc GetWorkers(GetWorkersRequest) returns (GetWorkersReply){
-        
+       
     };
     /** 
      * Update a Status of Worker.
      */
     rpc UpdateWorkerState(UpdateWorkerStateRequest) returns (UpdateWorkerStateReply){
-        
+       
     };
     /** 
      * Get full information related to specified Workers.
@@ -86,9 +86,18 @@ service DBIF {
      * Get Suggestions from a Suggestion service.
      */
     rpc GetSuggestions(GetSuggestionsRequest) returns (GetSuggestionsReply){
+        
+    };
+    rpc GetShouldStopWorkers(GetShouldStopWorkersRequest) returns (GetShouldStopWorkersReply){
        
-    }
-    
+    };
+    /**
+     * Get metrics of workers.
+     * You can get all logs of metrics since start of the worker.
+     */
+    rpc GetMetrics(GetMetricsRequest) returns (GetMetricsReply){
+        
+    };
     /**
      * Create or Update parameter set for a suggestion service.
      * If you specify an ID of parameter set, it will update the parameter set by your request.
@@ -96,7 +105,7 @@ service DBIF {
      * The parameters are key-value format.
      */
     rpc SetSuggestionParameters(SetSuggestionParametersRequest) returns (SetSuggestionParametersReply){
-        
+       
     };
     /**
      * Get suggestion parameter set from DB specified.
@@ -108,23 +117,45 @@ service DBIF {
      * Get all suggestion parameter sets from DB.
      */
     rpc GetSuggestionParameterList(GetSuggestionParameterListRequest) returns (GetSuggestionParameterListReply){
+        
+    };
+    rpc SetEarlyStoppingParameters(SetEarlyStoppingParametersRequest) returns (SetEarlyStoppingParametersReply){
        
     };
-
-
+    rpc GetEarlyStoppingParameters(GetEarlyStoppingParametersRequest) returns (GetEarlyStoppingParametersReply){
+        
+    };
+    rpc GetEarlyStoppingParameterList(GetEarlyStoppingParameterListRequest) returns (GetEarlyStoppingParameterListReply){
+      
+    };
     rpc SaveStudy(SaveStudyRequest) returns(SaveStudyReply){
-       
+     
     };
     rpc SaveModel(SaveModelRequest) returns(SaveModelReply){
-       
+      
     };
-
+    /**
+     * Report a logs of metrics for workers.
+     * The logs for each worker must have timestamp and must be ordered in time series.
+     * When the log you reported are already reported before, it will be dismissed and get no error.
+     */
+    rpc ReportMetricsLogs(ReportMetricsLogsRequest) returns (ReportMetricsLogsReply){
+        
+    };
     rpc GetSavedStudies(GetSavedStudiesRequest) returns(GetSavedStudiesReply){
-       
+        
     };
     rpc GetSavedModels(GetSavedModelsRequest) returns(GetSavedModelsReply){
        
     };
+}
+
+service Suggestion {
+    rpc GetSuggestions(GetSuggestionsRequest) returns (GetSuggestionsReply);
+}
+
+service EarlyStopping {
+    rpc GetShouldStopWorkers(GetShouldStopWorkersRequest) returns (GetShouldStopWorkersReply);
 }
 
 /**
@@ -193,6 +224,38 @@ enum State {
     ERROR = 120; /// Error.
 }
 
+/**
+ * Logs of metrics for a worker.
+ */
+message MetricsLogSet {
+    string worker_id = 1; /// ID of the corresponding worker.
+    repeated MetricsLog metrics_logs= 2; /// Logs of metrics.
+    State worker_status = 3; /// Status of the corresponding worker.
+}
+
+/**
+ * Metrics of a worker
+ */
+message Metrics {
+    string name = 1; /// Name of metrics.
+    string value = 2; /// Value of metrics. Double float.
+}
+
+/**
+ * Metrics of a worker with timestamp
+ */
+message MetricsValueTime {
+    string time = 1; /// Timestamp RFC3339 format.
+    string value = 2; /// Value of metrics. Double float.
+}
+
+/**
+ * Metrics logs of a worker
+ */
+message MetricsLog {
+    string name = 1;  /// Name of metrics.
+    repeated MetricsValueTime values = 2; /// Log of metrics. Ordered by time series.
+}
 
 /**
  * Parameter for Suggestion service. Key-value format.
@@ -202,6 +265,13 @@ message SuggestionParameter {
     string value = 2; /// Value of Parameter.
 }
 
+/**
+ * Parameter for EarlyStopping service. Key-value format.
+ */
+message EarlyStoppingParameter {
+    string name = 1; /// Name of Parameter.
+    string value = 2; /// Value of Parameter.
+}
 
 /**
  * Tag for each resource.
@@ -249,9 +319,6 @@ message Worker {
 }
 
 /**
-TODO: Review with Manasi
-**/
-/**
  * NasConfig contains a config of NAS job
  */
  message NasConfig {
@@ -261,6 +328,7 @@ TODO: Review with Manasi
     }
     Operations operations = 2; /// List of Operation
 }
+
 
 /**
  * GraphConfig contains a config of DAG
@@ -472,19 +540,6 @@ message GetWorkerFullInfoRequest {
     bool only_latest_log = 4;
 }
 
-/**
- * Metrics of a worker with timestamp
- */
-message MetricsValueTime {
-    string time = 1; /// Timestamp RFC3339 format.
-    string value = 2; /// Value of metrics. Double float.
-}
-
-message MetricsLog {
-    string name = 1;  /// Name of metrics.
-    repeated MetricsValueTime values = 2; /// Log of metrics. Ordered by time series.
-}
-
 message WorkerFullInfo {
     Worker Worker = 1;
     repeated Parameter parameter_set = 2;
@@ -507,9 +562,32 @@ message GetSuggestionsReply {
     repeated Trial trials = 1;
 }
 
-message Metrics {
-    string name = 1; /// Name of metrics.
-    string value = 2; /// Value of metrics. Double float.
+message GetShouldStopWorkersRequest {
+    string study_id = 1;
+    string early_stopping_algorithm = 2;
+    string param_id = 5;
+}
+
+message GetShouldStopWorkersReply {
+    repeated string should_stop_worker_ids = 1;
+}
+
+message GetMetricsRequest {
+    string study_id = 1;
+    repeated string worker_ids = 2;
+    repeated string metrics_names = 3;
+}
+
+message GetMetricsReply {
+    repeated MetricsLogSet metrics_log_sets = 1;
+}
+
+message ReportMetricsLogsRequest {
+    string study_id = 1;
+    repeated MetricsLogSet metrics_log_sets = 3;
+}
+
+message ReportMetricsLogsReply {
 }
 
 message ModelInfo {
@@ -597,6 +675,7 @@ message SuggestionParameterSet {
 }
 
 message GetSuggestionParameterListReply {
+
     repeated SuggestionParameterSet suggestion_parameter_sets = 1;
 }
 
@@ -605,4 +684,37 @@ message StopSuggestionRequest {
 }
 
 message StopSuggestionReply {
+}
+
+message SetEarlyStoppingParametersRequest {
+    string study_id = 1;
+    string early_stopping_algorithm = 2;
+    string param_id = 3;
+    repeated EarlyStoppingParameter early_stopping_parameters = 4;
+}
+
+message SetEarlyStoppingParametersReply {
+    string param_id = 1;
+}
+
+message GetEarlyStoppingParametersRequest {
+    string param_id = 1;
+}
+
+message GetEarlyStoppingParametersReply {
+    repeated EarlyStoppingParameter early_stopping_parameters = 1;
+}
+
+message GetEarlyStoppingParameterListRequest {
+    string study_id = 1;
+}
+
+message EarlyStoppingParameterSet {
+    string param_id = 1;
+    string early_stopping_algorithm = 2;
+    repeated EarlyStoppingParameter early_stopping_parameters = 3;
+}
+
+message GetEarlyStoppingParameterListReply {
+    repeated EarlyStoppingParameterSet early_stopping_parameter_sets = 1;
 }
