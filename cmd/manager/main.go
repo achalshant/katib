@@ -28,73 +28,73 @@ type server struct {
 	msIf modelstore.ModelStore
 }
 
-func (s *server) CreateStudy(ctx context.Context, in *api_pb.CreateStudyRequest) (*api_pb.CreateStudyReply, error) {
+func (s *server) CreateStudy(ctx context.Context, in *kdb.CreateStudyRequest) (*kdb.CreateStudyReply, error) {
 	if in == nil || in.StudyConfig == nil {
-		return &api_pb.CreateStudyReply{}, errors.New("StudyConfig is missing.")
+		return &kdb.CreateStudyReply{}, errors.New("StudyConfig is missing.")
 	}
 
 	studyID, err := dbIf.CreateStudy(in.StudyConfig)
 	if err != nil {
-		return &api_pb.CreateStudyReply{}, err
+		return &kdb.CreateStudyReply{}, err
 	}
 
-	return &api_pb.CreateStudyReply{StudyId: studyID}, nil
+	return &kdb.CreateStudyReply{StudyId: studyID}, nil
 }
 
-func (s *server) DeleteStudy(ctx context.Context, in *api_pb.DeleteStudyRequest) (*api_pb.DeleteStudyReply, error) {
+func (s *server) DeleteStudy(ctx context.Context, in *kdb.DeleteStudyRequest) (*kdb.DeleteStudyReply, error) {
 	if in == nil || in.StudyId == "" {
-		return &api_pb.DeleteStudyReply{}, errors.New("StudyId is missing.")
+		return &kdb.DeleteStudyReply{}, errors.New("StudyId is missing.")
 	}
 	err := dbIf.DeleteStudy(in.StudyId)
 	if err != nil {
-		return &api_pb.DeleteStudyReply{}, err
+		return &kdb.DeleteStudyReply{}, err
 	}
-	return &api_pb.DeleteStudyReply{StudyId: in.StudyId}, nil
+	return &kdb.DeleteStudyReply{StudyId: in.StudyId}, nil
 }
 
-func (s *server) GetStudy(ctx context.Context, in *api_pb.GetStudyRequest) (*api_pb.GetStudyReply, error) {
+func (s *server) GetStudy(ctx context.Context, in *kdb.GetStudyRequest) (*kdb.GetStudyReply, error) {
 
 	sc, err := dbIf.GetStudy(in.StudyId)
 
 	if err != nil {
-		return &api_pb.GetStudyReply{}, err
+		return &kdb.GetStudyReply{}, err
 	}
-	return &api_pb.GetStudyReply{StudyConfig: sc}, err
+	return &kdb.GetStudyReply{StudyConfig: sc}, err
 }
 
-func (s *server) GetStudyList(ctx context.Context, in *api_pb.GetStudyListRequest) (*api_pb.GetStudyListReply, error) {
+func (s *server) GetStudyList(ctx context.Context, in *kdb.GetStudyListRequest) (*kdb.GetStudyListReply, error) {
 	sl, err := dbIf.GetStudyList()
 	if err != nil {
-		return &api_pb.GetStudyListReply{}, err
+		return &kdb.GetStudyListReply{}, err
 	}
-	result := make([]*api_pb.StudyOverview, len(sl))
+	result := make([]*kdb.StudyOverview, len(sl))
 	for i, id := range sl {
 		sc, err := dbIf.GetStudy(id)
 		if err != nil {
-			return &api_pb.GetStudyListReply{}, err
+			return &kdb.GetStudyListReply{}, err
 		}
-		result[i] = &api_pb.StudyOverview{
+		result[i] = &kdb.StudyOverview{
 			Name:  sc.Name,
 			Owner: sc.Owner,
 			Id:    id,
 		}
 	}
-	return &api_pb.GetStudyListReply{StudyOverviews: result}, err
+	return &kdb.GetStudyListReply{StudyOverviews: result}, err
 }
 
-func (s *server) CreateTrial(ctx context.Context, in *api_pb.CreateTrialRequest) (*api_pb.CreateTrialReply, error) {
+func (s *server) CreateTrial(ctx context.Context, in *kdb.CreateTrialRequest) (*kdb.CreateTrialReply, error) {
 	err := dbIf.CreateTrial(in.Trial)
-	return &api_pb.CreateTrialReply{TrialId: in.Trial.TrialId}, err
+	return &kdb.CreateTrialReply{TrialId: in.Trial.TrialId}, err
 }
 
-func (s *server) GetTrials(ctx context.Context, in *api_pb.GetTrialsRequest) (*api_pb.GetTrialsReply, error) {
+func (s *server) GetTrials(ctx context.Context, in *kdb.GetTrialsRequest) (*kdb.GetTrialsReply, error) {
 	tl, err := dbIf.GetTrialList(in.StudyId)
-	return &api_pb.GetTrialsReply{Trials: tl}, err
+	return &kdb.GetTrialsReply{Trials: tl}, err
 }
 
-func (s *server) GetTrial(ctx context.Context, in *api_pb.GetTrialRequest) (*api_pb.GetTrialReply, error) {
+func (s *server) GetTrial(ctx context.Context, in *kdb.GetTrialRequest) (*kdb.GetTrialReply, error) {
 	t, err := dbIf.GetTrial(in.TrialId)
-	return &api_pb.GetTrialReply{Trial: t}, err
+	return &kdb.GetTrialReply{Trial: t}, err
 }
 
 func (s *server) GetSuggestions(ctx context.Context, in *api_pb.GetSuggestionsRequest) (*api_pb.GetSuggestionsReply, error) {
@@ -115,22 +115,22 @@ func (s *server) GetSuggestions(ctx context.Context, in *api_pb.GetSuggestionsRe
 	return r, nil
 }
 
-func (s *server) RegisterWorker(ctx context.Context, in *api_pb.RegisterWorkerRequest) (*api_pb.RegisterWorkerReply, error) {
+func (s *server) RegisterWorker(ctx context.Context, in *kdb.RegisterWorkerRequest) (*kdb.RegisterWorkerReply, error) {
 	wid, err := dbIf.CreateWorker(in.Worker)
-	return &api_pb.RegisterWorkerReply{WorkerId: wid}, err
+	return &kdb.RegisterWorkerReply{WorkerId: wid}, err
 }
 
-func (s *server) GetWorkers(ctx context.Context, in *api_pb.GetWorkersRequest) (*api_pb.GetWorkersReply, error) {
-	var ws []*api_pb.Worker
+func (s *server) GetWorkers(ctx context.Context, in *kdb.GetWorkersRequest) (*kdb.GetWorkersReply, error) {
+	var ws []*kdb.Worker
 	var err error
 	if in.WorkerId == "" {
 		ws, err = dbIf.GetWorkerList(in.StudyId, in.TrialId)
 	} else {
-		var w *api_pb.Worker
+		var w *kdb.Worker
 		w, err = dbIf.GetWorker(in.WorkerId)
 		ws = append(ws, w)
 	}
-	return &api_pb.GetWorkersReply{Workers: ws}, err
+	return &kdb.GetWorkersReply{Workers: ws}, err
 }
 
 func (s *server) GetShouldStopWorkers(ctx context.Context, in *api_pb.GetShouldStopWorkersRequest) (*api_pb.GetShouldStopWorkersReply, error) {
@@ -146,14 +146,14 @@ func (s *server) GetShouldStopWorkers(ctx context.Context, in *api_pb.GetShouldS
 	return c.GetShouldStopWorkers(context.Background(), in)
 }
 
-func (s *server) GetMetrics(ctx context.Context, in *api_pb.GetMetricsRequest) (*api_pb.GetMetricsReply, error) {
+func (s *server) GetMetrics(ctx context.Context, in *kdb.GetMetricsRequest) (*kdb.GetMetricsReply, error) {
 	var mNames []string
 	if in.StudyId == "" {
-		return &api_pb.GetMetricsReply{}, errors.New("StudyId should be set")
+		return &kdb.GetMetricsReply{}, errors.New("StudyId should be set")
 	}
 	sc, err := dbIf.GetStudy(in.StudyId)
 	if err != nil {
-		return &api_pb.GetMetricsReply{}, err
+		return &kdb.GetMetricsReply{}, err
 	}
 	if len(in.MetricsNames) > 0 {
 		mNames = in.MetricsNames
@@ -161,63 +161,63 @@ func (s *server) GetMetrics(ctx context.Context, in *api_pb.GetMetricsRequest) (
 		mNames = sc.Metrics
 	}
 	if err != nil {
-		return &api_pb.GetMetricsReply{}, err
+		return &kdb.GetMetricsReply{}, err
 	}
-	mls := make([]*api_pb.MetricsLogSet, len(in.WorkerIds))
+	mls := make([]*kdb.MetricsLogSet, len(in.WorkerIds))
 	for i, w := range in.WorkerIds {
-		wr, err := s.GetWorkers(ctx, &api_pb.GetWorkersRequest{
+		wr, err := s.GetWorkers(ctx, &kdb.GetWorkersRequest{
 			StudyId:  in.StudyId,
 			WorkerId: w,
 		})
 		if err != nil {
-			return &api_pb.GetMetricsReply{}, err
+			return &kdb.GetMetricsReply{}, err
 		}
-		mls[i] = &api_pb.MetricsLogSet{
+		mls[i] = &kdb.MetricsLogSet{
 			WorkerId:     w,
-			MetricsLogs:  make([]*api_pb.MetricsLog, len(mNames)),
+			MetricsLogs:  make([]*kdb.MetricsLog, len(mNames)),
 			WorkerStatus: wr.Workers[0].Status,
 		}
 		for j, m := range mNames {
 			ls, err := dbIf.GetWorkerLogs(w, &kdb.GetWorkerLogOpts{Name: m})
 			if err != nil {
-				return &api_pb.GetMetricsReply{}, err
+				return &kdb.GetMetricsReply{}, err
 			}
-			mls[i].MetricsLogs[j] = &api_pb.MetricsLog{
+			mls[i].MetricsLogs[j] = &kdb.MetricsLog{
 				Name:   m,
-				Values: make([]*api_pb.MetricsValueTime, len(ls)),
+				Values: make([]*kdb.MetricsValueTime, len(ls)),
 			}
 			for k, l := range ls {
-				mls[i].MetricsLogs[j].Values[k] = &api_pb.MetricsValueTime{
+				mls[i].MetricsLogs[j].Values[k] = &kdb.MetricsValueTime{
 					Value: l.Value,
 					Time:  l.Time.UTC().Format(time.RFC3339Nano),
 				}
 			}
 		}
 	}
-	return &api_pb.GetMetricsReply{MetricsLogSets: mls}, nil
+	return &kdb.GetMetricsReply{MetricsLogSets: mls}, nil
 }
 
-func (s *server) ReportMetricsLogs(ctx context.Context, in *api_pb.ReportMetricsLogsRequest) (*api_pb.ReportMetricsLogsReply, error) {
+func (s *server) ReportMetricsLogs(ctx context.Context, in *kdb.ReportMetricsLogsRequest) (*kdb.ReportMetricsLogsReply, error) {
 	for _, mls := range in.MetricsLogSets {
 		err := dbIf.StoreWorkerLogs(mls.WorkerId, mls.MetricsLogs)
 		if err != nil {
-			return &api_pb.ReportMetricsLogsReply{}, err
+			return &kdb.ReportMetricsLogsReply{}, err
 		}
 
 	}
-	return &api_pb.ReportMetricsLogsReply{}, nil
+	return &kdb.ReportMetricsLogsReply{}, nil
 }
 
-func (s *server) UpdateWorkerState(ctx context.Context, in *api_pb.UpdateWorkerStateRequest) (*api_pb.UpdateWorkerStateReply, error) {
+func (s *server) UpdateWorkerState(ctx context.Context, in *kdb.UpdateWorkerStateRequest) (*kdb.UpdateWorkerStateReply, error) {
 	err := dbIf.UpdateWorker(in.WorkerId, in.Status)
-	return &api_pb.UpdateWorkerStateReply{}, err
+	return &kdb.UpdateWorkerStateReply{}, err
 }
 
-func (s *server) GetWorkerFullInfo(ctx context.Context, in *api_pb.GetWorkerFullInfoRequest) (*api_pb.GetWorkerFullInfoReply, error) {
+func (s *server) GetWorkerFullInfo(ctx context.Context, in *kdb.GetWorkerFullInfoRequest) (*kdb.GetWorkerFullInfoReply, error) {
 	return dbIf.GetWorkerFullInfo(in.StudyId, in.TrialId, in.WorkerId, in.OnlyLatestLog)
 }
 
-func (s *server) SetSuggestionParameters(ctx context.Context, in *api_pb.SetSuggestionParametersRequest) (*api_pb.SetSuggestionParametersReply, error) {
+func (s *server) SetSuggestionParameters(ctx context.Context, in *kdb.SetSuggestionParametersRequest) (*kdb.SetSuggestionParametersReply, error) {
 	var err error
 	var id string
 	if in.ParamId == "" {
@@ -226,10 +226,10 @@ func (s *server) SetSuggestionParameters(ctx context.Context, in *api_pb.SetSugg
 		id = in.ParamId
 		err = dbIf.UpdateSuggestionParam(in.ParamId, in.SuggestionParameters)
 	}
-	return &api_pb.SetSuggestionParametersReply{ParamId: id}, err
+	return &kdb.SetSuggestionParametersReply{ParamId: id}, err
 }
 
-func (s *server) SetEarlyStoppingParameters(ctx context.Context, in *api_pb.SetEarlyStoppingParametersRequest) (*api_pb.SetEarlyStoppingParametersReply, error) {
+func (s *server) SetEarlyStoppingParameters(ctx context.Context, in *kdb.SetEarlyStoppingParametersRequest) (*kdb.SetEarlyStoppingParametersReply, error) {
 	var err error
 	var id string
 	if in.ParamId == "" {
@@ -238,73 +238,73 @@ func (s *server) SetEarlyStoppingParameters(ctx context.Context, in *api_pb.SetE
 		id = in.ParamId
 		err = dbIf.UpdateEarlyStopParam(in.ParamId, in.EarlyStoppingParameters)
 	}
-	return &api_pb.SetEarlyStoppingParametersReply{ParamId: id}, err
+	return &kdb.SetEarlyStoppingParametersReply{ParamId: id}, err
 }
 
-func (s *server) GetSuggestionParameters(ctx context.Context, in *api_pb.GetSuggestionParametersRequest) (*api_pb.GetSuggestionParametersReply, error) {
+func (s *server) GetSuggestionParameters(ctx context.Context, in *kdb.GetSuggestionParametersRequest) (*kdb.GetSuggestionParametersReply, error) {
 	ps, err := dbIf.GetSuggestionParam(in.ParamId)
-	return &api_pb.GetSuggestionParametersReply{SuggestionParameters: ps}, err
+	return &kdb.GetSuggestionParametersReply{SuggestionParameters: ps}, err
 }
 
-func (s *server) GetSuggestionParameterList(ctx context.Context, in *api_pb.GetSuggestionParameterListRequest) (*api_pb.GetSuggestionParameterListReply, error) {
+func (s *server) GetSuggestionParameterList(ctx context.Context, in *kdb.GetSuggestionParameterListRequest) (*kdb.GetSuggestionParameterListReply, error) {
 	pss, err := dbIf.GetSuggestionParamList(in.StudyId)
-	return &api_pb.GetSuggestionParameterListReply{SuggestionParameterSets: pss}, err
+	return &kdb.GetSuggestionParameterListReply{SuggestionParameterSets: pss}, err
 }
 
-func (s *server) GetEarlyStoppingParameters(ctx context.Context, in *api_pb.GetEarlyStoppingParametersRequest) (*api_pb.GetEarlyStoppingParametersReply, error) {
+func (s *server) GetEarlyStoppingParameters(ctx context.Context, in *kdb.GetEarlyStoppingParametersRequest) (*kdb.GetEarlyStoppingParametersReply, error) {
 	ps, err := dbIf.GetEarlyStopParam(in.ParamId)
-	return &api_pb.GetEarlyStoppingParametersReply{EarlyStoppingParameters: ps}, err
+	return &kdb.GetEarlyStoppingParametersReply{EarlyStoppingParameters: ps}, err
 }
 
-func (s *server) GetEarlyStoppingParameterList(ctx context.Context, in *api_pb.GetEarlyStoppingParameterListRequest) (*api_pb.GetEarlyStoppingParameterListReply, error) {
+func (s *server) GetEarlyStoppingParameterList(ctx context.Context, in *kdb.GetEarlyStoppingParameterListRequest) (*kdb.GetEarlyStoppingParameterListReply, error) {
 	pss, err := dbIf.GetEarlyStopParamList(in.StudyId)
-	return &api_pb.GetEarlyStoppingParameterListReply{EarlyStoppingParameterSets: pss}, err
+	return &kdb.GetEarlyStoppingParameterListReply{EarlyStoppingParameterSets: pss}, err
 }
 
-func (s *server) SaveStudy(ctx context.Context, in *api_pb.SaveStudyRequest) (*api_pb.SaveStudyReply, error) {
+func (s *server) SaveStudy(ctx context.Context, in *kdb.SaveStudyRequest) (*kdb.SaveStudyReply, error) {
 	var err error
 	if s.msIf != nil {
 		err = s.msIf.SaveStudy(in)
 	}
-	return &api_pb.SaveStudyReply{}, err
+	return &kdb.SaveStudyReply{}, err
 }
 
-func (s *server) SaveModel(ctx context.Context, in *api_pb.SaveModelRequest) (*api_pb.SaveModelReply, error) {
+func (s *server) SaveModel(ctx context.Context, in *kdb.SaveModelRequest) (*kdb.SaveModelReply, error) {
 	if s.msIf != nil {
 		err := s.msIf.SaveModel(in)
 		if err != nil {
 			log.Printf("Save Model failed %v", err)
-			return &api_pb.SaveModelReply{}, err
+			return &kdb.SaveModelReply{}, err
 		}
 	}
-	return &api_pb.SaveModelReply{}, nil
+	return &kdb.SaveModelReply{}, nil
 }
 
-func (s *server) GetSavedStudies(ctx context.Context, in *api_pb.GetSavedStudiesRequest) (*api_pb.GetSavedStudiesReply, error) {
-	ret := []*api_pb.StudyOverview{}
+func (s *server) GetSavedStudies(ctx context.Context, in *kdb.GetSavedStudiesRequest) (*kdb.GetSavedStudiesReply, error) {
+	ret := []*kdb.StudyOverview{}
 	var err error
 	if s.msIf != nil {
 		ret, err = s.msIf.GetSavedStudies()
 	}
-	return &api_pb.GetSavedStudiesReply{Studies: ret}, err
+	return &kdb.GetSavedStudiesReply{Studies: ret}, err
 }
 
-func (s *server) GetSavedModels(ctx context.Context, in *api_pb.GetSavedModelsRequest) (*api_pb.GetSavedModelsReply, error) {
-	ret := []*api_pb.ModelInfo{}
+func (s *server) GetSavedModels(ctx context.Context, in *kdb.GetSavedModelsRequest) (*kdb.GetSavedModelsReply, error) {
+	ret := []*kdb.ModelInfo{}
 	var err error
 	if s.msIf != nil {
 		ret, err = s.msIf.GetSavedModels(in)
 	}
-	return &api_pb.GetSavedModelsReply{Models: ret}, err
+	return &kdb.GetSavedModelsReply{Models: ret}, err
 }
 
-func (s *server) GetSavedModel(ctx context.Context, in *api_pb.GetSavedModelRequest) (*api_pb.GetSavedModelReply, error) {
-	var ret *api_pb.ModelInfo = nil
+func (s *server) GetSavedModel(ctx context.Context, in *kdb.GetSavedModelRequest) (*kdb.GetSavedModelReply, error) {
+	var ret *kdb.ModelInfo = nil
 	var err error
 	if s.msIf != nil {
 		ret, err = s.msIf.GetSavedModel(in)
 	}
-	return &api_pb.GetSavedModelReply{Model: ret}, err
+	return &kdb.GetSavedModelReply{Model: ret}, err
 }
 
 func (s *server) Check(ctx context.Context, in *health_pb.HealthCheckRequest) (*health_pb.HealthCheckResponse, error) {
@@ -337,9 +337,9 @@ func main() {
 	}
 	defer conn.Close()
 	dbIf = kdb.DBIFClient(conn)
-	
+
 	//dbIf, err = kdb.New()
-	
+
 	dbIf.DBInit()
 	listener, err := net.Listen("tcp", port)
 	if err != nil {
