@@ -13,9 +13,6 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/jsonpb"
-
-	dbif "github.com/kubeflow/katib/pkg/db"
-
 	_ "github.com/go-sql-driver/mysql"
 )
 /**
@@ -46,38 +43,38 @@ type VizierDBInterface interface {
 	DBInit()
 	SelectOne() error
 
-	GetStudy(string) (*dbif.StudyConfig, error)
+	GetStudy(string) (StudyConfig, error)
 	GetStudyList() ([]string, error)
 
-	CreateStudy(*dbif.StudyConfig) (string, error)
-	UpdateStudy(string, *dbif.StudyConfig) error
+	CreateStudy(StudyConfig) (string, error)
+	UpdateStudy(string, StudyConfig) error
 	DeleteStudy(string) error
 
-	GetTrial(string) (*dbif.Trial, error)
-	GetTrialList(string) ([]*dbif.Trial, error)
-	CreateTrial(*dbif.Trial) error
-	UpdateTrial(*dbif.Trial) error
+	GetTrial(string) (Trial, error)
+	GetTrialList(string) ([]Trial, error)
+	CreateTrial(Trial) error
+	UpdateTrial(Trial) error
 	DeleteTrial(string) error
 
-	GetWorker(string) (*dbif.Worker, error)
-	GetWorkerStatus(string) (*dbif.State, error)
-	GetWorkerList(string, string) ([]*dbif.Worker, error)
+	GetWorker(string) (Worker, error)
+	GetWorkerStatus(string) (State, error)
+	GetWorkerList(string, string) ([]Worker, error)
 	GetWorkerLogs(string, *GetWorkerLogOpts) ([]*WorkerLog, error)
 	GetWorkerTimestamp(string) (*time.Time, error)
-	StoreWorkerLogs(string, []*dbif.MetricsLog) error
-	CreateWorker(*dbif.Worker) (string, error)
+	StoreWorkerLogs(string, []MetricsLog) error
+	CreateWorker(Worker) (string, error)
 	UpdateWorker(string, dbif.State) error
 	DeleteWorker(string) error
-	GetWorkerFullInfo(string, string, string, bool) (*dbif.GetWorkerFullInfoReply, error)
+	GetWorkerFullInfo(string, string, string, bool) (GetWorkerFullInfoReply, error)
 
-	SetSuggestionParam(string, string, []*dbif.SuggestionParameter) (string, error)
-	UpdateSuggestionParam(string, []*dbif.SuggestionParameter) error
-	GetSuggestionParam(string) ([]*dbif.SuggestionParameter, error)
-	GetSuggestionParamList(string) ([]*dbif.SuggestionParameterSet, error)
-	SetEarlyStopParam(string, string, []*dbif.EarlyStoppingParameter) (string, error)
-	UpdateEarlyStopParam(string, []*dbif.EarlyStoppingParameter) error
-	GetEarlyStopParam(string) ([]*dbif.EarlyStoppingParameter, error)
-	GetEarlyStopParamList(string) ([]*dbif.EarlyStoppingParameterSet, error)
+	SetSuggestionParam(string, string, []SuggestionParameter) (string, error)
+	UpdateSuggestionParam(string, []SuggestionParameter) error
+	GetSuggestionParam(string) ([]SuggestionParameter, error)
+	GetSuggestionParamList(string) ([]SuggestionParameterSet, error)
+	SetEarlyStopParam(string, string, []EarlyStoppingParameter) (string, error)
+	UpdateEarlyStopParam(string, []EarlyStoppingParameter) error
+	GetEarlyStopParam(string) ([]EarlyStoppingParameter, error)
+	GetEarlyStopParamList(string) ([]EarlyStoppingParameterSet, error)
 }
 
 /**
