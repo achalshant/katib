@@ -22,6 +22,299 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+type ParameterType int32
+
+const (
+	ParameterType_UNKNOWN_TYPE ParameterType = 0
+	ParameterType_DOUBLE       ParameterType = 1
+	ParameterType_INT          ParameterType = 2
+	ParameterType_DISCRETE     ParameterType = 3
+	ParameterType_CATEGORICAL  ParameterType = 4
+)
+
+var ParameterType_name = map[int32]string{
+	0: "UNKNOWN_TYPE",
+	1: "DOUBLE",
+	2: "INT",
+	3: "DISCRETE",
+	4: "CATEGORICAL",
+}
+
+var ParameterType_value = map[string]int32{
+	"UNKNOWN_TYPE": 0,
+	"DOUBLE":       1,
+	"INT":          2,
+	"DISCRETE":     3,
+	"CATEGORICAL":  4,
+}
+
+func (x ParameterType) String() string {
+	return proto.EnumName(ParameterType_name, int32(x))
+}
+
+func (ParameterType) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{0}
+}
+
+//*
+// Direction of optimization. Minimize or Maximize.
+type OptimizationType int32
+
+const (
+	OptimizationType_UNKNOWN_OPTIMIZATION OptimizationType = 0
+	OptimizationType_MINIMIZE             OptimizationType = 1
+	OptimizationType_MAXIMIZE             OptimizationType = 2
+)
+
+var OptimizationType_name = map[int32]string{
+	0: "UNKNOWN_OPTIMIZATION",
+	1: "MINIMIZE",
+	2: "MAXIMIZE",
+}
+
+var OptimizationType_value = map[string]int32{
+	"UNKNOWN_OPTIMIZATION": 0,
+	"MINIMIZE":             1,
+	"MAXIMIZE":             2,
+}
+
+func (x OptimizationType) String() string {
+	return proto.EnumName(OptimizationType_name, int32(x))
+}
+
+func (OptimizationType) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{1}
+}
+
+type Operation struct {
+	OperationType        string                      `protobuf:"bytes,1,opt,name=operationType,proto3" json:"operationType,omitempty"`
+	ParameterConfigs     *Operation_ParameterConfigs `protobuf:"bytes,2,opt,name=parameter_configs,json=parameterConfigs,proto3" json:"parameter_configs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                    `json:"-"`
+	XXX_unrecognized     []byte                      `json:"-"`
+	XXX_sizecache        int32                       `json:"-"`
+}
+
+func (m *Operation) Reset()         { *m = Operation{} }
+func (m *Operation) String() string { return proto.CompactTextString(m) }
+func (*Operation) ProtoMessage()    {}
+func (*Operation) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{0}
+}
+
+func (m *Operation) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Operation.Unmarshal(m, b)
+}
+func (m *Operation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Operation.Marshal(b, m, deterministic)
+}
+func (m *Operation) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Operation.Merge(m, src)
+}
+func (m *Operation) XXX_Size() int {
+	return xxx_messageInfo_Operation.Size(m)
+}
+func (m *Operation) XXX_DiscardUnknown() {
+	xxx_messageInfo_Operation.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Operation proto.InternalMessageInfo
+
+func (m *Operation) GetOperationType() string {
+	if m != nil {
+		return m.OperationType
+	}
+	return ""
+}
+
+func (m *Operation) GetParameterConfigs() *Operation_ParameterConfigs {
+	if m != nil {
+		return m.ParameterConfigs
+	}
+	return nil
+}
+
+//*
+// List of ParameterConfig
+type Operation_ParameterConfigs struct {
+	Configs              []*ParameterConfig `protobuf:"bytes,1,rep,name=configs,proto3" json:"configs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *Operation_ParameterConfigs) Reset()         { *m = Operation_ParameterConfigs{} }
+func (m *Operation_ParameterConfigs) String() string { return proto.CompactTextString(m) }
+func (*Operation_ParameterConfigs) ProtoMessage()    {}
+func (*Operation_ParameterConfigs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{0, 0}
+}
+
+func (m *Operation_ParameterConfigs) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Operation_ParameterConfigs.Unmarshal(m, b)
+}
+func (m *Operation_ParameterConfigs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Operation_ParameterConfigs.Marshal(b, m, deterministic)
+}
+func (m *Operation_ParameterConfigs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Operation_ParameterConfigs.Merge(m, src)
+}
+func (m *Operation_ParameterConfigs) XXX_Size() int {
+	return xxx_messageInfo_Operation_ParameterConfigs.Size(m)
+}
+func (m *Operation_ParameterConfigs) XXX_DiscardUnknown() {
+	xxx_messageInfo_Operation_ParameterConfigs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Operation_ParameterConfigs proto.InternalMessageInfo
+
+func (m *Operation_ParameterConfigs) GetConfigs() []*ParameterConfig {
+	if m != nil {
+		return m.Configs
+	}
+	return nil
+}
+
+type NasConfig struct {
+	GraphConfig          *GraphConfig          `protobuf:"bytes,1,opt,name=graph_config,json=graphConfig,proto3" json:"graph_config,omitempty"`
+	Operations           *NasConfig_Operations `protobuf:"bytes,2,opt,name=operations,proto3" json:"operations,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
+	XXX_unrecognized     []byte                `json:"-"`
+	XXX_sizecache        int32                 `json:"-"`
+}
+
+func (m *NasConfig) Reset()         { *m = NasConfig{} }
+func (m *NasConfig) String() string { return proto.CompactTextString(m) }
+func (*NasConfig) ProtoMessage()    {}
+func (*NasConfig) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{1}
+}
+
+func (m *NasConfig) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_NasConfig.Unmarshal(m, b)
+}
+func (m *NasConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NasConfig.Marshal(b, m, deterministic)
+}
+func (m *NasConfig) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NasConfig.Merge(m, src)
+}
+func (m *NasConfig) XXX_Size() int {
+	return xxx_messageInfo_NasConfig.Size(m)
+}
+func (m *NasConfig) XXX_DiscardUnknown() {
+	xxx_messageInfo_NasConfig.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NasConfig proto.InternalMessageInfo
+
+func (m *NasConfig) GetGraphConfig() *GraphConfig {
+	if m != nil {
+		return m.GraphConfig
+	}
+	return nil
+}
+
+func (m *NasConfig) GetOperations() *NasConfig_Operations {
+	if m != nil {
+		return m.Operations
+	}
+	return nil
+}
+
+type NasConfig_Operations struct {
+	Operation            []*Operation `protobuf:"bytes,1,rep,name=operation,proto3" json:"operation,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
+	XXX_unrecognized     []byte       `json:"-"`
+	XXX_sizecache        int32        `json:"-"`
+}
+
+func (m *NasConfig_Operations) Reset()         { *m = NasConfig_Operations{} }
+func (m *NasConfig_Operations) String() string { return proto.CompactTextString(m) }
+func (*NasConfig_Operations) ProtoMessage()    {}
+func (*NasConfig_Operations) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{1, 0}
+}
+
+func (m *NasConfig_Operations) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_NasConfig_Operations.Unmarshal(m, b)
+}
+func (m *NasConfig_Operations) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NasConfig_Operations.Marshal(b, m, deterministic)
+}
+func (m *NasConfig_Operations) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NasConfig_Operations.Merge(m, src)
+}
+func (m *NasConfig_Operations) XXX_Size() int {
+	return xxx_messageInfo_NasConfig_Operations.Size(m)
+}
+func (m *NasConfig_Operations) XXX_DiscardUnknown() {
+	xxx_messageInfo_NasConfig_Operations.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NasConfig_Operations proto.InternalMessageInfo
+
+func (m *NasConfig_Operations) GetOperation() []*Operation {
+	if m != nil {
+		return m.Operation
+	}
+	return nil
+}
+
+type GraphConfig struct {
+	NumLayers            int32    `protobuf:"varint,1,opt,name=num_layers,json=numLayers,proto3" json:"num_layers,omitempty"`
+	InputSize            []int32  `protobuf:"varint,2,rep,packed,name=input_size,json=inputSize,proto3" json:"input_size,omitempty"`
+	OutputSize           []int32  `protobuf:"varint,3,rep,packed,name=output_size,json=outputSize,proto3" json:"output_size,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GraphConfig) Reset()         { *m = GraphConfig{} }
+func (m *GraphConfig) String() string { return proto.CompactTextString(m) }
+func (*GraphConfig) ProtoMessage()    {}
+func (*GraphConfig) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{2}
+}
+
+func (m *GraphConfig) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GraphConfig.Unmarshal(m, b)
+}
+func (m *GraphConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GraphConfig.Marshal(b, m, deterministic)
+}
+func (m *GraphConfig) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GraphConfig.Merge(m, src)
+}
+func (m *GraphConfig) XXX_Size() int {
+	return xxx_messageInfo_GraphConfig.Size(m)
+}
+func (m *GraphConfig) XXX_DiscardUnknown() {
+	xxx_messageInfo_GraphConfig.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GraphConfig proto.InternalMessageInfo
+
+func (m *GraphConfig) GetNumLayers() int32 {
+	if m != nil {
+		return m.NumLayers
+	}
+	return 0
+}
+
+func (m *GraphConfig) GetInputSize() []int32 {
+	if m != nil {
+		return m.InputSize
+	}
+	return nil
+}
+
+func (m *GraphConfig) GetOutputSize() []int32 {
+	if m != nil {
+		return m.OutputSize
+	}
+	return nil
+}
+
 // The request message containing the user's name.
 type HelloRequest struct {
 	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -34,7 +327,7 @@ func (m *HelloRequest) Reset()         { *m = HelloRequest{} }
 func (m *HelloRequest) String() string { return proto.CompactTextString(m) }
 func (*HelloRequest) ProtoMessage()    {}
 func (*HelloRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{0}
+	return fileDescriptor_23a2d42ab756d553, []int{3}
 }
 
 func (m *HelloRequest) XXX_Unmarshal(b []byte) error {
@@ -74,7 +367,7 @@ func (m *HelloReply) Reset()         { *m = HelloReply{} }
 func (m *HelloReply) String() string { return proto.CompactTextString(m) }
 func (*HelloReply) ProtoMessage()    {}
 func (*HelloReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{1}
+	return fileDescriptor_23a2d42ab756d553, []int{4}
 }
 
 func (m *HelloReply) XXX_Unmarshal(b []byte) error {
@@ -102,24 +395,496 @@ func (m *HelloReply) GetMessage() string {
 	return ""
 }
 
+type ParameterConfig struct {
+	Name                 string         `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	ParameterType        ParameterType  `protobuf:"varint,2,opt,name=parameter_type,json=parameterType,proto3,enum=db.ParameterType" json:"parameter_type,omitempty"`
+	Feasible             *FeasibleSpace `protobuf:"bytes,3,opt,name=feasible,proto3" json:"feasible,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
+}
+
+func (m *ParameterConfig) Reset()         { *m = ParameterConfig{} }
+func (m *ParameterConfig) String() string { return proto.CompactTextString(m) }
+func (*ParameterConfig) ProtoMessage()    {}
+func (*ParameterConfig) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{5}
+}
+
+func (m *ParameterConfig) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ParameterConfig.Unmarshal(m, b)
+}
+func (m *ParameterConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ParameterConfig.Marshal(b, m, deterministic)
+}
+func (m *ParameterConfig) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ParameterConfig.Merge(m, src)
+}
+func (m *ParameterConfig) XXX_Size() int {
+	return xxx_messageInfo_ParameterConfig.Size(m)
+}
+func (m *ParameterConfig) XXX_DiscardUnknown() {
+	xxx_messageInfo_ParameterConfig.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ParameterConfig proto.InternalMessageInfo
+
+func (m *ParameterConfig) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *ParameterConfig) GetParameterType() ParameterType {
+	if m != nil {
+		return m.ParameterType
+	}
+	return ParameterType_UNKNOWN_TYPE
+}
+
+func (m *ParameterConfig) GetFeasible() *FeasibleSpace {
+	if m != nil {
+		return m.Feasible
+	}
+	return nil
+}
+
+type Tag struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Value                string   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Tag) Reset()         { *m = Tag{} }
+func (m *Tag) String() string { return proto.CompactTextString(m) }
+func (*Tag) ProtoMessage()    {}
+func (*Tag) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{6}
+}
+
+func (m *Tag) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Tag.Unmarshal(m, b)
+}
+func (m *Tag) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Tag.Marshal(b, m, deterministic)
+}
+func (m *Tag) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Tag.Merge(m, src)
+}
+func (m *Tag) XXX_Size() int {
+	return xxx_messageInfo_Tag.Size(m)
+}
+func (m *Tag) XXX_DiscardUnknown() {
+	xxx_messageInfo_Tag.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Tag proto.InternalMessageInfo
+
+func (m *Tag) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Tag) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
+type FeasibleSpace struct {
+	Max                  string   `protobuf:"bytes,1,opt,name=max,proto3" json:"max,omitempty"`
+	Min                  string   `protobuf:"bytes,2,opt,name=min,proto3" json:"min,omitempty"`
+	List                 []string `protobuf:"bytes,3,rep,name=list,proto3" json:"list,omitempty"`
+	Step                 string   `protobuf:"bytes,4,opt,name=step,proto3" json:"step,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *FeasibleSpace) Reset()         { *m = FeasibleSpace{} }
+func (m *FeasibleSpace) String() string { return proto.CompactTextString(m) }
+func (*FeasibleSpace) ProtoMessage()    {}
+func (*FeasibleSpace) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{7}
+}
+
+func (m *FeasibleSpace) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FeasibleSpace.Unmarshal(m, b)
+}
+func (m *FeasibleSpace) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FeasibleSpace.Marshal(b, m, deterministic)
+}
+func (m *FeasibleSpace) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FeasibleSpace.Merge(m, src)
+}
+func (m *FeasibleSpace) XXX_Size() int {
+	return xxx_messageInfo_FeasibleSpace.Size(m)
+}
+func (m *FeasibleSpace) XXX_DiscardUnknown() {
+	xxx_messageInfo_FeasibleSpace.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FeasibleSpace proto.InternalMessageInfo
+
+func (m *FeasibleSpace) GetMax() string {
+	if m != nil {
+		return m.Max
+	}
+	return ""
+}
+
+func (m *FeasibleSpace) GetMin() string {
+	if m != nil {
+		return m.Min
+	}
+	return ""
+}
+
+func (m *FeasibleSpace) GetList() []string {
+	if m != nil {
+		return m.List
+	}
+	return nil
+}
+
+func (m *FeasibleSpace) GetStep() string {
+	if m != nil {
+		return m.Step
+	}
+	return ""
+}
+
+type StudyConfig struct {
+	Name                 string                        `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Owner                string                        `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	OptimizationType     OptimizationType              `protobuf:"varint,3,opt,name=optimization_type,json=optimizationType,proto3,enum=db.OptimizationType" json:"optimization_type,omitempty"`
+	OptimizationGoal     float64                       `protobuf:"fixed64,4,opt,name=optimization_goal,json=optimizationGoal,proto3" json:"optimization_goal,omitempty"`
+	ParameterConfigs     *StudyConfig_ParameterConfigs `protobuf:"bytes,5,opt,name=parameter_configs,json=parameterConfigs,proto3" json:"parameter_configs,omitempty"`
+	AccessPermissions    []string                      `protobuf:"bytes,6,rep,name=access_permissions,json=accessPermissions,proto3" json:"access_permissions,omitempty"`
+	Tags                 []*Tag                        `protobuf:"bytes,7,rep,name=tags,proto3" json:"tags,omitempty"`
+	ObjectiveValueName   string                        `protobuf:"bytes,8,opt,name=objective_value_name,json=objectiveValueName,proto3" json:"objective_value_name,omitempty"`
+	Metrics              []string                      `protobuf:"bytes,9,rep,name=metrics,proto3" json:"metrics,omitempty"`
+	JobId                string                        `protobuf:"bytes,10,opt,name=jobId,proto3" json:"jobId,omitempty"`
+	NasConfig            *NasConfig                    `protobuf:"bytes,11,opt,name=nas_config,json=nasConfig,proto3" json:"nas_config,omitempty"`
+	JobType              string                        `protobuf:"bytes,12,opt,name=job_type,json=jobType,proto3" json:"job_type,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                      `json:"-"`
+	XXX_unrecognized     []byte                        `json:"-"`
+	XXX_sizecache        int32                         `json:"-"`
+}
+
+func (m *StudyConfig) Reset()         { *m = StudyConfig{} }
+func (m *StudyConfig) String() string { return proto.CompactTextString(m) }
+func (*StudyConfig) ProtoMessage()    {}
+func (*StudyConfig) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{8}
+}
+
+func (m *StudyConfig) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StudyConfig.Unmarshal(m, b)
+}
+func (m *StudyConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StudyConfig.Marshal(b, m, deterministic)
+}
+func (m *StudyConfig) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StudyConfig.Merge(m, src)
+}
+func (m *StudyConfig) XXX_Size() int {
+	return xxx_messageInfo_StudyConfig.Size(m)
+}
+func (m *StudyConfig) XXX_DiscardUnknown() {
+	xxx_messageInfo_StudyConfig.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StudyConfig proto.InternalMessageInfo
+
+func (m *StudyConfig) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *StudyConfig) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *StudyConfig) GetOptimizationType() OptimizationType {
+	if m != nil {
+		return m.OptimizationType
+	}
+	return OptimizationType_UNKNOWN_OPTIMIZATION
+}
+
+func (m *StudyConfig) GetOptimizationGoal() float64 {
+	if m != nil {
+		return m.OptimizationGoal
+	}
+	return 0
+}
+
+func (m *StudyConfig) GetParameterConfigs() *StudyConfig_ParameterConfigs {
+	if m != nil {
+		return m.ParameterConfigs
+	}
+	return nil
+}
+
+func (m *StudyConfig) GetAccessPermissions() []string {
+	if m != nil {
+		return m.AccessPermissions
+	}
+	return nil
+}
+
+func (m *StudyConfig) GetTags() []*Tag {
+	if m != nil {
+		return m.Tags
+	}
+	return nil
+}
+
+func (m *StudyConfig) GetObjectiveValueName() string {
+	if m != nil {
+		return m.ObjectiveValueName
+	}
+	return ""
+}
+
+func (m *StudyConfig) GetMetrics() []string {
+	if m != nil {
+		return m.Metrics
+	}
+	return nil
+}
+
+func (m *StudyConfig) GetJobId() string {
+	if m != nil {
+		return m.JobId
+	}
+	return ""
+}
+
+func (m *StudyConfig) GetNasConfig() *NasConfig {
+	if m != nil {
+		return m.NasConfig
+	}
+	return nil
+}
+
+func (m *StudyConfig) GetJobType() string {
+	if m != nil {
+		return m.JobType
+	}
+	return ""
+}
+
+//*
+// List of ParameterConfig
+type StudyConfig_ParameterConfigs struct {
+	Configs              []*ParameterConfig `protobuf:"bytes,1,rep,name=configs,proto3" json:"configs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *StudyConfig_ParameterConfigs) Reset()         { *m = StudyConfig_ParameterConfigs{} }
+func (m *StudyConfig_ParameterConfigs) String() string { return proto.CompactTextString(m) }
+func (*StudyConfig_ParameterConfigs) ProtoMessage()    {}
+func (*StudyConfig_ParameterConfigs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{8, 0}
+}
+
+func (m *StudyConfig_ParameterConfigs) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StudyConfig_ParameterConfigs.Unmarshal(m, b)
+}
+func (m *StudyConfig_ParameterConfigs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StudyConfig_ParameterConfigs.Marshal(b, m, deterministic)
+}
+func (m *StudyConfig_ParameterConfigs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StudyConfig_ParameterConfigs.Merge(m, src)
+}
+func (m *StudyConfig_ParameterConfigs) XXX_Size() int {
+	return xxx_messageInfo_StudyConfig_ParameterConfigs.Size(m)
+}
+func (m *StudyConfig_ParameterConfigs) XXX_DiscardUnknown() {
+	xxx_messageInfo_StudyConfig_ParameterConfigs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StudyConfig_ParameterConfigs proto.InternalMessageInfo
+
+func (m *StudyConfig_ParameterConfigs) GetConfigs() []*ParameterConfig {
+	if m != nil {
+		return m.Configs
+	}
+	return nil
+}
+
+type CreateStudyRequest struct {
+	StudyConfig          *StudyConfig `protobuf:"bytes,1,opt,name=study_config,json=studyConfig,proto3" json:"study_config,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
+	XXX_unrecognized     []byte       `json:"-"`
+	XXX_sizecache        int32        `json:"-"`
+}
+
+func (m *CreateStudyRequest) Reset()         { *m = CreateStudyRequest{} }
+func (m *CreateStudyRequest) String() string { return proto.CompactTextString(m) }
+func (*CreateStudyRequest) ProtoMessage()    {}
+func (*CreateStudyRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{9}
+}
+
+func (m *CreateStudyRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CreateStudyRequest.Unmarshal(m, b)
+}
+func (m *CreateStudyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CreateStudyRequest.Marshal(b, m, deterministic)
+}
+func (m *CreateStudyRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateStudyRequest.Merge(m, src)
+}
+func (m *CreateStudyRequest) XXX_Size() int {
+	return xxx_messageInfo_CreateStudyRequest.Size(m)
+}
+func (m *CreateStudyRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateStudyRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateStudyRequest proto.InternalMessageInfo
+
+func (m *CreateStudyRequest) GetStudyConfig() *StudyConfig {
+	if m != nil {
+		return m.StudyConfig
+	}
+	return nil
+}
+
+//*
+// Return generated StudyID.
+type CreateStudyReply struct {
+	StudyId              string   `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *CreateStudyReply) Reset()         { *m = CreateStudyReply{} }
+func (m *CreateStudyReply) String() string { return proto.CompactTextString(m) }
+func (*CreateStudyReply) ProtoMessage()    {}
+func (*CreateStudyReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{10}
+}
+
+func (m *CreateStudyReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CreateStudyReply.Unmarshal(m, b)
+}
+func (m *CreateStudyReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CreateStudyReply.Marshal(b, m, deterministic)
+}
+func (m *CreateStudyReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateStudyReply.Merge(m, src)
+}
+func (m *CreateStudyReply) XXX_Size() int {
+	return xxx_messageInfo_CreateStudyReply.Size(m)
+}
+func (m *CreateStudyReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateStudyReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateStudyReply proto.InternalMessageInfo
+
+func (m *CreateStudyReply) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
 func init() {
+	proto.RegisterEnum("db.ParameterType", ParameterType_name, ParameterType_value)
+	proto.RegisterEnum("db.OptimizationType", OptimizationType_name, OptimizationType_value)
+	proto.RegisterType((*Operation)(nil), "db.Operation")
+	proto.RegisterType((*Operation_ParameterConfigs)(nil), "db.Operation.ParameterConfigs")
+	proto.RegisterType((*NasConfig)(nil), "db.NasConfig")
+	proto.RegisterType((*NasConfig_Operations)(nil), "db.NasConfig.Operations")
+	proto.RegisterType((*GraphConfig)(nil), "db.GraphConfig")
 	proto.RegisterType((*HelloRequest)(nil), "db.HelloRequest")
 	proto.RegisterType((*HelloReply)(nil), "db.HelloReply")
+	proto.RegisterType((*ParameterConfig)(nil), "db.ParameterConfig")
+	proto.RegisterType((*Tag)(nil), "db.Tag")
+	proto.RegisterType((*FeasibleSpace)(nil), "db.FeasibleSpace")
+	proto.RegisterType((*StudyConfig)(nil), "db.StudyConfig")
+	proto.RegisterType((*StudyConfig_ParameterConfigs)(nil), "db.StudyConfig.ParameterConfigs")
+	proto.RegisterType((*CreateStudyRequest)(nil), "db.CreateStudyRequest")
+	proto.RegisterType((*CreateStudyReply)(nil), "db.CreateStudyReply")
 }
 
 func init() { proto.RegisterFile("dbif.proto", fileDescriptor_23a2d42ab756d553) }
 
 var fileDescriptor_23a2d42ab756d553 = []byte{
-	// 135 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4a, 0x49, 0xca, 0x4c,
-	0xd3, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x4a, 0x49, 0x52, 0x52, 0xe2, 0xe2, 0xf1, 0x48,
-	0xcd, 0xc9, 0xc9, 0x0f, 0x4a, 0x2d, 0x2c, 0x4d, 0x2d, 0x2e, 0x11, 0x12, 0xe2, 0x62, 0xc9, 0x4b,
-	0xcc, 0x4d, 0x95, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c, 0x02, 0xb3, 0x95, 0xd4, 0xb8, 0xb8, 0xa0,
-	0x6a, 0x0a, 0x72, 0x2a, 0x85, 0x24, 0xb8, 0xd8, 0x73, 0x53, 0x8b, 0x8b, 0x13, 0xd3, 0x61, 0x8a,
-	0x60, 0x5c, 0x23, 0x33, 0x2e, 0x16, 0x17, 0x27, 0x4f, 0x37, 0x21, 0x3d, 0x2e, 0x8e, 0xe0, 0xc4,
-	0x4a, 0xb0, 0x16, 0x21, 0x01, 0xbd, 0x94, 0x24, 0x3d, 0x64, 0x1b, 0xa4, 0xf8, 0x90, 0x44, 0x0a,
-	0x72, 0x2a, 0x95, 0x18, 0x92, 0xd8, 0xc0, 0xce, 0x31, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x5b,
-	0x9d, 0x0d, 0x44, 0x9c, 0x00, 0x00, 0x00,
+	// 855 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x55, 0x5f, 0x6f, 0xe2, 0x46,
+	0x10, 0x8f, 0x81, 0x04, 0x3c, 0x86, 0xc4, 0x99, 0xa2, 0xca, 0x97, 0xaa, 0x2d, 0xb2, 0xaa, 0x2a,
+	0xba, 0x6b, 0x68, 0x45, 0x5f, 0xae, 0x0f, 0x7d, 0xe0, 0x08, 0x97, 0x58, 0x97, 0x40, 0x64, 0x9c,
+	0xfe, 0x7d, 0x40, 0x6b, 0xd8, 0x50, 0x47, 0xc6, 0xeb, 0x7a, 0xcd, 0xb5, 0xe4, 0x43, 0xf4, 0xb3,
+	0xf4, 0xa1, 0x5f, 0xa0, 0xdf, 0xac, 0xda, 0x31, 0x06, 0x4c, 0x50, 0xd5, 0x87, 0xbe, 0x79, 0x7e,
+	0x33, 0xfb, 0xdb, 0x99, 0xdf, 0xcc, 0xac, 0x01, 0xa6, 0x7e, 0xf0, 0xd0, 0x8e, 0x13, 0x91, 0x0a,
+	0x2c, 0x4d, 0x7d, 0xfb, 0x6f, 0x0d, 0xf4, 0x61, 0xcc, 0x13, 0x96, 0x06, 0x22, 0xc2, 0xcf, 0xa0,
+	0x21, 0x72, 0xc3, 0x5b, 0xc6, 0xdc, 0xd2, 0x5a, 0xda, 0xb9, 0xee, 0x16, 0x41, 0x7c, 0x07, 0xa7,
+	0x31, 0x4b, 0xd8, 0x9c, 0xa7, 0x3c, 0x19, 0x4f, 0x44, 0xf4, 0x10, 0xcc, 0xa4, 0x55, 0x6a, 0x69,
+	0xe7, 0x46, 0xe7, 0x93, 0xf6, 0xd4, 0x6f, 0xaf, 0xf9, 0xda, 0x77, 0x79, 0x58, 0x2f, 0x8b, 0x72,
+	0xcd, 0x78, 0x07, 0x39, 0xeb, 0x82, 0xb9, 0x1b, 0x85, 0x17, 0x50, 0xcd, 0x69, 0xb5, 0x56, 0xf9,
+	0xdc, 0xe8, 0x7c, 0xa0, 0x68, 0x77, 0xc2, 0xdc, 0x3c, 0xc6, 0xfe, 0x4b, 0x03, 0x7d, 0xc0, 0x64,
+	0x06, 0x63, 0x07, 0xea, 0xb3, 0x84, 0xc5, 0xbf, 0xac, 0x32, 0xa3, 0x12, 0x8c, 0xce, 0x89, 0x62,
+	0xb8, 0x52, 0xf8, 0xea, 0xb4, 0x31, 0xdb, 0x18, 0xf8, 0x1a, 0x60, 0x5d, 0x62, 0x5e, 0x8a, 0xa5,
+	0x4e, 0xac, 0x69, 0x37, 0x45, 0x49, 0x77, 0x2b, 0xf6, 0xec, 0x1b, 0x80, 0x8d, 0x07, 0x5f, 0x81,
+	0xbe, 0xf6, 0xad, 0x52, 0x6f, 0x14, 0x14, 0x71, 0x37, 0x7e, 0x3b, 0x04, 0x63, 0x2b, 0x21, 0xfc,
+	0x18, 0x20, 0x5a, 0xcc, 0xc7, 0x21, 0x5b, 0xf2, 0x44, 0x52, 0xd6, 0x87, 0xae, 0x1e, 0x2d, 0xe6,
+	0x37, 0x04, 0x28, 0x77, 0x10, 0xc5, 0x8b, 0x74, 0x2c, 0x83, 0x27, 0x6e, 0x95, 0x5a, 0x65, 0xe5,
+	0x26, 0x64, 0x14, 0x3c, 0x71, 0xfc, 0x14, 0x0c, 0xb1, 0x48, 0xd7, 0xfe, 0x32, 0xf9, 0x21, 0x83,
+	0x54, 0x80, 0x6d, 0x43, 0xfd, 0x9a, 0x87, 0xa1, 0x70, 0xf9, 0xaf, 0x0b, 0x2e, 0x53, 0x44, 0xa8,
+	0x44, 0x6c, 0x9e, 0x77, 0x98, 0xbe, 0xed, 0xcf, 0x01, 0x56, 0x31, 0x71, 0xb8, 0x44, 0x0b, 0xaa,
+	0x73, 0x2e, 0x25, 0x9b, 0xe5, 0x41, 0xb9, 0x69, 0xff, 0xa1, 0xc1, 0xc9, 0x4e, 0x37, 0xf6, 0xf1,
+	0xe1, 0x6b, 0x38, 0xde, 0x0c, 0x4a, 0xaa, 0xe6, 0x49, 0x49, 0x7b, 0xdc, 0x39, 0x2d, 0xb4, 0x53,
+	0xcd, 0x94, 0xdb, 0x88, 0xb7, 0x4d, 0xbc, 0x80, 0xda, 0x03, 0x67, 0x32, 0xf0, 0x43, 0x55, 0x8b,
+	0x6a, 0x07, 0x9d, 0x79, 0xbb, 0xc2, 0x46, 0x31, 0x9b, 0x70, 0x77, 0x1d, 0x62, 0x7f, 0x09, 0x65,
+	0x8f, 0xed, 0xcf, 0xa1, 0x09, 0x87, 0xef, 0x59, 0xb8, 0xc8, 0xae, 0xd6, 0xdd, 0xcc, 0xb0, 0x7f,
+	0x86, 0x46, 0x81, 0x0b, 0x4d, 0x28, 0xcf, 0xd9, 0xef, 0xab, 0x93, 0xea, 0x93, 0x90, 0x20, 0x5a,
+	0x1d, 0x53, 0x9f, 0x8a, 0x3e, 0x0c, 0x64, 0x4a, 0xe2, 0xea, 0x2e, 0x7d, 0x2b, 0x4c, 0xa6, 0x3c,
+	0xb6, 0x2a, 0xd9, 0x95, 0xea, 0xdb, 0xfe, 0xb3, 0x02, 0xc6, 0x28, 0x5d, 0x4c, 0x97, 0xff, 0x22,
+	0x4d, 0x13, 0x0e, 0xc5, 0x6f, 0x11, 0x4f, 0xf2, 0xb4, 0xc8, 0xc0, 0x2e, 0x9c, 0x8a, 0x38, 0x0d,
+	0xe6, 0xc1, 0x13, 0x8d, 0x48, 0xa6, 0x59, 0x99, 0x34, 0x6b, 0x66, 0x73, 0xb4, 0x71, 0x92, 0x6c,
+	0xa6, 0xd8, 0x41, 0xf0, 0xd5, 0x0e, 0xc5, 0x4c, 0xb0, 0x90, 0xb2, 0xd3, 0x8a, 0xc1, 0x57, 0x82,
+	0x85, 0x78, 0xbb, 0x6f, 0x93, 0x0f, 0x49, 0xef, 0x96, 0xba, 0x6f, 0xab, 0x8a, 0xff, 0xb0, 0xcb,
+	0x78, 0x01, 0xc8, 0x26, 0x13, 0x2e, 0xe5, 0x38, 0xe6, 0xc9, 0x3c, 0x90, 0x92, 0xd6, 0xe9, 0x88,
+	0xe4, 0x3a, 0xcd, 0x3c, 0x77, 0x1b, 0x07, 0x7e, 0x04, 0x95, 0x94, 0xcd, 0xa4, 0x55, 0xa5, 0x45,
+	0xa9, 0xaa, 0x0b, 0x3d, 0x36, 0x73, 0x09, 0xc4, 0xaf, 0xa0, 0x29, 0xfc, 0x47, 0x3e, 0x49, 0x83,
+	0xf7, 0x7c, 0x4c, 0x4d, 0x1b, 0x93, 0x88, 0x35, 0xd2, 0x0b, 0xd7, 0xbe, 0xef, 0x94, 0x6b, 0xa0,
+	0x24, 0xa5, 0x79, 0x4d, 0x93, 0x60, 0x22, 0x2d, 0x9d, 0xae, 0xcc, 0x4d, 0x25, 0xf6, 0xa3, 0xf0,
+	0x9d, 0xa9, 0x05, 0x99, 0xd8, 0x64, 0xe0, 0x17, 0x00, 0x11, 0x93, 0xf9, 0x33, 0x61, 0x50, 0xd5,
+	0x8d, 0xc2, 0xd2, 0xbb, 0x7a, 0xb4, 0x7e, 0x56, 0x5e, 0x40, 0xed, 0x51, 0xf8, 0x59, 0x47, 0xea,
+	0xd9, 0x3a, 0x3c, 0x0a, 0x5f, 0x49, 0xfe, 0x7f, 0x3c, 0x61, 0xd7, 0x80, 0xbd, 0x84, 0xb3, 0x94,
+	0x93, 0xe2, 0xf9, 0x8e, 0x76, 0xa0, 0x2e, 0x95, 0xbd, 0xe7, 0x29, 0xdb, 0xea, 0x8c, 0x6b, 0xc8,
+	0x8d, 0x61, 0x5f, 0x80, 0x59, 0x60, 0x52, 0x9b, 0xfc, 0x02, 0x6a, 0x19, 0x4f, 0x30, 0xcd, 0x57,
+	0x99, 0x6c, 0x67, 0xfa, 0xf2, 0x1e, 0x1a, 0x85, 0x45, 0x44, 0x13, 0xea, 0xf7, 0x83, 0x77, 0x83,
+	0xe1, 0xf7, 0x83, 0xb1, 0xf7, 0xe3, 0x5d, 0xdf, 0x3c, 0x40, 0x80, 0xa3, 0xcb, 0xe1, 0xfd, 0x9b,
+	0x9b, 0xbe, 0xa9, 0x61, 0x15, 0xca, 0xce, 0xc0, 0x33, 0x4b, 0x58, 0x87, 0xda, 0xa5, 0x33, 0xea,
+	0xb9, 0x7d, 0xaf, 0x6f, 0x96, 0xf1, 0x04, 0x8c, 0x5e, 0xd7, 0xeb, 0x5f, 0x0d, 0x5d, 0xa7, 0xd7,
+	0xbd, 0x31, 0x2b, 0x2f, 0xaf, 0xc1, 0xdc, 0x9d, 0x55, 0xb4, 0xa0, 0x99, 0x33, 0x0f, 0xef, 0x3c,
+	0xe7, 0xd6, 0xf9, 0xa9, 0xeb, 0x39, 0xc3, 0x81, 0x79, 0xa0, 0xc8, 0x6e, 0x9d, 0x81, 0x42, 0xd4,
+	0x1d, 0xca, 0xea, 0xfe, 0x90, 0x59, 0xa5, 0xce, 0x02, 0x2a, 0x97, 0x6f, 0x9c, 0xb7, 0xd8, 0x86,
+	0xda, 0x88, 0x2d, 0xe9, 0x79, 0x42, 0x53, 0x29, 0xb0, 0xfd, 0x9a, 0x9d, 0x1d, 0x6f, 0x21, 0x71,
+	0xb8, 0xb4, 0x0f, 0xf0, 0x5b, 0x30, 0xb6, 0x74, 0xc0, 0x0f, 0x55, 0xc0, 0x73, 0x89, 0xcf, 0x9a,
+	0xcf, 0x70, 0x3a, 0xee, 0x1f, 0xd1, 0x2f, 0xf2, 0xeb, 0x7f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x74,
+	0x6f, 0x94, 0xa4, 0x30, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -135,6 +900,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type DBIFClient interface {
 	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+	CreateStudy(ctx context.Context, in *CreateStudyRequest, opts ...grpc.CallOption) (*CreateStudyReply, error)
 }
 
 type dBIFClient struct {
@@ -154,9 +920,19 @@ func (c *dBIFClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grp
 	return out, nil
 }
 
+func (c *dBIFClient) CreateStudy(ctx context.Context, in *CreateStudyRequest, opts ...grpc.CallOption) (*CreateStudyReply, error) {
+	out := new(CreateStudyReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/CreateStudy", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DBIFServer is the server API for DBIF service.
 type DBIFServer interface {
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
+	CreateStudy(context.Context, *CreateStudyRequest) (*CreateStudyReply, error)
 }
 
 func RegisterDBIFServer(s *grpc.Server, srv DBIFServer) {
@@ -181,6 +957,24 @@ func _DBIF_SayHello_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DBIF_CreateStudy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateStudyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).CreateStudy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/CreateStudy",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).CreateStudy(ctx, req.(*CreateStudyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _DBIF_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "db.DBIF",
 	HandlerType: (*DBIFServer)(nil),
@@ -188,6 +982,10 @@ var _DBIF_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SayHello",
 			Handler:    _DBIF_SayHello_Handler,
+		},
+		{
+			MethodName: "CreateStudy",
+			Handler:    _DBIF_CreateStudy_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
