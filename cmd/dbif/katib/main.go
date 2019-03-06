@@ -54,13 +54,15 @@ func getDbName() string {
 func CreateNewDBServer() *dbserver {
 	db, err := openSQLConn(dbDriver, getDbName(), connectInterval, connectTimeout)
 	if err != nil {
-		return nil, fmt.Errorf("DB open failed: %v", err)
+		log.Fatalf("DB open failed: %v", err)
+		return nil
 	}
 	dbWithConn, err := NewWithSQLConn(db)
 	if err != nil {
-		return nil, fmt.Errorf("DB open failed: %v", err)
+		log.Fatalf("DB open failed: %v", err)
+		return nil
 	}
-	return &dbserver{db: dbWithConn}, nil
+	return &dbserver{db: dbWithConn}
 }
 
 func openSQLConn(driverName string, dataSourceName string, interval time.Duration,
