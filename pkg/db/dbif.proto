@@ -19,6 +19,7 @@ service DBIF {
     rpc CreateStudy(CreateStudyRequest) returns (CreateStudyReply){
         
     };
+    
     /** 
      * Get a Study Config from DB by ID of Study.
      */
@@ -148,6 +149,10 @@ service DBIF {
     rpc GetSavedModels(GetSavedModelsRequest) returns(GetSavedModelsReply){
        
     };
+
+    rpc SayHello (HelloRequest) returns (HelloReply) {
+        
+    };
 }
 
 service Suggestion {
@@ -157,6 +162,18 @@ service Suggestion {
 service EarlyStopping {
     rpc GetShouldStopWorkers(GetShouldStopWorkersRequest) returns (GetShouldStopWorkersReply);
 }
+
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+
 
 /**
  * Types of value for HyperParameter.

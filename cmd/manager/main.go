@@ -1,18 +1,13 @@
 package main
 
 import (
-	"context"
-	"errors"
 	"flag"
-	"fmt"
 	"log"
 	"net"
-	"time"
 
 	api_pb "github.com/kubeflow/katib/pkg/api"
 	health_pb "github.com/kubeflow/katib/pkg/api/health"
 	kdb "github.com/kubeflow/katib/pkg/db"
-	"github.com/kubeflow/katib/pkg/manager/modelstore"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -24,6 +19,7 @@ const (
 
 var dbIf kdb.VizierDBInterface
 
+/*
 type server struct {
 	msIf modelstore.ModelStore
 }
@@ -328,6 +324,8 @@ func (s *server) Check(ctx context.Context, in *health_pb.HealthCheckRequest) (*
 	return &resp, nil
 }
 
+**/
+
 func main() {
 	flag.Parse()
 	var err error
@@ -339,8 +337,7 @@ func main() {
 	dbIf = kdb.DBIFClient(conn)
 
 	//dbIf, err = kdb.New()
-
-	dbIf.DBInit()
+	//TODO: Add to proto file
 	listener, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)

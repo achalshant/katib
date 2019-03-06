@@ -1,24 +1,16 @@
 package main
 
 import (
+	"context"
+	"database/sql"
 	"log"
 	"net"
+	"time"
+
+	_ "github.com/go-sql-driver/mysql"
+	dbif "github.com/kubeflow/katib/pkg/db"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	crand "crypto/rand"
-	"database/sql"
-	"errors"
-	"fmt"
-	"log"
-	"math/big"
-	"math/rand"
-	"os"
-	"strings"
-	"time"
-	"github.com/golang/protobuf/jsonpb"
-	api "github.com/kubeflow/katib/pkg/api"
-	dbif "github.com/kubeflow/katib/pkg/db"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
@@ -50,6 +42,11 @@ const (
 
 type DBIFServer struct {
 	db *sql.DB
+}
+
+/*func (d *DBIFServer) CreateDBIFServer() (DBIFServer){
+	s = &DBIFServer{}
+	return s;
 }
 
 var rs1Letters = []rune("abcdefghijklmnopqrstuvwxyz")
@@ -355,7 +352,7 @@ func (d *DBIFServer) CreateStudy(in *dbif.StudyConfig) (string, error) {
 		}
 	}
 
-	/* WE PROBABLY DON'T NEED METRICS AND ALSO THIS LOGIC IS KIND OF CONFUSING */
+	// WE PROBABLY DON'T NEED METRICS AND ALSO THIS LOGIC IS KIND OF CONFUSING
 	var isin bool = false
 	for _, m := range in.Metrics {
 		if m == in.ObjectiveValueName {
@@ -406,7 +403,7 @@ func (d *DBIFServer) CreateStudy(in *dbif.StudyConfig) (string, error) {
 // Other columns are silently ignored.
 func (d *DBIFServer) UpdateStudy(studyID string, in *dbif.StudyConfig) error {
 
-	/* THINK ABOUT TRIALS */
+	// THINK ABOUT TRIALS
 	var err error
 
 	tags := make([]string, len(in.Tags))
@@ -545,7 +542,7 @@ func marshalTrial(trial *dbif.Trial) ([]string, []string, error) {
 // As a side-effect, it generates and sets trial.TrialId.
 // Users should not overwrite TrialId.
 
-/* TODO FIX CREATE_TRIAL & DELETE_TRIAL IN CASE OF NAS, SINCE WE WANT TRIALS */
+// TODO FIX CREATE_TRIAL & DELETE_TRIAL IN CASE OF NAS, SINCE WE WANT TRIALS
 func (d *DBIFServer) CreateTrial(trial *dbif.Trial) error {
 	params, tags, lastErr := marshalTrial(trial)
 
@@ -969,51 +966,51 @@ func (d *DBIFServer) GetWorkerFullInfo(studyId string, trialId string, workerId 
 	var qstr, id string
 	if OnlyLatestLog {
 		qstr = `
-		SELECT 
-			WM.worker_id, WM.time, WM.name, WM.value 
+		SELECT
+			WM.worker_id, WM.time, WM.name, WM.value
 		FROM (
-			SELECT 
+			SELECT
 				Master.worker_id, Master.time,  Master.name,  Master.value
 			FROM (
-				SELECT 
-					worker_id, name, 
+				SELECT
+					worker_id, name,
 					MAX(id) AS MaxID
-				FROM 
-					worker_metrics 
-				GROUP BY 
+				FROM
+					worker_metrics
+				GROUP BY
 					worker_id, name
 				) AS LATEST
 				JOIN worker_metrics AS Master
 				ON Master.id = LATEST.MaxID
-		) AS WM 
-		JOIN workers AS WS 
-		ON WM.worker_id = WS.id 
+		) AS WM
+		JOIN workers AS WS
+		ON WM.worker_id = WS.id
 		AND`
 	} else {
 		qstr = `
-		SELECT 
-			WM.worker_id, WM.time, WM.name, WM.value 
-		FROM 
-			worker_metrics AS WM 
-		JOIN workers AS WS 
-		ON WM.worker_id = WS.id 
+		SELECT
+			WM.worker_id, WM.time, WM.name, WM.value
+		FROM
+			worker_metrics AS WM
+		JOIN workers AS WS
+		ON WM.worker_id = WS.id
 		AND`
 	}
 	if workerId != "" {
 		if OnlyLatestLog {
 			qstr = `
-			SELECT 
-			WM.worker_id, WM.time, WM.name, WM.value 
+			SELECT
+			WM.worker_id, WM.time, WM.name, WM.value
 			FROM (
-				SELECT 
+				SELECT
 					Master.worker_id, Master.time,  Master.name,  Master.value
 				FROM (
-					SELECT 
-						worker_id, name, 
+					SELECT
+						worker_id, name,
 						MAX(id) AS MaxID
-					FROM 
-						worker_metrics 
-					GROUP BY 
+					FROM
+						worker_metrics
+					GROUP BY
 						worker_id, name
 				) AS LATEST
 				JOIN worker_metrics AS Master
@@ -1292,8 +1289,12 @@ func (d *DBIFServer) GetEarlyStopParamList(studyID string) ([]*dbif.EarlyStoppin
 		})
 	}
 	return result, nil
-}
+}**/
 
+func (d *DBIFServer) SayHello(ctx context.Context, in *dbif.HelloRequest) (*dbif.HelloReply, error) {
+	log.Printf("Received: %v", in.Name)
+	return &dbif.HelloReply{Message: "Hello " + in.Name}, nil
+}
 
 func main() {
 	listener, err := net.Listen("tcp", port)
@@ -1302,7 +1303,7 @@ func main() {
 	}
 	size := 1<<31 - 1
 	s := grpc.NewServer(grpc.MaxRecvMsgSize(size), grpc.MaxSendMsgSize(size))
-	dbif_pb.RegisterDBIFServer(s, &DBIFServer{})
+	dbif.RegisterDBIFServer(s, &DBIFServer{})
 	reflection.Register(s)
 	log.Printf("DBIF Service\n")
 	if err = s.Serve(listener); err != nil {
