@@ -53,10 +53,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
-	csresp, err := c.CreateStudy(ctx, &kdb.CreateStudyRequest{StudyConfig: &kdb.StudyConfig{Name: "NewStudy"}})
-	if err != nil {
-		log.Fatalf("could not create study: %v", err)
-	}
 	log.Printf("Greeting: %s", r.Message)
-	log.Printf("Study created with id: %s", csresp.StudyId)
+	// csresp, err := c.CreateStudy(ctx, &kdb.CreateStudyRequest{StudyConfig: &kdb.StudyConfig{Name: "NewStudy"}})
+	// if err != nil {
+	// 	log.Fatalf("could not create study: %v", err)
+	// }
+	// log.Printf("Greeting: %s", r.Message)
+	// log.Printf("Study created with id: %s", csresp.StudyId)
 }
