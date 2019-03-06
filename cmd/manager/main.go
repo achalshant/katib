@@ -1,23 +1,20 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"log"
 	"net"
+	"time"
 
-	api_pb "github.com/kubeflow/katib/pkg/api"
-	health_pb "github.com/kubeflow/katib/pkg/api/health"
 	kdb "github.com/kubeflow/katib/pkg/db"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 const (
 	port = "0.0.0.0:6789"
 )
-
-var dbIf kdb.VizierDBInterface
 
 /*
 type server struct {
@@ -329,12 +326,12 @@ func (s *server) Check(ctx context.Context, in *health_pb.HealthCheckRequest) (*
 func main() {
 	flag.Parse()
 	var err error
-	conn, err := grpc.Dial("katib-dbif:6789", grpc.WithInsecure())
+	conn, err := grpc.Dial("0.0.0.0:6789", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Failed to open db connection: %v", err)
 	}
 	defer conn.Close()
-	dbIf = kdb.DBIFClient(conn)
+	dbIf := kdb.DBIFClient(conn)
 
 	//dbIf, err = kdb.New()
 	//TODO: Add to proto file
@@ -342,9 +339,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
-
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	size := 1<<31 - 1
-	log.Printf("Start Katib manager: %s", port)
+	/*log.Printf("Start Katib manager: %s", port)
 	log.Printf("Hello from Achal's own Katib!")
 	s := grpc.NewServer(grpc.MaxRecvMsgSize(size), grpc.MaxSendMsgSize(size))
 	api_pb.RegisterManagerServer(s, &server{})
@@ -352,5 +349,11 @@ func main() {
 	reflection.Register(s)
 	if err = s.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
+	}*/
+
+	r, err := dbIf.SayHello(ctx, &dbIf.HelloRequest{Name: name})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
 	}
+	log.Printf("Greeting: %s", r.Message)
 }
