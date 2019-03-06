@@ -16,142 +16,144 @@ service DBIF {
      * Create a Study from Study Config.
      * Generate a unique ID and store the Study to DB.
      */
-    rpc CreateStudy(CreateStudyRequest) returns (CreateStudyReply){
-        
-    };
+
     
-    /** 
-     * Get a Study Config from DB by ID of Study.
-     */
-    rpc GetStudy(GetStudyRequest) returns (GetStudyReply){
+    // rpc CreateStudy(CreateStudyRequest) returns (CreateStudyReply){
         
-    };
-    /** 
-     * Delete a Study from DB by Study ID.
-     */
-    rpc DeleteStudy(DeleteStudyRequest) returns (DeleteStudyReply){
+    // };
+    
+    // /** 
+    //  * Get a Study Config from DB by ID of Study.
+    //  */
+    // rpc GetStudy(GetStudyRequest) returns (GetStudyReply){
         
-    };
-    /**
-     * Get all Study Configs from DB.
-     */
-    rpc GetStudyList(GetStudyListRequest) returns (GetStudyListReply){
+    // };
+    // /** 
+    //  * Delete a Study from DB by Study ID.
+    //  */
+    // rpc DeleteStudy(DeleteStudyRequest) returns (DeleteStudyReply){
         
-    };
-    /**
-     * Create a Trial from Trial Config.
-     * Generate a unique ID and store the Trial to DB.
-     */
-    rpc CreateTrial(CreateTrialRequest) returns (CreateTrialReply){
+    // };
+    // /**
+    //  * Get all Study Configs from DB.
+    //  */
+    // rpc GetStudyList(GetStudyListRequest) returns (GetStudyListReply){
+        
+    // };
+    // /**
+    //  * Create a Trial from Trial Config.
+    //  * Generate a unique ID and store the Trial to DB.
+    //  */
+    // rpc CreateTrial(CreateTrialRequest) returns (CreateTrialReply){
       
-    };
-    /** 
-     * Get a Trial Configs from DB by ID of Study.
-     */
-    rpc GetTrials(GetTrialsRequest) returns (GetTrialsReply){
+    // };
+    // /** 
+    //  * Get a Trial Configs from DB by ID of Study.
+    //  */
+    // rpc GetTrials(GetTrialsRequest) returns (GetTrialsReply){
         
-    };
-    /**
-     * Get a Trial Configuration from DB by ID of Trial.
-     */
-    rpc GetTrial(GetTrialRequest) returns (GetTrialReply){
+    // };
+    // /**
+    //  * Get a Trial Configuration from DB by ID of Trial.
+    //  */
+    // rpc GetTrial(GetTrialRequest) returns (GetTrialReply){
        
-    };
-    /**
-     * Create a Worker from Worker Config.
-     * Generate a unique ID and store the Worker to DB.
-     */
-    rpc RegisterWorker(RegisterWorkerRequest) returns (RegisterWorkerReply){
+    // };
+    // /**
+    //  * Create a Worker from Worker Config.
+    //  * Generate a unique ID and store the Worker to DB.
+    //  */
+    // rpc RegisterWorker(RegisterWorkerRequest) returns (RegisterWorkerReply){
      
-    };
-    /** 
-     * Get a Worker Configs and Status from DB by ID of Study, Trial or Worker.
-     */
-    rpc GetWorkers(GetWorkersRequest) returns (GetWorkersReply){
+    // };
+    // /** 
+    //  * Get a Worker Configs and Status from DB by ID of Study, Trial or Worker.
+    //  */
+    // rpc GetWorkers(GetWorkersRequest) returns (GetWorkersReply){
        
-    };
-    /** 
-     * Update a Status of Worker.
-     */
-    rpc UpdateWorkerState(UpdateWorkerStateRequest) returns (UpdateWorkerStateReply){
+    // };
+    // /** 
+    //  * Update a Status of Worker.
+    //  */
+    // rpc UpdateWorkerState(UpdateWorkerStateRequest) returns (UpdateWorkerStateReply){
        
-    };
-    /** 
-     * Get full information related to specified Workers.
-     * It includes Worker Config, HyperParameters and Metrics Logs.
-     */
-    rpc GetWorkerFullInfo(GetWorkerFullInfoRequest) returns (GetWorkerFullInfoReply){
+    // };
+    // /** 
+    //  * Get full information related to specified Workers.
+    //  * It includes Worker Config, HyperParameters and Metrics Logs.
+    //  */
+    // rpc GetWorkerFullInfo(GetWorkerFullInfoRequest) returns (GetWorkerFullInfoReply){
        
-    };
-    /** 
-     * Get Suggestions from a Suggestion service.
-     */
-    rpc GetSuggestions(GetSuggestionsRequest) returns (GetSuggestionsReply){
+    // };
+    // /** 
+    //  * Get Suggestions from a Suggestion service.
+    //  */
+    // rpc GetSuggestions(GetSuggestionsRequest) returns (GetSuggestionsReply){
         
-    };
-    rpc GetShouldStopWorkers(GetShouldStopWorkersRequest) returns (GetShouldStopWorkersReply){
+    // };
+    // rpc GetShouldStopWorkers(GetShouldStopWorkersRequest) returns (GetShouldStopWorkersReply){
        
-    };
-    /**
-     * Get metrics of workers.
-     * You can get all logs of metrics since start of the worker.
-     */
-    rpc GetMetrics(GetMetricsRequest) returns (GetMetricsReply){
+    // };
+    // /**
+    //  * Get metrics of workers.
+    //  * You can get all logs of metrics since start of the worker.
+    //  */
+    // rpc GetMetrics(GetMetricsRequest) returns (GetMetricsReply){
         
-    };
-    /**
-     * Create or Update parameter set for a suggestion service.
-     * If you specify an ID of parameter set, it will update the parameter set by your request.
-     * If you don't specify an ID, it will create a new parameter set for corresponding study and suggestion service.
-     * The parameters are key-value format.
-     */
-    rpc SetSuggestionParameters(SetSuggestionParametersRequest) returns (SetSuggestionParametersReply){
+    // };
+    // /**
+    //  * Create or Update parameter set for a suggestion service.
+    //  * If you specify an ID of parameter set, it will update the parameter set by your request.
+    //  * If you don't specify an ID, it will create a new parameter set for corresponding study and suggestion service.
+    //  * The parameters are key-value format.
+    //  */
+    // rpc SetSuggestionParameters(SetSuggestionParametersRequest) returns (SetSuggestionParametersReply){
        
-    };
-    /**
-     * Get suggestion parameter set from DB specified.
-     */
-    rpc GetSuggestionParameters(GetSuggestionParametersRequest) returns (GetSuggestionParametersReply){
+    // };
+    // /**
+    //  * Get suggestion parameter set from DB specified.
+    //  */
+    // rpc GetSuggestionParameters(GetSuggestionParametersRequest) returns (GetSuggestionParametersReply){
        
-    };
-    /**
-     * Get all suggestion parameter sets from DB.
-     */
-    rpc GetSuggestionParameterList(GetSuggestionParameterListRequest) returns (GetSuggestionParameterListReply){
+    // };
+    // /**
+    //  * Get all suggestion parameter sets from DB.
+    //  */
+    // rpc GetSuggestionParameterList(GetSuggestionParameterListRequest) returns (GetSuggestionParameterListReply){
         
-    };
-    rpc SetEarlyStoppingParameters(SetEarlyStoppingParametersRequest) returns (SetEarlyStoppingParametersReply){
+    // };
+    // rpc SetEarlyStoppingParameters(SetEarlyStoppingParametersRequest) returns (SetEarlyStoppingParametersReply){
        
-    };
-    rpc GetEarlyStoppingParameters(GetEarlyStoppingParametersRequest) returns (GetEarlyStoppingParametersReply){
+    // };
+    // rpc GetEarlyStoppingParameters(GetEarlyStoppingParametersRequest) returns (GetEarlyStoppingParametersReply){
         
-    };
-    rpc GetEarlyStoppingParameterList(GetEarlyStoppingParameterListRequest) returns (GetEarlyStoppingParameterListReply){
+    // };
+    // rpc GetEarlyStoppingParameterList(GetEarlyStoppingParameterListRequest) returns (GetEarlyStoppingParameterListReply){
       
-    };
-    rpc SaveStudy(SaveStudyRequest) returns(SaveStudyReply){
+    // };
+    // rpc SaveStudy(SaveStudyRequest) returns(SaveStudyReply){
      
-    };
-    rpc SaveModel(SaveModelRequest) returns(SaveModelReply){
+    // };
+    // rpc SaveModel(SaveModelRequest) returns(SaveModelReply){
       
-    };
-    /**
-     * Report a logs of metrics for workers.
-     * The logs for each worker must have timestamp and must be ordered in time series.
-     * When the log you reported are already reported before, it will be dismissed and get no error.
-     */
-    rpc ReportMetricsLogs(ReportMetricsLogsRequest) returns (ReportMetricsLogsReply){
+    // };
+    // /**
+    //  * Report a logs of metrics for workers.
+    //  * The logs for each worker must have timestamp and must be ordered in time series.
+    //  * When the log you reported are already reported before, it will be dismissed and get no error.
+    //  */
+    // rpc ReportMetricsLogs(ReportMetricsLogsRequest) returns (ReportMetricsLogsReply){
         
-    };
-    rpc GetSavedStudies(GetSavedStudiesRequest) returns(GetSavedStudiesReply){
+    // };
+    // rpc GetSavedStudies(GetSavedStudiesRequest) returns(GetSavedStudiesReply){
         
-    };
-    rpc GetSavedModels(GetSavedModelsRequest) returns(GetSavedModelsReply){
+    // };
+    // rpc GetSavedModels(GetSavedModelsRequest) returns(GetSavedModelsReply){
        
-    };
+    // };
 
     rpc SayHello (HelloRequest) returns (HelloReply) {
-        
+
     };
 }
 
