@@ -75,6 +75,17 @@ message HelloReply {
   string message = 1;
 }
 
+message ParameterConfig {
+    string name = 1; /// Name of the parameter.
+    ParameterType parameter_type = 2; /// Type of the parameter.
+    FeasibleSpace feasible = 3; /// FeasibleSpace for the parameter.
+}
+
+message Tag {
+    string name = 1; /// Name of tag.
+    string value = 2; /// Value of tag.
+}
+
 message StudyConfig {
     /** 
      * List of ParameterConfig
