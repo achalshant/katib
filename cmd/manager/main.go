@@ -16,6 +16,23 @@ const (
 	defaultName = "world"
 )
 
+type server struct {
+}
+
+/*
+func (s *server) CreateStudy(ctx context.Context, in *kdb.CreateStudyRequest) (*kdb.CreateStudyReply, error) {
+	if in == nil || in.StudyConfig == nil {
+		return &kdb.CreateStudyReply{}, errors.New("StudyConfig is missing.")
+	}
+
+	studyID, err := dbIf.CreateStudy(in.StudyConfig)
+	if err != nil {
+		return &kdb.CreateStudyReply{}, err
+	}
+
+	return &kdb.CreateStudyReply{StudyId: studyID}, nil
+}
+*/
 func main() {
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
@@ -36,5 +53,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
+	csresp, err := c.CreateStudy(ctx, &kdb.CreateStudyRequest{StudyConfig: &kdb.StudyConfig{name: "NewStudy"}})
+	if err != nil {
+		log.Fatalf("could not create study: %v", err)
+	}
 	log.Printf("Greeting: %s", r.Message)
+	log.Printf("Study created with id: %s", csresp.StudyId)
 }

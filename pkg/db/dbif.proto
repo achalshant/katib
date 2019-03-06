@@ -16,7 +16,55 @@ service DBIF {
     rpc SayHello (HelloRequest) returns (HelloReply) {
 
     };
+
+    rpc CreateStudy(CreateStudyRequest) returns (CreateStudyReply){
+        
+    };
 }
+
+enum ParameterType {
+    UNKNOWN_TYPE = 0; /// Undefined type and not used.
+
+    DOUBLE = 1; /// Double float type. Use "Max/Min".
+    INT = 2; /// Int type. Use "Max/Min".
+    DISCRETE = 3; /// Discrete number type. Use "List" as float.
+    CATEGORICAL = 4; /// Categorical type. Use "List" as string.
+}
+
+/**
+ * Direction of optimization. Minimize or Maximize.
+ */
+enum OptimizationType {
+    UNKNOWN_OPTIMIZATION = 0; /// Undefined type and not used.
+
+    MINIMIZE = 1; /// Minimize
+    MAXIMIZE = 2; /// Maximize
+}
+ message Operation {
+     string operationType = 1; /// Type of operation in DAG
+      /** 
+     * List of ParameterConfig
+     */
+     message ParameterConfigs {
+        repeated ParameterConfig configs = 1;
+    }
+    ParameterConfigs parameter_configs = 2; /// List of ParameterConfig
+}
+
+message NasConfig {
+    GraphConfig graph_config = 1; /// Config of DAG
+    message Operations {
+        repeated Operation operation = 1;
+    }
+    Operations operations = 2; /// List of Operation
+}
+
+message GraphConfig {
+    int32 num_layers = 1; /// Number of layers
+    repeated int32 input_size = 2; ///  Dimenstions of input size
+    repeated int32 output_size = 3; /// Dimensions of output size
+}
+
 // The request message containing the user's name.
 message HelloRequest {
   string name = 1;
@@ -25,4 +73,36 @@ message HelloRequest {
 // The response message containing the greetings
 message HelloReply {
   string message = 1;
+}
+
+message StudyConfig {
+    /** 
+     * List of ParameterConfig
+     */
+    message ParameterConfigs {
+        repeated ParameterConfig configs = 1;
+    }
+    string name = 1; /// Name of Study.
+    string owner = 2; /// Owner of Study.
+    OptimizationType optimization_type = 3; /// Optimization type.
+    double optimization_goal = 4; /// Goal of optimization value.
+    ParameterConfigs parameter_configs = 5; /// List of ParameterConfig
+    repeated string access_permissions = 6; /// Access Permission
+    repeated Tag tags = 7; /// Tag for Study
+    string objective_value_name = 8; /// Name of objective value.
+    repeated string metrics = 9; /// List of metrics name.
+    string jobId = 10; /// ID of studyjob that is created from this config.
+    NasConfig nas_config = 11; /// Config for NAS job
+    string job_type = 12; /// Type of the job, NAS or HP
+}
+
+message CreateStudyRequest {
+    StudyConfig study_config = 1;
+}
+
+/**
+ * Return generated StudyID.
+ */
+message CreateStudyReply {
+    string study_id = 1;
 }
