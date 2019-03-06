@@ -22,7 +22,7 @@ const (
 	port = "0.0.0.0:6789"
 )
 
-var dbIf 
+var dbIf = nil
 
 type server struct {
 	msIf modelstore.ModelStore
