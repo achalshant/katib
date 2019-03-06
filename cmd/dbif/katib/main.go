@@ -51,7 +51,7 @@ func getDbName() string {
 	return fmt.Sprintf(dbNameTmpl, dbPass)
 }
 
-func CreateNewDBServer() (*dbserver, error) {
+func CreateNewDBServer() *dbserver {
 	db, err := openSQLConn(dbDriver, getDbName(), connectInterval, connectTimeout)
 	if err != nil {
 		return nil, fmt.Errorf("DB open failed: %v", err)
@@ -208,7 +208,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	dbif.RegisterDBIFServer(s, &dbserver{})
+	dbif.RegisterDBIFServer(s, CreateNewDBServer())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
