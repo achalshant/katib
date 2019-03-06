@@ -23,7 +23,7 @@ type WorkerLog struct {
 	Name  string
 	Value string
 }
-**/
+
 type VizierDBInterface interface {
 	DBInit()
 	SelectOne() error
