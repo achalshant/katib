@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"os"
 	"time"
 
 	kdb "github.com/kubeflow/katib/pkg/db"
@@ -43,21 +42,17 @@ func main() {
 	c := kdb.NewDBIFClient(conn)
 
 	// Contact the server and print out its response.
-	name := defaultName
-	if len(os.Args) > 1 {
-		name = os.Args[1]
-	}
+	//name := defaultName
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.SayHello(ctx, &kdb.HelloRequest{Name: name})
-	if err != nil {
-		log.Fatalf("could not greet: %v", err)
-	}
-	log.Printf("Greeting: %s", r.Message)
-	// csresp, err := c.CreateStudy(ctx, &kdb.CreateStudyRequest{StudyConfig: &kdb.StudyConfig{Name: "NewStudy"}})
+	// r, err := c.SayHello(ctx, &kdb.HelloRequest{Name: name})
 	// if err != nil {
-	// 	log.Fatalf("could not create study: %v", err)
+	// 	log.Fatalf("could not greet: %v", err)
 	// }
 	// log.Printf("Greeting: %s", r.Message)
-	// log.Printf("Study created with id: %s", csresp.StudyId)
+	csresp, err := c.CreateStudy(ctx, &kdb.CreateStudyRequest{StudyConfig: &kdb.StudyConfig{Name: "NewStudy"}})
+	if err != nil {
+		log.Fatalf("could not create study: %v", err)
+	}
+	log.Printf("Study created with id: %s", csresp.StudyId)
 }
