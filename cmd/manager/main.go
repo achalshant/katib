@@ -22,7 +22,7 @@ const (
 	port = "0.0.0.0:6789"
 )
 
-var dbIf = nil
+var dbIf kdb.VizierDBInterface
 
 type server struct {
 	msIf modelstore.ModelStore
@@ -337,6 +337,7 @@ func main() {
 	}
 	defer conn.Close()
 	dbIf = kdb.DBIFClient(conn)
+
 	//dbIf, err = kdb.New()
 
 	dbIf.DBInit()
