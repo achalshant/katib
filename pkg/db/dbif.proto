@@ -86,6 +86,13 @@ message Tag {
     string value = 2; /// Value of tag.
 }
 
+message FeasibleSpace {
+    string max = 1; /// Max Value
+    string min = 2; /// Minimum Value
+    repeated string list = 3; /// List of Values.
+    string step = 4; /// Step for double or int parameter
+}
+
 message StudyConfig {
     /** 
      * List of ParameterConfig
