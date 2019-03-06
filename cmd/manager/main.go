@@ -2,9 +2,8 @@ package main
 
 import (
 	"context"
-	"flag"
 	"log"
-	"net"
+	"os"
 	"time"
 
 	kdb "github.com/kubeflow/katib/pkg/db"
@@ -13,26 +12,27 @@ import (
 )
 
 const (
-	port = "0.0.0.0:6789"
+	address     = "0.0.0.0:6789"
+	defaultName = "world"
 )
 
 func main() {
-	flag.Parse()
-	var err error
-	conn, err := grpc.Dial("0.0.0.0:6789", grpc.WithInsecure())
+	// Set up a connection to the server.
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("Failed to open db connection: %v", err)
+		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	dbIf := kdb.DBIFClient(conn)
-	listener, err := net.Listen("tcp", port)
-	if err != nil {
-		log.Fatalf("Failed to listen: %v", err)
+	c := kdb.NewDBIFClient(conn)
+
+	// Contact the server and print out its response.
+	name := defaultName
+	if len(os.Args) > 1 {
+		name = os.Args[1]
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	size := 1<<31 - 1
-
-	r, err := dbIf.SayHello(ctx, &dbIf.HelloRequest{Name: name})
+	defer cancel()
+	r, err := c.SayHello(ctx, &kdb.HelloRequest{Name: name})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
