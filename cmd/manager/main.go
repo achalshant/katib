@@ -53,7 +53,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
-	csresp, err := c.CreateStudy(ctx, &kdb.CreateStudyRequest{StudyConfig: &kdb.StudyConfig{name: "NewStudy"}})
+	csresp, err := c.CreateStudy(ctx, &kdb.CreateStudyRequest{StudyConfig: &kdb.StudyConfig{Name: "NewStudy"}})
 	if err != nil {
 		log.Fatalf("could not create study: %v", err)
 	}

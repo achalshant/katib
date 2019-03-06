@@ -103,34 +103,35 @@ func (s *dbserver) SayHello(ctx context.Context, in *dbif.HelloRequest) (*dbif.H
 }
 
 func (s *dbserver) CreateStudy(ctx context.Context, in *dbif.CreateStudyRequest) (*dbif.CreateStudyReply, error) {
-	in = in.StudyConfig
-	if in.JobId != "" {
+	sc := in.StudyConfig
+	if sc.JobId != "" {
 		var temporaryId string
-		err := s.db.QueryRow("SELECT id FROM studies WHERE job_id = ?", in.JobId).Scan(&temporaryId)
+		err := s.db.QueryRow("SELECT id FROM studies WHERE job_id = ?", sc.JobId).Scan(&temporaryId)
+
 		if err == nil {
-			return "", fmt.Errorf("Study %s in Job %s already exist.", in.Name, in.JobId)
+			return &dbif.CreateStudyReply{}, err
 		}
 	}
 
 	var nasConfig string
 	var configs string
 	var err error
-	if in.NasConfig != nil {
-		nasConfig, err = (&jsonpb.Marshaler{}).MarshalToString(in.NasConfig)
+	if sc.NasConfig != nil {
+		nasConfig, err = (&jsonpb.Marshaler{}).MarshalToString(sc.NasConfig)
 		if err != nil {
 			log.Fatalf("Error marshaling nasConfig: %v", err)
 		}
 	}
 
-	if in.ParameterConfigs != nil {
-		configs, err = (&jsonpb.Marshaler{}).MarshalToString(in.ParameterConfigs)
+	if sc.ParameterConfigs != nil {
+		configs, err = (&jsonpb.Marshaler{}).MarshalToString(sc.ParameterConfigs)
 		if err != nil {
 			log.Fatalf("Error marshaling configs: %v", err)
 		}
 	}
 
-	tags := make([]string, len(in.Tags))
-	for i, elem := range in.Tags {
+	tags := make([]string, len(sc.Tags))
+	for i, elem := range sc.Tags {
 		tags[i], err = (&jsonpb.Marshaler{}).MarshalToString(elem)
 		if err != nil {
 			log.Printf("Error marshalling %v: %v", elem, err)
@@ -139,14 +140,14 @@ func (s *dbserver) CreateStudy(ctx context.Context, in *dbif.CreateStudyRequest)
 	}
 
 	var isin bool = false
-	for _, m := range in.Metrics {
-		if m == in.ObjectiveValueName {
+	for _, m := range sc.Metrics {
+		if m == sc.ObjectiveValueName {
 			isin = true
 		}
 	}
 
 	if !isin {
-		in.Metrics = append(in.Metrics, in.ObjectiveValueName)
+		sc.Metrics = append(sc.Metrics, sc.ObjectiveValueName)
 	}
 
 	var studyID string
@@ -157,17 +158,17 @@ func (s *dbserver) CreateStudy(ctx context.Context, in *dbif.CreateStudyRequest)
 		_, err := s.db.Exec(
 			"INSERT INTO studies VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 			studyID,
-			in.Name,
-			in.Owner,
-			in.OptimizationType,
-			in.OptimizationGoal,
+			sc.Name,
+			sc.Owner,
+			sc.OptimizationType,
+			sc.OptimizationGoal,
 			configs,
 			strings.Join(tags, ",\n"),
-			in.ObjectiveValueName,
-			strings.Join(in.Metrics, ",\n"),
+			sc.ObjectiveValueName,
+			strings.Join(sc.Metrics, ",\n"),
 			nasConfig,
-			in.JobId,
-			in.JobType,
+			sc.JobId,
+			sc.JobType,
 		)
 		if err == nil {
 			break
@@ -177,7 +178,7 @@ func (s *dbserver) CreateStudy(ctx context.Context, in *dbif.CreateStudyRequest)
 				continue
 			}
 		}
-		return "", err
+		return &dbif.CreateStudyReply{}, err
 	}
 	return &dbif.CreateStudyReply{StudyId: studyID}, nil
 }
