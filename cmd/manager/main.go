@@ -43,7 +43,7 @@ func main() {
 
 	// Contact the server and print out its response.
 	//name := defaultName
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 	// r, err := c.SayHello(ctx, &kdb.HelloRequest{Name: name})
 	// if err != nil {
