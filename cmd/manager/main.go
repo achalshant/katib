@@ -49,9 +49,9 @@ func main() {
 		log.Fatalf("could not create study: %v", err)
 	}
 	log.Printf("Study created with id: %s", csresp.StudyId)
-	// gsresp, err := c.GetStudy(ctx, &kdb.GetStudyRequest{StudyId: "2"})
-	// if err != nil {
-	// 	log.Fatalf("could not get study: %v", err)
-	// }
-	// log.Printf("Study name: %s", gsresp.StudyConfig.Name)
+	gsresp, err := c.GetStudy(ctx, &kdb.GetStudyRequest{StudyId: csresp.StudyId})
+	if err != nil {
+		log.Fatalf("could not get study: %v", err)
+	}
+	log.Printf("Study name: %s", gsresp.StudyConfig.Name)
 }
