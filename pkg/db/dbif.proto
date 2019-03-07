@@ -20,6 +20,10 @@ service DBIF {
     rpc CreateStudy(CreateStudyRequest) returns (CreateStudyReply){
         
     };
+
+    rpc GetStudy(GetStudyRequest) returns (GetStudyReply){
+        
+    };
 }
 
 enum ParameterType {
@@ -123,4 +127,15 @@ message CreateStudyRequest {
  */
 message CreateStudyReply {
     string study_id = 1;
+}
+
+message GetStudyRequest {
+    string study_id = 1;
+}
+
+/**
+ * Return a config of specified Study.
+ */
+message GetStudyReply {
+    StudyConfig study_config= 1;
 }

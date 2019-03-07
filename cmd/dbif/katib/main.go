@@ -38,6 +38,10 @@ type dbserver struct {
 	db *sql.DB
 }
 
+/**
+HELPER FUNCTIONS
+**/
+
 func getDbName() string {
 	dbPass := os.Getenv("MYSQL_ROOT_PASSWORD")
 	if dbPass == "" {
@@ -84,6 +88,34 @@ func openSQLConn(driverName string, dataSourceName string, interval time.Duratio
 			return nil, fmt.Errorf("Timeout waiting for DB conn successfully opened.")
 		}
 	}
+}
+
+func isDBDuplicateError(err error) bool {
+	errmsg := strings.ToLower(err.Error())
+	if strings.Contains(errmsg, "unique") || strings.Contains(errmsg, "duplicate") {
+		return true
+	}
+	return false
+}
+
+func generateRandid() string {
+	// UUID isn't quite handy in the Go world
+	id := make([]byte, 8)
+	_, err := rand.Read(id)
+	if err != nil {
+		log.Printf("Error reading random: %v", err)
+		return ""
+	}
+	return string(rs1Letters[rand.Intn(len(rs1Letters))]) + fmt.Sprintf("%016x", id)[1:]
+}
+
+func (d *dbserver) SelectOne() error {
+	db := d.db
+	_, err := db.Exec(`SELECT 1`)
+	if err != nil {
+		return fmt.Errorf("Error `SELECT 1` probing: %v", err)
+	}
+	return nil
 }
 
 func DBInit(db *sql.DB) {
@@ -198,6 +230,10 @@ func NewWithSQLConn(db *sql.DB) (*dbserver, error) {
 	return d, nil
 }
 
+/**
+INTERFACE FUNCTIONS
+**/
+
 // SayHello implements helloworld.GreeterServer
 func (s *dbserver) SayHello(ctx context.Context, in *dbif.HelloRequest) (*dbif.HelloReply, error) {
 	log.Printf("Received: %v", in.Name)
@@ -285,32 +321,58 @@ func (s *dbserver) CreateStudy(ctx context.Context, in *dbif.CreateStudyRequest)
 	return &dbif.CreateStudyReply{StudyId: studyID}, nil
 }
 
-func isDBDuplicateError(err error) bool {
-	errmsg := strings.ToLower(err.Error())
-	if strings.Contains(errmsg, "unique") || strings.Contains(errmsg, "duplicate") {
-		return true
-	}
-	return false
-}
-
-func generateRandid() string {
-	// UUID isn't quite handy in the Go world
-	id := make([]byte, 8)
-	_, err := rand.Read(id)
+func (s *dbserver) GetStudy(ctx context.Context, in *dbif.GetStudyRequest) (*dbif.GetStudyReply, error) {
+	row := s.db.QueryRow("SELECT * FROM studies WHERE id = ?", in.StudyID)
+	study := new(dbif.StudyConfig)
+	var dummyID, nasConfig, parameters, tags, metrics string
+	err := row.Scan(&dummyID,
+		&study.Name,
+		&study.Owner,
+		&study.OptimizationType,
+		&study.OptimizationGoal,
+		&parameters,
+		&tags,
+		&study.ObjectiveValueName,
+		&metrics,
+		&nasConfig,
+		&study.JobId,
+		&study.JobType,
+	)
 	if err != nil {
-		log.Printf("Error reading random: %v", err)
-		return ""
+		return &dbif.GetStudyReply{}, err
 	}
-	return string(rs1Letters[rand.Intn(len(rs1Letters))]) + fmt.Sprintf("%016x", id)[1:]
-}
+	if parameters != "" {
+		study.ParameterConfigs = new(dbif.StudyConfig_ParameterConfigs)
+		err = jsonpb.UnmarshalString(parameters, study.ParameterConfigs)
+		if err != nil {
+			return &dbif.GetStudyReply{}, err
+		}
+	}
+	if nasConfig != "" {
+		study.NasConfig = new(dbif.NasConfig)
+		err = jsonpb.UnmarshalString(nasConfig, study.NasConfig)
+		if err != nil {
+			log.Printf("Failed to unmarshal NasConfig")
+			return &dbif.GetStudyReply{}, err
+		}
+	}
 
-func (d *dbserver) SelectOne() error {
-	db := d.db
-	_, err := db.Exec(`SELECT 1`)
-	if err != nil {
-		return fmt.Errorf("Error `SELECT 1` probing: %v", err)
+	var tagsArray []string
+	if len(tags) > 0 {
+		tagsArray = strings.Split(tags, ",\n")
 	}
-	return nil
+	study.Tags = make([]*dbif.Tag, len(tagsArray))
+	for i, j := range tagsArray {
+		tag := new(dbif.Tag)
+		err = jsonpb.UnmarshalString(j, tag)
+		if err != nil {
+			log.Printf("err unmarshal %s", j)
+			return &dbif.GetStudyReply{}, err
+		}
+		study.Tags[i] = tag
+	}
+	study.Metrics = strings.Split(metrics, ",\n")
+	return &dbif.GetStudyReply{StudyConfig: study}, nil
 }
 
 func main() {
