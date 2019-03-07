@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dbif-katib
+  namespace: kubeflow
+  labels:
+    app: vizier
+    component: dbif-katib
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: dbif-katib
+      labels:
+        app: vizier
+        component: dbif-katib
+    spec:
+      containers:
+      - name: dbif-katib
+        image: acshanth/katib-dbif
+        ports:
+        - name: api
+          containerPort: 6789
+#        resources:
+#          requests:
+#            cpu: 500m
+#            memory: 500M
+#          limits:
+#            cpu: 500m
+#            memory: 500M
