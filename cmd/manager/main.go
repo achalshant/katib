@@ -44,14 +44,14 @@ func main() {
 	// Contact the server and print out its response.
 	ctx, cancel := context.WithTimeout(context.Background(), 600*time.Second)
 	defer cancel()
-	// csresp, err := c.CreateStudy(ctx, &kdb.CreateStudyRequest{StudyConfig: &kdb.StudyConfig{Name: "NewStudy"}})
-	// if err != nil {
-	// 	log.Fatalf("could not create study: %v", err)
-	// }
-	// log.Printf("Study created with id: %s", csresp.StudyId)
-	gsresp, err := c.GetStudy(ctx, &kdb.GetStudyRequest{StudyId: "1"})
+	csresp, err := c.CreateStudy(ctx, &kdb.CreateStudyRequest{StudyConfig: &kdb.StudyConfig{Name: "NewStudy"}})
 	if err != nil {
-		log.Fatalf("could not get study: %v", err)
+		log.Fatalf("could not create study: %v", err)
 	}
-	log.Printf("Study name: %s", gsresp.StudyConfig.Name)
+	log.Printf("Study created with id: %s", csresp.StudyId)
+	// gsresp, err := c.GetStudy(ctx, &kdb.GetStudyRequest{StudyId: "2"})
+	// if err != nil {
+	// 	log.Fatalf("could not get study: %v", err)
+	// }
+	// log.Printf("Study name: %s", gsresp.StudyConfig.Name)
 }
