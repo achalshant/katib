@@ -119,7 +119,7 @@ func (d *dbserver) SelectOne() error {
 }
 
 func DBInit(db *sql.DB) {
-
+//INSERT INTO studies VALUES (1, "First study", "Achal",1,0.99,"none","none" ,"none" ,"none" ,"none" ,"none" ,"none");
 	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS studies
 		(id CHAR(16) PRIMARY KEY,
 		name VARCHAR(255),
@@ -322,7 +322,7 @@ func (s *dbserver) CreateStudy(ctx context.Context, in *dbif.CreateStudyRequest)
 }
 
 func (s *dbserver) GetStudy(ctx context.Context, in *dbif.GetStudyRequest) (*dbif.GetStudyReply, error) {
-	row := s.db.QueryRow("SELECT * FROM studies WHERE id = ?", in.StudyID)
+	row := s.db.QueryRow("SELECT * FROM studies WHERE id = ?", in.StudyId)
 	study := new(dbif.StudyConfig)
 	var dummyID, nasConfig, parameters, tags, metrics string
 	err := row.Scan(&dummyID,
