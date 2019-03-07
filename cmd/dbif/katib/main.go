@@ -119,7 +119,7 @@ func (d *dbserver) SelectOne() error {
 }
 
 func DBInit(db *sql.DB) {
-//INSERT INTO studies VALUES (1, "First study", "Achal",1,0.99,"none","none" ,"none" ,"none" ,"none" ,"none" ,"none");
+	//INSERT INTO studies VALUES (1, "First study", "Achal",1,0.99,"none","none" ,"none" ,"none" ,"none" ,"none" ,"none");
 	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS studies
 		(id CHAR(16) PRIMARY KEY,
 		name VARCHAR(255),
@@ -339,12 +339,14 @@ func (s *dbserver) GetStudy(ctx context.Context, in *dbif.GetStudyRequest) (*dbi
 		&study.JobType,
 	)
 	if err != nil {
+		log.Fatalf("Error in fetching")
 		return &dbif.GetStudyReply{}, err
 	}
 	if parameters != "" {
 		study.ParameterConfigs = new(dbif.StudyConfig_ParameterConfigs)
 		err = jsonpb.UnmarshalString(parameters, study.ParameterConfigs)
 		if err != nil {
+			log.Fatalf("Error in unmarshaling json")
 			return &dbif.GetStudyReply{}, err
 		}
 	}
