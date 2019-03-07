@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	address     = "0.0.0.0:6789"
+	address     = "dbif-katib:6789"
 	defaultName = "world"
 )
 

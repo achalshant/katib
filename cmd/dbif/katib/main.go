@@ -62,6 +62,7 @@ func CreateNewDBServer() *dbserver {
 		log.Fatalf("DB open failed: %v", err)
 		return nil
 	}
+	log.Printf("DB connection opened successfully")
 	return dbWithConn
 }
 
@@ -192,6 +193,7 @@ func NewWithSQLConn(db *sql.DB) (*dbserver, error) {
 	// We can do the following instead, but it creates a locking issue
 	//d.rng = rand.New(rand.NewSource(seed.Int64()))
 	DBInit(d.db)
+	log.Printf("DB initialized successfully!")
 	rand.Seed(seed.Int64())
 	return d, nil
 }
