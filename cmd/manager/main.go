@@ -60,18 +60,18 @@ func (s *server) GetTrial(ctx context.Context, in *dbif.GetTrialRequest) (*dbif.
 
 func (s *server) GetSuggestions(ctx context.Context, in *api_pb.GetSuggestionsRequest) (*api_pb.GetSuggestionsReply, error) {
 	if in.SuggestionAlgorithm == "" {
-		return &api_pb.GetSuggestionsReply{Trials: []*api_pb.Trial{}}, errors.New("No suggest algorithm specified")
+		return &api_pb.GetSuggestionsReply{Trials: []*dbif.Trial{}}, errors.New("No suggest algorithm specified")
 	}
 	conn, err := grpc.Dial("vizier-suggestion-"+in.SuggestionAlgorithm+":6789", grpc.WithInsecure())
 	if err != nil {
-		return &api_pb.GetSuggestionsReply{Trials: []*api_pb.Trial{}}, err
+		return &api_pb.GetSuggestionsReply{Trials: []*dbif.Trial{}}, err
 	}
 
 	defer conn.Close()
 	c := api_pb.NewSuggestionClient(conn)
 	r, err := c.GetSuggestions(ctx, in)
 	if err != nil {
-		return &api_pb.GetSuggestionsReply{Trials: []*api_pb.Trial{}}, err
+		return &api_pb.GetSuggestionsReply{Trials: []*dbif.Trial{}}, err
 	}
 	return r, nil
 }
@@ -157,7 +157,7 @@ func (s *server) SaveModel(ctx context.Context, in *api_pb.SaveModelRequest) (*a
 }
 
 func (s *server) GetSavedStudies(ctx context.Context, in *api_pb.GetSavedStudiesRequest) (*api_pb.GetSavedStudiesReply, error) {
-	ret := []*api_pb.StudyOverview{}
+	ret := []*dbif.StudyOverview{}
 	var err error
 	if s.msIf != nil {
 		ret, err = s.msIf.GetSavedStudies()
