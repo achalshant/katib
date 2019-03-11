@@ -141,7 +141,7 @@ service Manager {
      * The logs for each worker must have timestamp and must be ordered in time series.
      * When the log you reported are already reported before, it will be dismissed and get no error.
      */
-    rpc ReportMetricsLogs(ReportMetricsLogsRequest) returns (ReportMetricsLogsReply){
+    rpc ReportMetricsLogs(db.ReportMetricsLogsRequest) returns (db.ReportMetricsLogsReply){
         
     };
     rpc GetSavedStudies(GetSavedStudiesRequest) returns(GetSavedStudiesReply){
@@ -169,7 +169,7 @@ message GetSuggestionsRequest {
 }
 
 message GetSuggestionsReply {
-    repeated Trial trials = 1;
+    repeated db.Trial trials = 1;
 }
 
 message GetShouldStopWorkersRequest {
@@ -185,8 +185,8 @@ message GetShouldStopWorkersReply {
 message ModelInfo {
     string study_name = 1;  
     string worker_id = 2; 
-    repeated Parameter parameters = 3; 
-    repeated Metrics metrics = 4;
+    repeated db.Parameter parameters = 3; 
+    repeated db.Metrics metrics = 4;
     string model_path = 5; 
 }
 
@@ -217,7 +217,7 @@ message GetSavedStudiesRequest {
 }
 
 message GetSavedStudiesReply {
-    repeated StudyOverview studies = 1;
+    repeated db.StudyOverview studies = 1;
 }
 
 message GetSavedModelsRequest {
