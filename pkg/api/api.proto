@@ -5,7 +5,7 @@ syntax = "proto3";
 
 package api;
 
-import "pkg/db/dbif.proto";
+import "github.com/kubeflow/katib/pkg/db/dbif.proto";
 
 /**
  * Service for Main API for Katib
