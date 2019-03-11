@@ -5,7 +5,7 @@ syntax = "proto3";
 
 package api;
 
-import "github.com/kubeflow/katib/pkg/db/dbif.proto";
+import "pkg/db/dbif.proto";
 
 /**
  * Service for Main API for Katib
@@ -18,25 +18,25 @@ service Manager {
      * Create a Study from Study Config.
      * Generate a unique ID and store the Study to DB.
      */
-    rpc CreateStudy(CreateStudyRequest) returns (CreateStudyReply){
+    rpc CreateStudy(db.CreateStudyRequest) returns (db.CreateStudyReply){
        
     };
     /** 
      * Get a Study Config from DB by ID of Study.
      */
-    rpc GetStudy(GetStudyRequest) returns (GetStudyReply){
+    rpc GetStudy(db.GetStudyRequest) returns (db.GetStudyReply){
        
     };
     /** 
      * Delete a Study from DB by Study ID.
      */
-    rpc DeleteStudy(DeleteStudyRequest) returns (DeleteStudyReply){
+    rpc DeleteStudy(db.DeleteStudyRequest) returns (db.DeleteStudyReply){
         
     };
     /**
      * Get all Study Configs from DB.
      */
-    rpc GetStudyList(GetStudyListRequest) returns (GetStudyListReply){
+    rpc GetStudyList(db.GetStudyListRequest) returns (db.GetStudyListReply){
         
     };
     /**
