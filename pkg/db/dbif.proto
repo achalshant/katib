@@ -123,6 +123,10 @@ service DBIF {
     rpc ReportMetricsLogs(ReportMetricsLogsRequest) returns (ReportMetricsLogsReply){
         
     };
+    
+    rpc SelectOne(SelectOneRequest) returns (SelectOneReply){
+        
+    };
 }
 
 
@@ -158,6 +162,12 @@ message FeasibleSpace {
     string min = 2; /// Minimum Value
     repeated string list = 3; /// List of Values.
     string step = 4; /// Step for double or int parameter
+}
+
+message SelectOneReply {
+}
+
+message SelectOneRequest {
 }
 
 /**
