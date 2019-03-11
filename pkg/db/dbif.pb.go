@@ -6,9 +6,10 @@ package db
 import (
 	context "context"
 	fmt "fmt"
+	math "math"
+
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
-	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -22,6 +23,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+//*
+// Types of value for HyperParameter.
 type ParameterType int32
 
 const (
@@ -86,417 +89,47 @@ func (OptimizationType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_23a2d42ab756d553, []int{1}
 }
 
-type Operation struct {
-	OperationType        string                      `protobuf:"bytes,1,opt,name=operationType,proto3" json:"operationType,omitempty"`
-	ParameterConfigs     *Operation_ParameterConfigs `protobuf:"bytes,2,opt,name=parameter_configs,json=parameterConfigs,proto3" json:"parameter_configs,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                    `json:"-"`
-	XXX_unrecognized     []byte                      `json:"-"`
-	XXX_sizecache        int32                       `json:"-"`
-}
-
-func (m *Operation) Reset()         { *m = Operation{} }
-func (m *Operation) String() string { return proto.CompactTextString(m) }
-func (*Operation) ProtoMessage()    {}
-func (*Operation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{0}
-}
-
-func (m *Operation) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Operation.Unmarshal(m, b)
-}
-func (m *Operation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Operation.Marshal(b, m, deterministic)
-}
-func (m *Operation) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Operation.Merge(m, src)
-}
-func (m *Operation) XXX_Size() int {
-	return xxx_messageInfo_Operation.Size(m)
-}
-func (m *Operation) XXX_DiscardUnknown() {
-	xxx_messageInfo_Operation.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Operation proto.InternalMessageInfo
-
-func (m *Operation) GetOperationType() string {
-	if m != nil {
-		return m.OperationType
-	}
-	return ""
-}
-
-func (m *Operation) GetParameterConfigs() *Operation_ParameterConfigs {
-	if m != nil {
-		return m.ParameterConfigs
-	}
-	return nil
-}
-
 //*
-// List of ParameterConfig
-type Operation_ParameterConfigs struct {
-	Configs              []*ParameterConfig `protobuf:"bytes,1,rep,name=configs,proto3" json:"configs,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
-	XXX_unrecognized     []byte             `json:"-"`
-	XXX_sizecache        int32              `json:"-"`
+// Status code for worker.
+// This value is stored as TINYINT in MySQL.
+type State int32
+
+const (
+	State_PENDING   State = 0
+	State_RUNNING   State = 1
+	State_COMPLETED State = 2
+	State_KILLED    State = 3
+	State_ERROR     State = 120
+)
+
+var State_name = map[int32]string{
+	0:   "PENDING",
+	1:   "RUNNING",
+	2:   "COMPLETED",
+	3:   "KILLED",
+	120: "ERROR",
 }
 
-func (m *Operation_ParameterConfigs) Reset()         { *m = Operation_ParameterConfigs{} }
-func (m *Operation_ParameterConfigs) String() string { return proto.CompactTextString(m) }
-func (*Operation_ParameterConfigs) ProtoMessage()    {}
-func (*Operation_ParameterConfigs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{0, 0}
+var State_value = map[string]int32{
+	"PENDING":   0,
+	"RUNNING":   1,
+	"COMPLETED": 2,
+	"KILLED":    3,
+	"ERROR":     120,
 }
 
-func (m *Operation_ParameterConfigs) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Operation_ParameterConfigs.Unmarshal(m, b)
-}
-func (m *Operation_ParameterConfigs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Operation_ParameterConfigs.Marshal(b, m, deterministic)
-}
-func (m *Operation_ParameterConfigs) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Operation_ParameterConfigs.Merge(m, src)
-}
-func (m *Operation_ParameterConfigs) XXX_Size() int {
-	return xxx_messageInfo_Operation_ParameterConfigs.Size(m)
-}
-func (m *Operation_ParameterConfigs) XXX_DiscardUnknown() {
-	xxx_messageInfo_Operation_ParameterConfigs.DiscardUnknown(m)
+func (x State) String() string {
+	return proto.EnumName(State_name, int32(x))
 }
 
-var xxx_messageInfo_Operation_ParameterConfigs proto.InternalMessageInfo
-
-func (m *Operation_ParameterConfigs) GetConfigs() []*ParameterConfig {
-	if m != nil {
-		return m.Configs
-	}
-	return nil
-}
-
-type NasConfig struct {
-	GraphConfig          *GraphConfig          `protobuf:"bytes,1,opt,name=graph_config,json=graphConfig,proto3" json:"graph_config,omitempty"`
-	Operations           *NasConfig_Operations `protobuf:"bytes,2,opt,name=operations,proto3" json:"operations,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
-	XXX_unrecognized     []byte                `json:"-"`
-	XXX_sizecache        int32                 `json:"-"`
-}
-
-func (m *NasConfig) Reset()         { *m = NasConfig{} }
-func (m *NasConfig) String() string { return proto.CompactTextString(m) }
-func (*NasConfig) ProtoMessage()    {}
-func (*NasConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{1}
-}
-
-func (m *NasConfig) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_NasConfig.Unmarshal(m, b)
-}
-func (m *NasConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_NasConfig.Marshal(b, m, deterministic)
-}
-func (m *NasConfig) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NasConfig.Merge(m, src)
-}
-func (m *NasConfig) XXX_Size() int {
-	return xxx_messageInfo_NasConfig.Size(m)
-}
-func (m *NasConfig) XXX_DiscardUnknown() {
-	xxx_messageInfo_NasConfig.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_NasConfig proto.InternalMessageInfo
-
-func (m *NasConfig) GetGraphConfig() *GraphConfig {
-	if m != nil {
-		return m.GraphConfig
-	}
-	return nil
-}
-
-func (m *NasConfig) GetOperations() *NasConfig_Operations {
-	if m != nil {
-		return m.Operations
-	}
-	return nil
-}
-
-type NasConfig_Operations struct {
-	Operation            []*Operation `protobuf:"bytes,1,rep,name=operation,proto3" json:"operation,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
-	XXX_unrecognized     []byte       `json:"-"`
-	XXX_sizecache        int32        `json:"-"`
-}
-
-func (m *NasConfig_Operations) Reset()         { *m = NasConfig_Operations{} }
-func (m *NasConfig_Operations) String() string { return proto.CompactTextString(m) }
-func (*NasConfig_Operations) ProtoMessage()    {}
-func (*NasConfig_Operations) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{1, 0}
-}
-
-func (m *NasConfig_Operations) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_NasConfig_Operations.Unmarshal(m, b)
-}
-func (m *NasConfig_Operations) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_NasConfig_Operations.Marshal(b, m, deterministic)
-}
-func (m *NasConfig_Operations) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NasConfig_Operations.Merge(m, src)
-}
-func (m *NasConfig_Operations) XXX_Size() int {
-	return xxx_messageInfo_NasConfig_Operations.Size(m)
-}
-func (m *NasConfig_Operations) XXX_DiscardUnknown() {
-	xxx_messageInfo_NasConfig_Operations.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_NasConfig_Operations proto.InternalMessageInfo
-
-func (m *NasConfig_Operations) GetOperation() []*Operation {
-	if m != nil {
-		return m.Operation
-	}
-	return nil
-}
-
-type GraphConfig struct {
-	NumLayers            int32    `protobuf:"varint,1,opt,name=num_layers,json=numLayers,proto3" json:"num_layers,omitempty"`
-	InputSize            []int32  `protobuf:"varint,2,rep,packed,name=input_size,json=inputSize,proto3" json:"input_size,omitempty"`
-	OutputSize           []int32  `protobuf:"varint,3,rep,packed,name=output_size,json=outputSize,proto3" json:"output_size,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GraphConfig) Reset()         { *m = GraphConfig{} }
-func (m *GraphConfig) String() string { return proto.CompactTextString(m) }
-func (*GraphConfig) ProtoMessage()    {}
-func (*GraphConfig) Descriptor() ([]byte, []int) {
+func (State) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_23a2d42ab756d553, []int{2}
 }
 
-func (m *GraphConfig) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GraphConfig.Unmarshal(m, b)
-}
-func (m *GraphConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GraphConfig.Marshal(b, m, deterministic)
-}
-func (m *GraphConfig) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GraphConfig.Merge(m, src)
-}
-func (m *GraphConfig) XXX_Size() int {
-	return xxx_messageInfo_GraphConfig.Size(m)
-}
-func (m *GraphConfig) XXX_DiscardUnknown() {
-	xxx_messageInfo_GraphConfig.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GraphConfig proto.InternalMessageInfo
-
-func (m *GraphConfig) GetNumLayers() int32 {
-	if m != nil {
-		return m.NumLayers
-	}
-	return 0
-}
-
-func (m *GraphConfig) GetInputSize() []int32 {
-	if m != nil {
-		return m.InputSize
-	}
-	return nil
-}
-
-func (m *GraphConfig) GetOutputSize() []int32 {
-	if m != nil {
-		return m.OutputSize
-	}
-	return nil
-}
-
-// The request message containing the user's name.
-type HelloRequest struct {
-	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *HelloRequest) Reset()         { *m = HelloRequest{} }
-func (m *HelloRequest) String() string { return proto.CompactTextString(m) }
-func (*HelloRequest) ProtoMessage()    {}
-func (*HelloRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{3}
-}
-
-func (m *HelloRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_HelloRequest.Unmarshal(m, b)
-}
-func (m *HelloRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_HelloRequest.Marshal(b, m, deterministic)
-}
-func (m *HelloRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_HelloRequest.Merge(m, src)
-}
-func (m *HelloRequest) XXX_Size() int {
-	return xxx_messageInfo_HelloRequest.Size(m)
-}
-func (m *HelloRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_HelloRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_HelloRequest proto.InternalMessageInfo
-
-func (m *HelloRequest) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-// The response message containing the greetings
-type HelloReply struct {
-	Message              string   `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *HelloReply) Reset()         { *m = HelloReply{} }
-func (m *HelloReply) String() string { return proto.CompactTextString(m) }
-func (*HelloReply) ProtoMessage()    {}
-func (*HelloReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{4}
-}
-
-func (m *HelloReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_HelloReply.Unmarshal(m, b)
-}
-func (m *HelloReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_HelloReply.Marshal(b, m, deterministic)
-}
-func (m *HelloReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_HelloReply.Merge(m, src)
-}
-func (m *HelloReply) XXX_Size() int {
-	return xxx_messageInfo_HelloReply.Size(m)
-}
-func (m *HelloReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_HelloReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_HelloReply proto.InternalMessageInfo
-
-func (m *HelloReply) GetMessage() string {
-	if m != nil {
-		return m.Message
-	}
-	return ""
-}
-
-type ParameterConfig struct {
-	Name                 string         `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	ParameterType        ParameterType  `protobuf:"varint,2,opt,name=parameter_type,json=parameterType,proto3,enum=db.ParameterType" json:"parameter_type,omitempty"`
-	Feasible             *FeasibleSpace `protobuf:"bytes,3,opt,name=feasible,proto3" json:"feasible,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
-	XXX_unrecognized     []byte         `json:"-"`
-	XXX_sizecache        int32          `json:"-"`
-}
-
-func (m *ParameterConfig) Reset()         { *m = ParameterConfig{} }
-func (m *ParameterConfig) String() string { return proto.CompactTextString(m) }
-func (*ParameterConfig) ProtoMessage()    {}
-func (*ParameterConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{5}
-}
-
-func (m *ParameterConfig) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ParameterConfig.Unmarshal(m, b)
-}
-func (m *ParameterConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ParameterConfig.Marshal(b, m, deterministic)
-}
-func (m *ParameterConfig) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ParameterConfig.Merge(m, src)
-}
-func (m *ParameterConfig) XXX_Size() int {
-	return xxx_messageInfo_ParameterConfig.Size(m)
-}
-func (m *ParameterConfig) XXX_DiscardUnknown() {
-	xxx_messageInfo_ParameterConfig.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ParameterConfig proto.InternalMessageInfo
-
-func (m *ParameterConfig) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-func (m *ParameterConfig) GetParameterType() ParameterType {
-	if m != nil {
-		return m.ParameterType
-	}
-	return ParameterType_UNKNOWN_TYPE
-}
-
-func (m *ParameterConfig) GetFeasible() *FeasibleSpace {
-	if m != nil {
-		return m.Feasible
-	}
-	return nil
-}
-
-type Tag struct {
-	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Value                string   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *Tag) Reset()         { *m = Tag{} }
-func (m *Tag) String() string { return proto.CompactTextString(m) }
-func (*Tag) ProtoMessage()    {}
-func (*Tag) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{6}
-}
-
-func (m *Tag) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Tag.Unmarshal(m, b)
-}
-func (m *Tag) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Tag.Marshal(b, m, deterministic)
-}
-func (m *Tag) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Tag.Merge(m, src)
-}
-func (m *Tag) XXX_Size() int {
-	return xxx_messageInfo_Tag.Size(m)
-}
-func (m *Tag) XXX_DiscardUnknown() {
-	xxx_messageInfo_Tag.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Tag proto.InternalMessageInfo
-
-func (m *Tag) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-func (m *Tag) GetValue() string {
-	if m != nil {
-		return m.Value
-	}
-	return ""
-}
-
+//*
+// Feasible space for optimization.
+// Int and Double type use Max/Min.
+// Discrete and Categorical type use List.
 type FeasibleSpace struct {
 	Max                  string   `protobuf:"bytes,1,opt,name=max,proto3" json:"max,omitempty"`
 	Min                  string   `protobuf:"bytes,2,opt,name=min,proto3" json:"min,omitempty"`
@@ -511,7 +144,7 @@ func (m *FeasibleSpace) Reset()         { *m = FeasibleSpace{} }
 func (m *FeasibleSpace) String() string { return proto.CompactTextString(m) }
 func (*FeasibleSpace) ProtoMessage()    {}
 func (*FeasibleSpace) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{7}
+	return fileDescriptor_23a2d42ab756d553, []int{0}
 }
 
 func (m *FeasibleSpace) XXX_Unmarshal(b []byte) error {
@@ -560,6 +193,1004 @@ func (m *FeasibleSpace) GetStep() string {
 	return ""
 }
 
+type SelectOneReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SelectOneReply) Reset()         { *m = SelectOneReply{} }
+func (m *SelectOneReply) String() string { return proto.CompactTextString(m) }
+func (*SelectOneReply) ProtoMessage()    {}
+func (*SelectOneReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{1}
+}
+
+func (m *SelectOneReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SelectOneReply.Unmarshal(m, b)
+}
+func (m *SelectOneReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SelectOneReply.Marshal(b, m, deterministic)
+}
+func (m *SelectOneReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SelectOneReply.Merge(m, src)
+}
+func (m *SelectOneReply) XXX_Size() int {
+	return xxx_messageInfo_SelectOneReply.Size(m)
+}
+func (m *SelectOneReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_SelectOneReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SelectOneReply proto.InternalMessageInfo
+
+type SelectOneRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SelectOneRequest) Reset()         { *m = SelectOneRequest{} }
+func (m *SelectOneRequest) String() string { return proto.CompactTextString(m) }
+func (*SelectOneRequest) ProtoMessage()    {}
+func (*SelectOneRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{2}
+}
+
+func (m *SelectOneRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SelectOneRequest.Unmarshal(m, b)
+}
+func (m *SelectOneRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SelectOneRequest.Marshal(b, m, deterministic)
+}
+func (m *SelectOneRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SelectOneRequest.Merge(m, src)
+}
+func (m *SelectOneRequest) XXX_Size() int {
+	return xxx_messageInfo_SelectOneRequest.Size(m)
+}
+func (m *SelectOneRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SelectOneRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SelectOneRequest proto.InternalMessageInfo
+
+//*
+// Config for a Hyper parameter.
+// Katib will create each Hyper parameter from this config.
+type ParameterConfig struct {
+	Name                 string         `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	ParameterType        ParameterType  `protobuf:"varint,2,opt,name=parameter_type,json=parameterType,proto3,enum=db.ParameterType" json:"parameter_type,omitempty"`
+	Feasible             *FeasibleSpace `protobuf:"bytes,3,opt,name=feasible,proto3" json:"feasible,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
+}
+
+func (m *ParameterConfig) Reset()         { *m = ParameterConfig{} }
+func (m *ParameterConfig) String() string { return proto.CompactTextString(m) }
+func (*ParameterConfig) ProtoMessage()    {}
+func (*ParameterConfig) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{3}
+}
+
+func (m *ParameterConfig) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ParameterConfig.Unmarshal(m, b)
+}
+func (m *ParameterConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ParameterConfig.Marshal(b, m, deterministic)
+}
+func (m *ParameterConfig) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ParameterConfig.Merge(m, src)
+}
+func (m *ParameterConfig) XXX_Size() int {
+	return xxx_messageInfo_ParameterConfig.Size(m)
+}
+func (m *ParameterConfig) XXX_DiscardUnknown() {
+	xxx_messageInfo_ParameterConfig.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ParameterConfig proto.InternalMessageInfo
+
+func (m *ParameterConfig) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *ParameterConfig) GetParameterType() ParameterType {
+	if m != nil {
+		return m.ParameterType
+	}
+	return ParameterType_UNKNOWN_TYPE
+}
+
+func (m *ParameterConfig) GetFeasible() *FeasibleSpace {
+	if m != nil {
+		return m.Feasible
+	}
+	return nil
+}
+
+//*
+// Value of a Hyper parameter.
+// This will be created from a correcponding Config.
+type Parameter struct {
+	Name                 string        `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	ParameterType        ParameterType `protobuf:"varint,2,opt,name=parameter_type,json=parameterType,proto3,enum=db.ParameterType" json:"parameter_type,omitempty"`
+	Value                string        `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
+}
+
+func (m *Parameter) Reset()         { *m = Parameter{} }
+func (m *Parameter) String() string { return proto.CompactTextString(m) }
+func (*Parameter) ProtoMessage()    {}
+func (*Parameter) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{4}
+}
+
+func (m *Parameter) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Parameter.Unmarshal(m, b)
+}
+func (m *Parameter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Parameter.Marshal(b, m, deterministic)
+}
+func (m *Parameter) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Parameter.Merge(m, src)
+}
+func (m *Parameter) XXX_Size() int {
+	return xxx_messageInfo_Parameter.Size(m)
+}
+func (m *Parameter) XXX_DiscardUnknown() {
+	xxx_messageInfo_Parameter.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Parameter proto.InternalMessageInfo
+
+func (m *Parameter) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Parameter) GetParameterType() ParameterType {
+	if m != nil {
+		return m.ParameterType
+	}
+	return ParameterType_UNKNOWN_TYPE
+}
+
+func (m *Parameter) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
+//*
+// Logs of metrics for a worker.
+type MetricsLogSet struct {
+	WorkerId             string        `protobuf:"bytes,1,opt,name=worker_id,json=workerId,proto3" json:"worker_id,omitempty"`
+	MetricsLogs          []*MetricsLog `protobuf:"bytes,2,rep,name=metrics_logs,json=metricsLogs,proto3" json:"metrics_logs,omitempty"`
+	WorkerStatus         State         `protobuf:"varint,3,opt,name=worker_status,json=workerStatus,proto3,enum=db.State" json:"worker_status,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
+}
+
+func (m *MetricsLogSet) Reset()         { *m = MetricsLogSet{} }
+func (m *MetricsLogSet) String() string { return proto.CompactTextString(m) }
+func (*MetricsLogSet) ProtoMessage()    {}
+func (*MetricsLogSet) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{5}
+}
+
+func (m *MetricsLogSet) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MetricsLogSet.Unmarshal(m, b)
+}
+func (m *MetricsLogSet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MetricsLogSet.Marshal(b, m, deterministic)
+}
+func (m *MetricsLogSet) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MetricsLogSet.Merge(m, src)
+}
+func (m *MetricsLogSet) XXX_Size() int {
+	return xxx_messageInfo_MetricsLogSet.Size(m)
+}
+func (m *MetricsLogSet) XXX_DiscardUnknown() {
+	xxx_messageInfo_MetricsLogSet.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MetricsLogSet proto.InternalMessageInfo
+
+func (m *MetricsLogSet) GetWorkerId() string {
+	if m != nil {
+		return m.WorkerId
+	}
+	return ""
+}
+
+func (m *MetricsLogSet) GetMetricsLogs() []*MetricsLog {
+	if m != nil {
+		return m.MetricsLogs
+	}
+	return nil
+}
+
+func (m *MetricsLogSet) GetWorkerStatus() State {
+	if m != nil {
+		return m.WorkerStatus
+	}
+	return State_PENDING
+}
+
+//*
+// Metrics of a worker
+type Metrics struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Value                string   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Metrics) Reset()         { *m = Metrics{} }
+func (m *Metrics) String() string { return proto.CompactTextString(m) }
+func (*Metrics) ProtoMessage()    {}
+func (*Metrics) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{6}
+}
+
+func (m *Metrics) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Metrics.Unmarshal(m, b)
+}
+func (m *Metrics) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Metrics.Marshal(b, m, deterministic)
+}
+func (m *Metrics) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Metrics.Merge(m, src)
+}
+func (m *Metrics) XXX_Size() int {
+	return xxx_messageInfo_Metrics.Size(m)
+}
+func (m *Metrics) XXX_DiscardUnknown() {
+	xxx_messageInfo_Metrics.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Metrics proto.InternalMessageInfo
+
+func (m *Metrics) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Metrics) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
+//*
+// Metrics of a worker with timestamp
+type MetricsValueTime struct {
+	Time                 string   `protobuf:"bytes,1,opt,name=time,proto3" json:"time,omitempty"`
+	Value                string   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MetricsValueTime) Reset()         { *m = MetricsValueTime{} }
+func (m *MetricsValueTime) String() string { return proto.CompactTextString(m) }
+func (*MetricsValueTime) ProtoMessage()    {}
+func (*MetricsValueTime) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{7}
+}
+
+func (m *MetricsValueTime) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MetricsValueTime.Unmarshal(m, b)
+}
+func (m *MetricsValueTime) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MetricsValueTime.Marshal(b, m, deterministic)
+}
+func (m *MetricsValueTime) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MetricsValueTime.Merge(m, src)
+}
+func (m *MetricsValueTime) XXX_Size() int {
+	return xxx_messageInfo_MetricsValueTime.Size(m)
+}
+func (m *MetricsValueTime) XXX_DiscardUnknown() {
+	xxx_messageInfo_MetricsValueTime.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MetricsValueTime proto.InternalMessageInfo
+
+func (m *MetricsValueTime) GetTime() string {
+	if m != nil {
+		return m.Time
+	}
+	return ""
+}
+
+func (m *MetricsValueTime) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
+//*
+// Metrics logs of a worker
+type MetricsLog struct {
+	Name                 string              `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Values               []*MetricsValueTime `protobuf:"bytes,2,rep,name=values,proto3" json:"values,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
+	XXX_unrecognized     []byte              `json:"-"`
+	XXX_sizecache        int32               `json:"-"`
+}
+
+func (m *MetricsLog) Reset()         { *m = MetricsLog{} }
+func (m *MetricsLog) String() string { return proto.CompactTextString(m) }
+func (*MetricsLog) ProtoMessage()    {}
+func (*MetricsLog) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{8}
+}
+
+func (m *MetricsLog) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MetricsLog.Unmarshal(m, b)
+}
+func (m *MetricsLog) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MetricsLog.Marshal(b, m, deterministic)
+}
+func (m *MetricsLog) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MetricsLog.Merge(m, src)
+}
+func (m *MetricsLog) XXX_Size() int {
+	return xxx_messageInfo_MetricsLog.Size(m)
+}
+func (m *MetricsLog) XXX_DiscardUnknown() {
+	xxx_messageInfo_MetricsLog.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MetricsLog proto.InternalMessageInfo
+
+func (m *MetricsLog) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *MetricsLog) GetValues() []*MetricsValueTime {
+	if m != nil {
+		return m.Values
+	}
+	return nil
+}
+
+//*
+// Parameter for Suggestion service. Key-value format.
+type SuggestionParameter struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Value                string   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SuggestionParameter) Reset()         { *m = SuggestionParameter{} }
+func (m *SuggestionParameter) String() string { return proto.CompactTextString(m) }
+func (*SuggestionParameter) ProtoMessage()    {}
+func (*SuggestionParameter) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{9}
+}
+
+func (m *SuggestionParameter) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SuggestionParameter.Unmarshal(m, b)
+}
+func (m *SuggestionParameter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SuggestionParameter.Marshal(b, m, deterministic)
+}
+func (m *SuggestionParameter) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SuggestionParameter.Merge(m, src)
+}
+func (m *SuggestionParameter) XXX_Size() int {
+	return xxx_messageInfo_SuggestionParameter.Size(m)
+}
+func (m *SuggestionParameter) XXX_DiscardUnknown() {
+	xxx_messageInfo_SuggestionParameter.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SuggestionParameter proto.InternalMessageInfo
+
+func (m *SuggestionParameter) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *SuggestionParameter) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
+//*
+// Parameter for EarlyStopping service. Key-value format.
+type EarlyStoppingParameter struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Value                string   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *EarlyStoppingParameter) Reset()         { *m = EarlyStoppingParameter{} }
+func (m *EarlyStoppingParameter) String() string { return proto.CompactTextString(m) }
+func (*EarlyStoppingParameter) ProtoMessage()    {}
+func (*EarlyStoppingParameter) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{10}
+}
+
+func (m *EarlyStoppingParameter) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_EarlyStoppingParameter.Unmarshal(m, b)
+}
+func (m *EarlyStoppingParameter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_EarlyStoppingParameter.Marshal(b, m, deterministic)
+}
+func (m *EarlyStoppingParameter) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EarlyStoppingParameter.Merge(m, src)
+}
+func (m *EarlyStoppingParameter) XXX_Size() int {
+	return xxx_messageInfo_EarlyStoppingParameter.Size(m)
+}
+func (m *EarlyStoppingParameter) XXX_DiscardUnknown() {
+	xxx_messageInfo_EarlyStoppingParameter.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EarlyStoppingParameter proto.InternalMessageInfo
+
+func (m *EarlyStoppingParameter) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *EarlyStoppingParameter) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
+//*
+// Tag for each resource.
+type Tag struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Value                string   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Tag) Reset()         { *m = Tag{} }
+func (m *Tag) String() string { return proto.CompactTextString(m) }
+func (*Tag) ProtoMessage()    {}
+func (*Tag) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{11}
+}
+
+func (m *Tag) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Tag.Unmarshal(m, b)
+}
+func (m *Tag) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Tag.Marshal(b, m, deterministic)
+}
+func (m *Tag) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Tag.Merge(m, src)
+}
+func (m *Tag) XXX_Size() int {
+	return xxx_messageInfo_Tag.Size(m)
+}
+func (m *Tag) XXX_DiscardUnknown() {
+	xxx_messageInfo_Tag.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Tag proto.InternalMessageInfo
+
+func (m *Tag) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Tag) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
+//*
+// Overview of a study. For UI.
+type StudyOverview struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Owner                string   `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	Id                   string   `protobuf:"bytes,3,opt,name=id,proto3" json:"id,omitempty"`
+	Description          string   `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *StudyOverview) Reset()         { *m = StudyOverview{} }
+func (m *StudyOverview) String() string { return proto.CompactTextString(m) }
+func (*StudyOverview) ProtoMessage()    {}
+func (*StudyOverview) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{12}
+}
+
+func (m *StudyOverview) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StudyOverview.Unmarshal(m, b)
+}
+func (m *StudyOverview) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StudyOverview.Marshal(b, m, deterministic)
+}
+func (m *StudyOverview) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StudyOverview.Merge(m, src)
+}
+func (m *StudyOverview) XXX_Size() int {
+	return xxx_messageInfo_StudyOverview.Size(m)
+}
+func (m *StudyOverview) XXX_DiscardUnknown() {
+	xxx_messageInfo_StudyOverview.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StudyOverview proto.InternalMessageInfo
+
+func (m *StudyOverview) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *StudyOverview) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *StudyOverview) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *StudyOverview) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+//*
+// A set of Hyperparameter.
+// In a study, multiple trials are evaluated by workers.
+// Suggestion service will generate next trials.
+type Trial struct {
+	TrialId              string       `protobuf:"bytes,1,opt,name=trial_id,json=trialId,proto3" json:"trial_id,omitempty"`
+	StudyId              string       `protobuf:"bytes,2,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	ParameterSet         []*Parameter `protobuf:"bytes,3,rep,name=parameter_set,json=parameterSet,proto3" json:"parameter_set,omitempty"`
+	ObjectiveValue       string       `protobuf:"bytes,4,opt,name=objective_value,json=objectiveValue,proto3" json:"objective_value,omitempty"`
+	Tags                 []*Tag       `protobuf:"bytes,5,rep,name=tags,proto3" json:"tags,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
+	XXX_unrecognized     []byte       `json:"-"`
+	XXX_sizecache        int32        `json:"-"`
+}
+
+func (m *Trial) Reset()         { *m = Trial{} }
+func (m *Trial) String() string { return proto.CompactTextString(m) }
+func (*Trial) ProtoMessage()    {}
+func (*Trial) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{13}
+}
+
+func (m *Trial) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Trial.Unmarshal(m, b)
+}
+func (m *Trial) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Trial.Marshal(b, m, deterministic)
+}
+func (m *Trial) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Trial.Merge(m, src)
+}
+func (m *Trial) XXX_Size() int {
+	return xxx_messageInfo_Trial.Size(m)
+}
+func (m *Trial) XXX_DiscardUnknown() {
+	xxx_messageInfo_Trial.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Trial proto.InternalMessageInfo
+
+func (m *Trial) GetTrialId() string {
+	if m != nil {
+		return m.TrialId
+	}
+	return ""
+}
+
+func (m *Trial) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+func (m *Trial) GetParameterSet() []*Parameter {
+	if m != nil {
+		return m.ParameterSet
+	}
+	return nil
+}
+
+func (m *Trial) GetObjectiveValue() string {
+	if m != nil {
+		return m.ObjectiveValue
+	}
+	return ""
+}
+
+func (m *Trial) GetTags() []*Tag {
+	if m != nil {
+		return m.Tags
+	}
+	return nil
+}
+
+//*
+// A process of evaluation for a trial.
+// Types of worker supported by Katib are k8s Job, TF-Job, and Pytorch-Job.
+type Worker struct {
+	WorkerId             string   `protobuf:"bytes,1,opt,name=worker_id,json=workerId,proto3" json:"worker_id,omitempty"`
+	StudyId              string   `protobuf:"bytes,2,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	TrialId              string   `protobuf:"bytes,3,opt,name=trial_id,json=trialId,proto3" json:"trial_id,omitempty"`
+	Type                 string   `protobuf:"bytes,4,opt,name=Type,json=type,proto3" json:"Type,omitempty"`
+	Status               State    `protobuf:"varint,5,opt,name=status,proto3,enum=db.State" json:"status,omitempty"`
+	TemplatePath         string   `protobuf:"bytes,6,opt,name=TemplatePath,json=templatePath,proto3" json:"TemplatePath,omitempty"`
+	Tags                 []*Tag   `protobuf:"bytes,7,rep,name=tags,proto3" json:"tags,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Worker) Reset()         { *m = Worker{} }
+func (m *Worker) String() string { return proto.CompactTextString(m) }
+func (*Worker) ProtoMessage()    {}
+func (*Worker) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{14}
+}
+
+func (m *Worker) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Worker.Unmarshal(m, b)
+}
+func (m *Worker) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Worker.Marshal(b, m, deterministic)
+}
+func (m *Worker) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Worker.Merge(m, src)
+}
+func (m *Worker) XXX_Size() int {
+	return xxx_messageInfo_Worker.Size(m)
+}
+func (m *Worker) XXX_DiscardUnknown() {
+	xxx_messageInfo_Worker.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Worker proto.InternalMessageInfo
+
+func (m *Worker) GetWorkerId() string {
+	if m != nil {
+		return m.WorkerId
+	}
+	return ""
+}
+
+func (m *Worker) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+func (m *Worker) GetTrialId() string {
+	if m != nil {
+		return m.TrialId
+	}
+	return ""
+}
+
+func (m *Worker) GetType() string {
+	if m != nil {
+		return m.Type
+	}
+	return ""
+}
+
+func (m *Worker) GetStatus() State {
+	if m != nil {
+		return m.Status
+	}
+	return State_PENDING
+}
+
+func (m *Worker) GetTemplatePath() string {
+	if m != nil {
+		return m.TemplatePath
+	}
+	return ""
+}
+
+func (m *Worker) GetTags() []*Tag {
+	if m != nil {
+		return m.Tags
+	}
+	return nil
+}
+
+//*
+// NasConfig contains a config of NAS job
+type NasConfig struct {
+	GraphConfig          *GraphConfig          `protobuf:"bytes,1,opt,name=graph_config,json=graphConfig,proto3" json:"graph_config,omitempty"`
+	Operations           *NasConfig_Operations `protobuf:"bytes,2,opt,name=operations,proto3" json:"operations,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
+	XXX_unrecognized     []byte                `json:"-"`
+	XXX_sizecache        int32                 `json:"-"`
+}
+
+func (m *NasConfig) Reset()         { *m = NasConfig{} }
+func (m *NasConfig) String() string { return proto.CompactTextString(m) }
+func (*NasConfig) ProtoMessage()    {}
+func (*NasConfig) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{15}
+}
+
+func (m *NasConfig) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_NasConfig.Unmarshal(m, b)
+}
+func (m *NasConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NasConfig.Marshal(b, m, deterministic)
+}
+func (m *NasConfig) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NasConfig.Merge(m, src)
+}
+func (m *NasConfig) XXX_Size() int {
+	return xxx_messageInfo_NasConfig.Size(m)
+}
+func (m *NasConfig) XXX_DiscardUnknown() {
+	xxx_messageInfo_NasConfig.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NasConfig proto.InternalMessageInfo
+
+func (m *NasConfig) GetGraphConfig() *GraphConfig {
+	if m != nil {
+		return m.GraphConfig
+	}
+	return nil
+}
+
+func (m *NasConfig) GetOperations() *NasConfig_Operations {
+	if m != nil {
+		return m.Operations
+	}
+	return nil
+}
+
+type NasConfig_Operations struct {
+	Operation            []*Operation `protobuf:"bytes,1,rep,name=operation,proto3" json:"operation,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
+	XXX_unrecognized     []byte       `json:"-"`
+	XXX_sizecache        int32        `json:"-"`
+}
+
+func (m *NasConfig_Operations) Reset()         { *m = NasConfig_Operations{} }
+func (m *NasConfig_Operations) String() string { return proto.CompactTextString(m) }
+func (*NasConfig_Operations) ProtoMessage()    {}
+func (*NasConfig_Operations) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{15, 0}
+}
+
+func (m *NasConfig_Operations) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_NasConfig_Operations.Unmarshal(m, b)
+}
+func (m *NasConfig_Operations) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NasConfig_Operations.Marshal(b, m, deterministic)
+}
+func (m *NasConfig_Operations) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NasConfig_Operations.Merge(m, src)
+}
+func (m *NasConfig_Operations) XXX_Size() int {
+	return xxx_messageInfo_NasConfig_Operations.Size(m)
+}
+func (m *NasConfig_Operations) XXX_DiscardUnknown() {
+	xxx_messageInfo_NasConfig_Operations.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NasConfig_Operations proto.InternalMessageInfo
+
+func (m *NasConfig_Operations) GetOperation() []*Operation {
+	if m != nil {
+		return m.Operation
+	}
+	return nil
+}
+
+//*
+// GraphConfig contains a config of DAG
+type GraphConfig struct {
+	NumLayers            int32    `protobuf:"varint,1,opt,name=num_layers,json=numLayers,proto3" json:"num_layers,omitempty"`
+	InputSize            []int32  `protobuf:"varint,2,rep,packed,name=input_size,json=inputSize,proto3" json:"input_size,omitempty"`
+	OutputSize           []int32  `protobuf:"varint,3,rep,packed,name=output_size,json=outputSize,proto3" json:"output_size,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GraphConfig) Reset()         { *m = GraphConfig{} }
+func (m *GraphConfig) String() string { return proto.CompactTextString(m) }
+func (*GraphConfig) ProtoMessage()    {}
+func (*GraphConfig) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{16}
+}
+
+func (m *GraphConfig) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GraphConfig.Unmarshal(m, b)
+}
+func (m *GraphConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GraphConfig.Marshal(b, m, deterministic)
+}
+func (m *GraphConfig) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GraphConfig.Merge(m, src)
+}
+func (m *GraphConfig) XXX_Size() int {
+	return xxx_messageInfo_GraphConfig.Size(m)
+}
+func (m *GraphConfig) XXX_DiscardUnknown() {
+	xxx_messageInfo_GraphConfig.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GraphConfig proto.InternalMessageInfo
+
+func (m *GraphConfig) GetNumLayers() int32 {
+	if m != nil {
+		return m.NumLayers
+	}
+	return 0
+}
+
+func (m *GraphConfig) GetInputSize() []int32 {
+	if m != nil {
+		return m.InputSize
+	}
+	return nil
+}
+
+func (m *GraphConfig) GetOutputSize() []int32 {
+	if m != nil {
+		return m.OutputSize
+	}
+	return nil
+}
+
+//*
+// Config for operations in DAG
+type Operation struct {
+	OperationType        string                      `protobuf:"bytes,1,opt,name=operationType,proto3" json:"operationType,omitempty"`
+	ParameterConfigs     *Operation_ParameterConfigs `protobuf:"bytes,2,opt,name=parameter_configs,json=parameterConfigs,proto3" json:"parameter_configs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                    `json:"-"`
+	XXX_unrecognized     []byte                      `json:"-"`
+	XXX_sizecache        int32                       `json:"-"`
+}
+
+func (m *Operation) Reset()         { *m = Operation{} }
+func (m *Operation) String() string { return proto.CompactTextString(m) }
+func (*Operation) ProtoMessage()    {}
+func (*Operation) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{17}
+}
+
+func (m *Operation) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Operation.Unmarshal(m, b)
+}
+func (m *Operation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Operation.Marshal(b, m, deterministic)
+}
+func (m *Operation) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Operation.Merge(m, src)
+}
+func (m *Operation) XXX_Size() int {
+	return xxx_messageInfo_Operation.Size(m)
+}
+func (m *Operation) XXX_DiscardUnknown() {
+	xxx_messageInfo_Operation.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Operation proto.InternalMessageInfo
+
+func (m *Operation) GetOperationType() string {
+	if m != nil {
+		return m.OperationType
+	}
+	return ""
+}
+
+func (m *Operation) GetParameterConfigs() *Operation_ParameterConfigs {
+	if m != nil {
+		return m.ParameterConfigs
+	}
+	return nil
+}
+
+//*
+// List of ParameterConfig
+type Operation_ParameterConfigs struct {
+	Configs              []*ParameterConfig `protobuf:"bytes,1,rep,name=configs,proto3" json:"configs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *Operation_ParameterConfigs) Reset()         { *m = Operation_ParameterConfigs{} }
+func (m *Operation_ParameterConfigs) String() string { return proto.CompactTextString(m) }
+func (*Operation_ParameterConfigs) ProtoMessage()    {}
+func (*Operation_ParameterConfigs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{17, 0}
+}
+
+func (m *Operation_ParameterConfigs) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Operation_ParameterConfigs.Unmarshal(m, b)
+}
+func (m *Operation_ParameterConfigs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Operation_ParameterConfigs.Marshal(b, m, deterministic)
+}
+func (m *Operation_ParameterConfigs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Operation_ParameterConfigs.Merge(m, src)
+}
+func (m *Operation_ParameterConfigs) XXX_Size() int {
+	return xxx_messageInfo_Operation_ParameterConfigs.Size(m)
+}
+func (m *Operation_ParameterConfigs) XXX_DiscardUnknown() {
+	xxx_messageInfo_Operation_ParameterConfigs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Operation_ParameterConfigs proto.InternalMessageInfo
+
+func (m *Operation_ParameterConfigs) GetConfigs() []*ParameterConfig {
+	if m != nil {
+		return m.Configs
+	}
+	return nil
+}
+
+//*
+// Config of a Study. Study represents a single optimization run over a feasible space.
+// Each Study contains a configuration describing the feasible space, as well as a set of Trials.
+// It is assumed that objective function f(x) does not change in the course of a Study.
 type StudyConfig struct {
 	Name                 string                        `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Owner                string                        `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
@@ -582,7 +1213,7 @@ func (m *StudyConfig) Reset()         { *m = StudyConfig{} }
 func (m *StudyConfig) String() string { return proto.CompactTextString(m) }
 func (*StudyConfig) ProtoMessage()    {}
 func (*StudyConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{8}
+	return fileDescriptor_23a2d42ab756d553, []int{18}
 }
 
 func (m *StudyConfig) XXX_Unmarshal(b []byte) error {
@@ -700,7 +1331,7 @@ func (m *StudyConfig_ParameterConfigs) Reset()         { *m = StudyConfig_Parame
 func (m *StudyConfig_ParameterConfigs) String() string { return proto.CompactTextString(m) }
 func (*StudyConfig_ParameterConfigs) ProtoMessage()    {}
 func (*StudyConfig_ParameterConfigs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{8, 0}
+	return fileDescriptor_23a2d42ab756d553, []int{18, 0}
 }
 
 func (m *StudyConfig_ParameterConfigs) XXX_Unmarshal(b []byte) error {
@@ -728,6 +1359,9 @@ func (m *StudyConfig_ParameterConfigs) GetConfigs() []*ParameterConfig {
 	return nil
 }
 
+//*
+// Create a Study from Study Config.
+// Generate an unique ID and store the Study to DB.
 type CreateStudyRequest struct {
 	StudyConfig          *StudyConfig `protobuf:"bytes,1,opt,name=study_config,json=studyConfig,proto3" json:"study_config,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
@@ -739,7 +1373,7 @@ func (m *CreateStudyRequest) Reset()         { *m = CreateStudyRequest{} }
 func (m *CreateStudyRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateStudyRequest) ProtoMessage()    {}
 func (*CreateStudyRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{9}
+	return fileDescriptor_23a2d42ab756d553, []int{19}
 }
 
 func (m *CreateStudyRequest) XXX_Unmarshal(b []byte) error {
@@ -780,7 +1414,7 @@ func (m *CreateStudyReply) Reset()         { *m = CreateStudyReply{} }
 func (m *CreateStudyReply) String() string { return proto.CompactTextString(m) }
 func (*CreateStudyReply) ProtoMessage()    {}
 func (*CreateStudyReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{10}
+	return fileDescriptor_23a2d42ab756d553, []int{20}
 }
 
 func (m *CreateStudyReply) XXX_Unmarshal(b []byte) error {
@@ -808,6 +1442,90 @@ func (m *CreateStudyReply) GetStudyId() string {
 	return ""
 }
 
+//*
+// Delete a Study from DB by Study ID.
+type DeleteStudyRequest struct {
+	StudyId              string   `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeleteStudyRequest) Reset()         { *m = DeleteStudyRequest{} }
+func (m *DeleteStudyRequest) String() string { return proto.CompactTextString(m) }
+func (*DeleteStudyRequest) ProtoMessage()    {}
+func (*DeleteStudyRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{21}
+}
+
+func (m *DeleteStudyRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteStudyRequest.Unmarshal(m, b)
+}
+func (m *DeleteStudyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteStudyRequest.Marshal(b, m, deterministic)
+}
+func (m *DeleteStudyRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteStudyRequest.Merge(m, src)
+}
+func (m *DeleteStudyRequest) XXX_Size() int {
+	return xxx_messageInfo_DeleteStudyRequest.Size(m)
+}
+func (m *DeleteStudyRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteStudyRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeleteStudyRequest proto.InternalMessageInfo
+
+func (m *DeleteStudyRequest) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+//*
+// Return deleted Study ID.
+type DeleteStudyReply struct {
+	StudyId              string   `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeleteStudyReply) Reset()         { *m = DeleteStudyReply{} }
+func (m *DeleteStudyReply) String() string { return proto.CompactTextString(m) }
+func (*DeleteStudyReply) ProtoMessage()    {}
+func (*DeleteStudyReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{22}
+}
+
+func (m *DeleteStudyReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteStudyReply.Unmarshal(m, b)
+}
+func (m *DeleteStudyReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteStudyReply.Marshal(b, m, deterministic)
+}
+func (m *DeleteStudyReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteStudyReply.Merge(m, src)
+}
+func (m *DeleteStudyReply) XXX_Size() int {
+	return xxx_messageInfo_DeleteStudyReply.Size(m)
+}
+func (m *DeleteStudyReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteStudyReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeleteStudyReply proto.InternalMessageInfo
+
+func (m *DeleteStudyReply) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+//*
+// Get a Study Config from DB by ID of Study.
 type GetStudyRequest struct {
 	StudyId              string   `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -819,7 +1537,7 @@ func (m *GetStudyRequest) Reset()         { *m = GetStudyRequest{} }
 func (m *GetStudyRequest) String() string { return proto.CompactTextString(m) }
 func (*GetStudyRequest) ProtoMessage()    {}
 func (*GetStudyRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{11}
+	return fileDescriptor_23a2d42ab756d553, []int{23}
 }
 
 func (m *GetStudyRequest) XXX_Unmarshal(b []byte) error {
@@ -860,7 +1578,7 @@ func (m *GetStudyReply) Reset()         { *m = GetStudyReply{} }
 func (m *GetStudyReply) String() string { return proto.CompactTextString(m) }
 func (*GetStudyReply) ProtoMessage()    {}
 func (*GetStudyReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_23a2d42ab756d553, []int{12}
+	return fileDescriptor_23a2d42ab756d553, []int{24}
 }
 
 func (m *GetStudyReply) XXX_Unmarshal(b []byte) error {
@@ -888,87 +1606,2262 @@ func (m *GetStudyReply) GetStudyConfig() *StudyConfig {
 	return nil
 }
 
+//*
+// Get all Study Configs from DB.
+type GetStudyListRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetStudyListRequest) Reset()         { *m = GetStudyListRequest{} }
+func (m *GetStudyListRequest) String() string { return proto.CompactTextString(m) }
+func (*GetStudyListRequest) ProtoMessage()    {}
+func (*GetStudyListRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{25}
+}
+
+func (m *GetStudyListRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetStudyListRequest.Unmarshal(m, b)
+}
+func (m *GetStudyListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetStudyListRequest.Marshal(b, m, deterministic)
+}
+func (m *GetStudyListRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetStudyListRequest.Merge(m, src)
+}
+func (m *GetStudyListRequest) XXX_Size() int {
+	return xxx_messageInfo_GetStudyListRequest.Size(m)
+}
+func (m *GetStudyListRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetStudyListRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetStudyListRequest proto.InternalMessageInfo
+
+//*
+// Return a overview list of Studies.
+type GetStudyListReply struct {
+	StudyOverviews       []*StudyOverview `protobuf:"bytes,1,rep,name=study_overviews,json=studyOverviews,proto3" json:"study_overviews,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
+}
+
+func (m *GetStudyListReply) Reset()         { *m = GetStudyListReply{} }
+func (m *GetStudyListReply) String() string { return proto.CompactTextString(m) }
+func (*GetStudyListReply) ProtoMessage()    {}
+func (*GetStudyListReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{26}
+}
+
+func (m *GetStudyListReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetStudyListReply.Unmarshal(m, b)
+}
+func (m *GetStudyListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetStudyListReply.Marshal(b, m, deterministic)
+}
+func (m *GetStudyListReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetStudyListReply.Merge(m, src)
+}
+func (m *GetStudyListReply) XXX_Size() int {
+	return xxx_messageInfo_GetStudyListReply.Size(m)
+}
+func (m *GetStudyListReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetStudyListReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetStudyListReply proto.InternalMessageInfo
+
+func (m *GetStudyListReply) GetStudyOverviews() []*StudyOverview {
+	if m != nil {
+		return m.StudyOverviews
+	}
+	return nil
+}
+
+//*
+// Create a Trial from Trial Config.
+// Generate an unique ID and store the Trial to DB.
+type CreateTrialRequest struct {
+	Trial                *Trial   `protobuf:"bytes,1,opt,name=trial,proto3" json:"trial,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *CreateTrialRequest) Reset()         { *m = CreateTrialRequest{} }
+func (m *CreateTrialRequest) String() string { return proto.CompactTextString(m) }
+func (*CreateTrialRequest) ProtoMessage()    {}
+func (*CreateTrialRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{27}
+}
+
+func (m *CreateTrialRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CreateTrialRequest.Unmarshal(m, b)
+}
+func (m *CreateTrialRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CreateTrialRequest.Marshal(b, m, deterministic)
+}
+func (m *CreateTrialRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateTrialRequest.Merge(m, src)
+}
+func (m *CreateTrialRequest) XXX_Size() int {
+	return xxx_messageInfo_CreateTrialRequest.Size(m)
+}
+func (m *CreateTrialRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateTrialRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateTrialRequest proto.InternalMessageInfo
+
+func (m *CreateTrialRequest) GetTrial() *Trial {
+	if m != nil {
+		return m.Trial
+	}
+	return nil
+}
+
+//*
+// Return generated TrialID.
+type CreateTrialReply struct {
+	TrialId              string   `protobuf:"bytes,1,opt,name=trial_id,json=trialId,proto3" json:"trial_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *CreateTrialReply) Reset()         { *m = CreateTrialReply{} }
+func (m *CreateTrialReply) String() string { return proto.CompactTextString(m) }
+func (*CreateTrialReply) ProtoMessage()    {}
+func (*CreateTrialReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{28}
+}
+
+func (m *CreateTrialReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CreateTrialReply.Unmarshal(m, b)
+}
+func (m *CreateTrialReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CreateTrialReply.Marshal(b, m, deterministic)
+}
+func (m *CreateTrialReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateTrialReply.Merge(m, src)
+}
+func (m *CreateTrialReply) XXX_Size() int {
+	return xxx_messageInfo_CreateTrialReply.Size(m)
+}
+func (m *CreateTrialReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateTrialReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateTrialReply proto.InternalMessageInfo
+
+func (m *CreateTrialReply) GetTrialId() string {
+	if m != nil {
+		return m.TrialId
+	}
+	return ""
+}
+
+//*
+// Get a Trial Configs from DB by ID of Study.
+type GetTrialsRequest struct {
+	StudyId              string   `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetTrialsRequest) Reset()         { *m = GetTrialsRequest{} }
+func (m *GetTrialsRequest) String() string { return proto.CompactTextString(m) }
+func (*GetTrialsRequest) ProtoMessage()    {}
+func (*GetTrialsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{29}
+}
+
+func (m *GetTrialsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTrialsRequest.Unmarshal(m, b)
+}
+func (m *GetTrialsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTrialsRequest.Marshal(b, m, deterministic)
+}
+func (m *GetTrialsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTrialsRequest.Merge(m, src)
+}
+func (m *GetTrialsRequest) XXX_Size() int {
+	return xxx_messageInfo_GetTrialsRequest.Size(m)
+}
+func (m *GetTrialsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTrialsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTrialsRequest proto.InternalMessageInfo
+
+func (m *GetTrialsRequest) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+//*
+// Return a trial list in specified Study.
+type GetTrialsReply struct {
+	Trials               []*Trial `protobuf:"bytes,1,rep,name=trials,proto3" json:"trials,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetTrialsReply) Reset()         { *m = GetTrialsReply{} }
+func (m *GetTrialsReply) String() string { return proto.CompactTextString(m) }
+func (*GetTrialsReply) ProtoMessage()    {}
+func (*GetTrialsReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{30}
+}
+
+func (m *GetTrialsReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTrialsReply.Unmarshal(m, b)
+}
+func (m *GetTrialsReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTrialsReply.Marshal(b, m, deterministic)
+}
+func (m *GetTrialsReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTrialsReply.Merge(m, src)
+}
+func (m *GetTrialsReply) XXX_Size() int {
+	return xxx_messageInfo_GetTrialsReply.Size(m)
+}
+func (m *GetTrialsReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTrialsReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTrialsReply proto.InternalMessageInfo
+
+func (m *GetTrialsReply) GetTrials() []*Trial {
+	if m != nil {
+		return m.Trials
+	}
+	return nil
+}
+
+//*
+// Get a trial configuration from DB by trial ID
+type GetTrialRequest struct {
+	TrialId              string   `protobuf:"bytes,1,opt,name=trial_id,json=trialId,proto3" json:"trial_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetTrialRequest) Reset()         { *m = GetTrialRequest{} }
+func (m *GetTrialRequest) String() string { return proto.CompactTextString(m) }
+func (*GetTrialRequest) ProtoMessage()    {}
+func (*GetTrialRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{31}
+}
+
+func (m *GetTrialRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTrialRequest.Unmarshal(m, b)
+}
+func (m *GetTrialRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTrialRequest.Marshal(b, m, deterministic)
+}
+func (m *GetTrialRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTrialRequest.Merge(m, src)
+}
+func (m *GetTrialRequest) XXX_Size() int {
+	return xxx_messageInfo_GetTrialRequest.Size(m)
+}
+func (m *GetTrialRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTrialRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTrialRequest proto.InternalMessageInfo
+
+func (m *GetTrialRequest) GetTrialId() string {
+	if m != nil {
+		return m.TrialId
+	}
+	return ""
+}
+
+//*
+// Return a trial configuration by specified trial ID
+type GetTrialReply struct {
+	Trial                *Trial   `protobuf:"bytes,1,opt,name=trial,proto3" json:"trial,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetTrialReply) Reset()         { *m = GetTrialReply{} }
+func (m *GetTrialReply) String() string { return proto.CompactTextString(m) }
+func (*GetTrialReply) ProtoMessage()    {}
+func (*GetTrialReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{32}
+}
+
+func (m *GetTrialReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTrialReply.Unmarshal(m, b)
+}
+func (m *GetTrialReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTrialReply.Marshal(b, m, deterministic)
+}
+func (m *GetTrialReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTrialReply.Merge(m, src)
+}
+func (m *GetTrialReply) XXX_Size() int {
+	return xxx_messageInfo_GetTrialReply.Size(m)
+}
+func (m *GetTrialReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTrialReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTrialReply proto.InternalMessageInfo
+
+func (m *GetTrialReply) GetTrial() *Trial {
+	if m != nil {
+		return m.Trial
+	}
+	return nil
+}
+
+//*
+// Create a Worker from Worker Config.
+// Generate an unique ID and store the Worker to DB.
+type RegisterWorkerRequest struct {
+	Worker               *Worker  `protobuf:"bytes,1,opt,name=worker,proto3" json:"worker,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RegisterWorkerRequest) Reset()         { *m = RegisterWorkerRequest{} }
+func (m *RegisterWorkerRequest) String() string { return proto.CompactTextString(m) }
+func (*RegisterWorkerRequest) ProtoMessage()    {}
+func (*RegisterWorkerRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{33}
+}
+
+func (m *RegisterWorkerRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RegisterWorkerRequest.Unmarshal(m, b)
+}
+func (m *RegisterWorkerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RegisterWorkerRequest.Marshal(b, m, deterministic)
+}
+func (m *RegisterWorkerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RegisterWorkerRequest.Merge(m, src)
+}
+func (m *RegisterWorkerRequest) XXX_Size() int {
+	return xxx_messageInfo_RegisterWorkerRequest.Size(m)
+}
+func (m *RegisterWorkerRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_RegisterWorkerRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RegisterWorkerRequest proto.InternalMessageInfo
+
+func (m *RegisterWorkerRequest) GetWorker() *Worker {
+	if m != nil {
+		return m.Worker
+	}
+	return nil
+}
+
+//*
+// Return generated WorkerID.
+type RegisterWorkerReply struct {
+	WorkerId             string   `protobuf:"bytes,1,opt,name=worker_id,json=workerId,proto3" json:"worker_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RegisterWorkerReply) Reset()         { *m = RegisterWorkerReply{} }
+func (m *RegisterWorkerReply) String() string { return proto.CompactTextString(m) }
+func (*RegisterWorkerReply) ProtoMessage()    {}
+func (*RegisterWorkerReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{34}
+}
+
+func (m *RegisterWorkerReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RegisterWorkerReply.Unmarshal(m, b)
+}
+func (m *RegisterWorkerReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RegisterWorkerReply.Marshal(b, m, deterministic)
+}
+func (m *RegisterWorkerReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RegisterWorkerReply.Merge(m, src)
+}
+func (m *RegisterWorkerReply) XXX_Size() int {
+	return xxx_messageInfo_RegisterWorkerReply.Size(m)
+}
+func (m *RegisterWorkerReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_RegisterWorkerReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RegisterWorkerReply proto.InternalMessageInfo
+
+func (m *RegisterWorkerReply) GetWorkerId() string {
+	if m != nil {
+		return m.WorkerId
+	}
+	return ""
+}
+
+type StopWorkersRequest struct {
+	StudyId              string   `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	WorkerIds            []string `protobuf:"bytes,2,rep,name=worker_ids,json=workerIds,proto3" json:"worker_ids,omitempty"`
+	IsComplete           bool     `protobuf:"varint,3,opt,name=is_complete,json=isComplete,proto3" json:"is_complete,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *StopWorkersRequest) Reset()         { *m = StopWorkersRequest{} }
+func (m *StopWorkersRequest) String() string { return proto.CompactTextString(m) }
+func (*StopWorkersRequest) ProtoMessage()    {}
+func (*StopWorkersRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{35}
+}
+
+func (m *StopWorkersRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StopWorkersRequest.Unmarshal(m, b)
+}
+func (m *StopWorkersRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StopWorkersRequest.Marshal(b, m, deterministic)
+}
+func (m *StopWorkersRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StopWorkersRequest.Merge(m, src)
+}
+func (m *StopWorkersRequest) XXX_Size() int {
+	return xxx_messageInfo_StopWorkersRequest.Size(m)
+}
+func (m *StopWorkersRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_StopWorkersRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StopWorkersRequest proto.InternalMessageInfo
+
+func (m *StopWorkersRequest) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+func (m *StopWorkersRequest) GetWorkerIds() []string {
+	if m != nil {
+		return m.WorkerIds
+	}
+	return nil
+}
+
+func (m *StopWorkersRequest) GetIsComplete() bool {
+	if m != nil {
+		return m.IsComplete
+	}
+	return false
+}
+
+type StopWorkersReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *StopWorkersReply) Reset()         { *m = StopWorkersReply{} }
+func (m *StopWorkersReply) String() string { return proto.CompactTextString(m) }
+func (*StopWorkersReply) ProtoMessage()    {}
+func (*StopWorkersReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{36}
+}
+
+func (m *StopWorkersReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StopWorkersReply.Unmarshal(m, b)
+}
+func (m *StopWorkersReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StopWorkersReply.Marshal(b, m, deterministic)
+}
+func (m *StopWorkersReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StopWorkersReply.Merge(m, src)
+}
+func (m *StopWorkersReply) XXX_Size() int {
+	return xxx_messageInfo_StopWorkersReply.Size(m)
+}
+func (m *StopWorkersReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_StopWorkersReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StopWorkersReply proto.InternalMessageInfo
+
+//*
+// Get a configs and status of a Worker from DB by ID of Study, Trial or Worker.
+type GetWorkersRequest struct {
+	StudyId              string   `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	TrialId              string   `protobuf:"bytes,2,opt,name=trial_id,json=trialId,proto3" json:"trial_id,omitempty"`
+	WorkerId             string   `protobuf:"bytes,3,opt,name=worker_id,json=workerId,proto3" json:"worker_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetWorkersRequest) Reset()         { *m = GetWorkersRequest{} }
+func (m *GetWorkersRequest) String() string { return proto.CompactTextString(m) }
+func (*GetWorkersRequest) ProtoMessage()    {}
+func (*GetWorkersRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{37}
+}
+
+func (m *GetWorkersRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetWorkersRequest.Unmarshal(m, b)
+}
+func (m *GetWorkersRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetWorkersRequest.Marshal(b, m, deterministic)
+}
+func (m *GetWorkersRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetWorkersRequest.Merge(m, src)
+}
+func (m *GetWorkersRequest) XXX_Size() int {
+	return xxx_messageInfo_GetWorkersRequest.Size(m)
+}
+func (m *GetWorkersRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetWorkersRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetWorkersRequest proto.InternalMessageInfo
+
+func (m *GetWorkersRequest) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+func (m *GetWorkersRequest) GetTrialId() string {
+	if m != nil {
+		return m.TrialId
+	}
+	return ""
+}
+
+func (m *GetWorkersRequest) GetWorkerId() string {
+	if m != nil {
+		return m.WorkerId
+	}
+	return ""
+}
+
+//*
+// Return a Worker list by specified condition.
+type GetWorkersReply struct {
+	Workers              []*Worker `protobuf:"bytes,1,rep,name=workers,proto3" json:"workers,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *GetWorkersReply) Reset()         { *m = GetWorkersReply{} }
+func (m *GetWorkersReply) String() string { return proto.CompactTextString(m) }
+func (*GetWorkersReply) ProtoMessage()    {}
+func (*GetWorkersReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{38}
+}
+
+func (m *GetWorkersReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetWorkersReply.Unmarshal(m, b)
+}
+func (m *GetWorkersReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetWorkersReply.Marshal(b, m, deterministic)
+}
+func (m *GetWorkersReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetWorkersReply.Merge(m, src)
+}
+func (m *GetWorkersReply) XXX_Size() int {
+	return xxx_messageInfo_GetWorkersReply.Size(m)
+}
+func (m *GetWorkersReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetWorkersReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetWorkersReply proto.InternalMessageInfo
+
+func (m *GetWorkersReply) GetWorkers() []*Worker {
+	if m != nil {
+		return m.Workers
+	}
+	return nil
+}
+
+//*
+// Update a Status of Worker.
+type UpdateWorkerStateRequest struct {
+	WorkerId             string   `protobuf:"bytes,1,opt,name=worker_id,json=workerId,proto3" json:"worker_id,omitempty"`
+	Status               State    `protobuf:"varint,2,opt,name=status,proto3,enum=db.State" json:"status,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UpdateWorkerStateRequest) Reset()         { *m = UpdateWorkerStateRequest{} }
+func (m *UpdateWorkerStateRequest) String() string { return proto.CompactTextString(m) }
+func (*UpdateWorkerStateRequest) ProtoMessage()    {}
+func (*UpdateWorkerStateRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{39}
+}
+
+func (m *UpdateWorkerStateRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateWorkerStateRequest.Unmarshal(m, b)
+}
+func (m *UpdateWorkerStateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateWorkerStateRequest.Marshal(b, m, deterministic)
+}
+func (m *UpdateWorkerStateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateWorkerStateRequest.Merge(m, src)
+}
+func (m *UpdateWorkerStateRequest) XXX_Size() int {
+	return xxx_messageInfo_UpdateWorkerStateRequest.Size(m)
+}
+func (m *UpdateWorkerStateRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateWorkerStateRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateWorkerStateRequest proto.InternalMessageInfo
+
+func (m *UpdateWorkerStateRequest) GetWorkerId() string {
+	if m != nil {
+		return m.WorkerId
+	}
+	return ""
+}
+
+func (m *UpdateWorkerStateRequest) GetStatus() State {
+	if m != nil {
+		return m.Status
+	}
+	return State_PENDING
+}
+
+type UpdateWorkerStateReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UpdateWorkerStateReply) Reset()         { *m = UpdateWorkerStateReply{} }
+func (m *UpdateWorkerStateReply) String() string { return proto.CompactTextString(m) }
+func (*UpdateWorkerStateReply) ProtoMessage()    {}
+func (*UpdateWorkerStateReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{40}
+}
+
+func (m *UpdateWorkerStateReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateWorkerStateReply.Unmarshal(m, b)
+}
+func (m *UpdateWorkerStateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateWorkerStateReply.Marshal(b, m, deterministic)
+}
+func (m *UpdateWorkerStateReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateWorkerStateReply.Merge(m, src)
+}
+func (m *UpdateWorkerStateReply) XXX_Size() int {
+	return xxx_messageInfo_UpdateWorkerStateReply.Size(m)
+}
+func (m *UpdateWorkerStateReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateWorkerStateReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateWorkerStateReply proto.InternalMessageInfo
+
+//*
+// Get a full information related to specified Workers.
+// It includes Worker Config, HyperParameters and Metrics Logs.
+type GetWorkerFullInfoRequest struct {
+	StudyId              string   `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	TrialId              string   `protobuf:"bytes,2,opt,name=trial_id,json=trialId,proto3" json:"trial_id,omitempty"`
+	WorkerId             string   `protobuf:"bytes,3,opt,name=worker_id,json=workerId,proto3" json:"worker_id,omitempty"`
+	OnlyLatestLog        bool     `protobuf:"varint,4,opt,name=only_latest_log,json=onlyLatestLog,proto3" json:"only_latest_log,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetWorkerFullInfoRequest) Reset()         { *m = GetWorkerFullInfoRequest{} }
+func (m *GetWorkerFullInfoRequest) String() string { return proto.CompactTextString(m) }
+func (*GetWorkerFullInfoRequest) ProtoMessage()    {}
+func (*GetWorkerFullInfoRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{41}
+}
+
+func (m *GetWorkerFullInfoRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetWorkerFullInfoRequest.Unmarshal(m, b)
+}
+func (m *GetWorkerFullInfoRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetWorkerFullInfoRequest.Marshal(b, m, deterministic)
+}
+func (m *GetWorkerFullInfoRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetWorkerFullInfoRequest.Merge(m, src)
+}
+func (m *GetWorkerFullInfoRequest) XXX_Size() int {
+	return xxx_messageInfo_GetWorkerFullInfoRequest.Size(m)
+}
+func (m *GetWorkerFullInfoRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetWorkerFullInfoRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetWorkerFullInfoRequest proto.InternalMessageInfo
+
+func (m *GetWorkerFullInfoRequest) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+func (m *GetWorkerFullInfoRequest) GetTrialId() string {
+	if m != nil {
+		return m.TrialId
+	}
+	return ""
+}
+
+func (m *GetWorkerFullInfoRequest) GetWorkerId() string {
+	if m != nil {
+		return m.WorkerId
+	}
+	return ""
+}
+
+func (m *GetWorkerFullInfoRequest) GetOnlyLatestLog() bool {
+	if m != nil {
+		return m.OnlyLatestLog
+	}
+	return false
+}
+
+type WorkerFullInfo struct {
+	Worker               *Worker       `protobuf:"bytes,1,opt,name=Worker,json=worker,proto3" json:"Worker,omitempty"`
+	ParameterSet         []*Parameter  `protobuf:"bytes,2,rep,name=parameter_set,json=parameterSet,proto3" json:"parameter_set,omitempty"`
+	MetricsLogs          []*MetricsLog `protobuf:"bytes,3,rep,name=metrics_logs,json=metricsLogs,proto3" json:"metrics_logs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
+}
+
+func (m *WorkerFullInfo) Reset()         { *m = WorkerFullInfo{} }
+func (m *WorkerFullInfo) String() string { return proto.CompactTextString(m) }
+func (*WorkerFullInfo) ProtoMessage()    {}
+func (*WorkerFullInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{42}
+}
+
+func (m *WorkerFullInfo) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_WorkerFullInfo.Unmarshal(m, b)
+}
+func (m *WorkerFullInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_WorkerFullInfo.Marshal(b, m, deterministic)
+}
+func (m *WorkerFullInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_WorkerFullInfo.Merge(m, src)
+}
+func (m *WorkerFullInfo) XXX_Size() int {
+	return xxx_messageInfo_WorkerFullInfo.Size(m)
+}
+func (m *WorkerFullInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_WorkerFullInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_WorkerFullInfo proto.InternalMessageInfo
+
+func (m *WorkerFullInfo) GetWorker() *Worker {
+	if m != nil {
+		return m.Worker
+	}
+	return nil
+}
+
+func (m *WorkerFullInfo) GetParameterSet() []*Parameter {
+	if m != nil {
+		return m.ParameterSet
+	}
+	return nil
+}
+
+func (m *WorkerFullInfo) GetMetricsLogs() []*MetricsLog {
+	if m != nil {
+		return m.MetricsLogs
+	}
+	return nil
+}
+
+type GetWorkerFullInfoReply struct {
+	WorkerFullInfos      []*WorkerFullInfo `protobuf:"bytes,1,rep,name=worker_full_infos,json=workerFullInfos,proto3" json:"worker_full_infos,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *GetWorkerFullInfoReply) Reset()         { *m = GetWorkerFullInfoReply{} }
+func (m *GetWorkerFullInfoReply) String() string { return proto.CompactTextString(m) }
+func (*GetWorkerFullInfoReply) ProtoMessage()    {}
+func (*GetWorkerFullInfoReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{43}
+}
+
+func (m *GetWorkerFullInfoReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetWorkerFullInfoReply.Unmarshal(m, b)
+}
+func (m *GetWorkerFullInfoReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetWorkerFullInfoReply.Marshal(b, m, deterministic)
+}
+func (m *GetWorkerFullInfoReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetWorkerFullInfoReply.Merge(m, src)
+}
+func (m *GetWorkerFullInfoReply) XXX_Size() int {
+	return xxx_messageInfo_GetWorkerFullInfoReply.Size(m)
+}
+func (m *GetWorkerFullInfoReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetWorkerFullInfoReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetWorkerFullInfoReply proto.InternalMessageInfo
+
+func (m *GetWorkerFullInfoReply) GetWorkerFullInfos() []*WorkerFullInfo {
+	if m != nil {
+		return m.WorkerFullInfos
+	}
+	return nil
+}
+
+type GetSuggestionsRequest struct {
+	StudyId              string   `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	SuggestionAlgorithm  string   `protobuf:"bytes,2,opt,name=suggestion_algorithm,json=suggestionAlgorithm,proto3" json:"suggestion_algorithm,omitempty"`
+	RequestNumber        int32    `protobuf:"varint,3,opt,name=request_number,json=requestNumber,proto3" json:"request_number,omitempty"`
+	LogWorkerIds         []string `protobuf:"bytes,4,rep,name=log_worker_ids,json=logWorkerIds,proto3" json:"log_worker_ids,omitempty"`
+	ParamId              string   `protobuf:"bytes,5,opt,name=param_id,json=paramId,proto3" json:"param_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetSuggestionsRequest) Reset()         { *m = GetSuggestionsRequest{} }
+func (m *GetSuggestionsRequest) String() string { return proto.CompactTextString(m) }
+func (*GetSuggestionsRequest) ProtoMessage()    {}
+func (*GetSuggestionsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{44}
+}
+
+func (m *GetSuggestionsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetSuggestionsRequest.Unmarshal(m, b)
+}
+func (m *GetSuggestionsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetSuggestionsRequest.Marshal(b, m, deterministic)
+}
+func (m *GetSuggestionsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetSuggestionsRequest.Merge(m, src)
+}
+func (m *GetSuggestionsRequest) XXX_Size() int {
+	return xxx_messageInfo_GetSuggestionsRequest.Size(m)
+}
+func (m *GetSuggestionsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetSuggestionsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetSuggestionsRequest proto.InternalMessageInfo
+
+func (m *GetSuggestionsRequest) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+func (m *GetSuggestionsRequest) GetSuggestionAlgorithm() string {
+	if m != nil {
+		return m.SuggestionAlgorithm
+	}
+	return ""
+}
+
+func (m *GetSuggestionsRequest) GetRequestNumber() int32 {
+	if m != nil {
+		return m.RequestNumber
+	}
+	return 0
+}
+
+func (m *GetSuggestionsRequest) GetLogWorkerIds() []string {
+	if m != nil {
+		return m.LogWorkerIds
+	}
+	return nil
+}
+
+func (m *GetSuggestionsRequest) GetParamId() string {
+	if m != nil {
+		return m.ParamId
+	}
+	return ""
+}
+
+type GetSuggestionsReply struct {
+	Trials               []*Trial `protobuf:"bytes,1,rep,name=trials,proto3" json:"trials,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetSuggestionsReply) Reset()         { *m = GetSuggestionsReply{} }
+func (m *GetSuggestionsReply) String() string { return proto.CompactTextString(m) }
+func (*GetSuggestionsReply) ProtoMessage()    {}
+func (*GetSuggestionsReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{45}
+}
+
+func (m *GetSuggestionsReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetSuggestionsReply.Unmarshal(m, b)
+}
+func (m *GetSuggestionsReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetSuggestionsReply.Marshal(b, m, deterministic)
+}
+func (m *GetSuggestionsReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetSuggestionsReply.Merge(m, src)
+}
+func (m *GetSuggestionsReply) XXX_Size() int {
+	return xxx_messageInfo_GetSuggestionsReply.Size(m)
+}
+func (m *GetSuggestionsReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetSuggestionsReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetSuggestionsReply proto.InternalMessageInfo
+
+func (m *GetSuggestionsReply) GetTrials() []*Trial {
+	if m != nil {
+		return m.Trials
+	}
+	return nil
+}
+
+type GetShouldStopWorkersRequest struct {
+	StudyId                string   `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	EarlyStoppingAlgorithm string   `protobuf:"bytes,2,opt,name=early_stopping_algorithm,json=earlyStoppingAlgorithm,proto3" json:"early_stopping_algorithm,omitempty"`
+	ParamId                string   `protobuf:"bytes,5,opt,name=param_id,json=paramId,proto3" json:"param_id,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{} `json:"-"`
+	XXX_unrecognized       []byte   `json:"-"`
+	XXX_sizecache          int32    `json:"-"`
+}
+
+func (m *GetShouldStopWorkersRequest) Reset()         { *m = GetShouldStopWorkersRequest{} }
+func (m *GetShouldStopWorkersRequest) String() string { return proto.CompactTextString(m) }
+func (*GetShouldStopWorkersRequest) ProtoMessage()    {}
+func (*GetShouldStopWorkersRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{46}
+}
+
+func (m *GetShouldStopWorkersRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetShouldStopWorkersRequest.Unmarshal(m, b)
+}
+func (m *GetShouldStopWorkersRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetShouldStopWorkersRequest.Marshal(b, m, deterministic)
+}
+func (m *GetShouldStopWorkersRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetShouldStopWorkersRequest.Merge(m, src)
+}
+func (m *GetShouldStopWorkersRequest) XXX_Size() int {
+	return xxx_messageInfo_GetShouldStopWorkersRequest.Size(m)
+}
+func (m *GetShouldStopWorkersRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetShouldStopWorkersRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetShouldStopWorkersRequest proto.InternalMessageInfo
+
+func (m *GetShouldStopWorkersRequest) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+func (m *GetShouldStopWorkersRequest) GetEarlyStoppingAlgorithm() string {
+	if m != nil {
+		return m.EarlyStoppingAlgorithm
+	}
+	return ""
+}
+
+func (m *GetShouldStopWorkersRequest) GetParamId() string {
+	if m != nil {
+		return m.ParamId
+	}
+	return ""
+}
+
+type GetShouldStopWorkersReply struct {
+	ShouldStopWorkerIds  []string `protobuf:"bytes,1,rep,name=should_stop_worker_ids,json=shouldStopWorkerIds,proto3" json:"should_stop_worker_ids,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetShouldStopWorkersReply) Reset()         { *m = GetShouldStopWorkersReply{} }
+func (m *GetShouldStopWorkersReply) String() string { return proto.CompactTextString(m) }
+func (*GetShouldStopWorkersReply) ProtoMessage()    {}
+func (*GetShouldStopWorkersReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{47}
+}
+
+func (m *GetShouldStopWorkersReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetShouldStopWorkersReply.Unmarshal(m, b)
+}
+func (m *GetShouldStopWorkersReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetShouldStopWorkersReply.Marshal(b, m, deterministic)
+}
+func (m *GetShouldStopWorkersReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetShouldStopWorkersReply.Merge(m, src)
+}
+func (m *GetShouldStopWorkersReply) XXX_Size() int {
+	return xxx_messageInfo_GetShouldStopWorkersReply.Size(m)
+}
+func (m *GetShouldStopWorkersReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetShouldStopWorkersReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetShouldStopWorkersReply proto.InternalMessageInfo
+
+func (m *GetShouldStopWorkersReply) GetShouldStopWorkerIds() []string {
+	if m != nil {
+		return m.ShouldStopWorkerIds
+	}
+	return nil
+}
+
+type GetMetricsRequest struct {
+	StudyId              string   `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	WorkerIds            []string `protobuf:"bytes,2,rep,name=worker_ids,json=workerIds,proto3" json:"worker_ids,omitempty"`
+	MetricsNames         []string `protobuf:"bytes,3,rep,name=metrics_names,json=metricsNames,proto3" json:"metrics_names,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetMetricsRequest) Reset()         { *m = GetMetricsRequest{} }
+func (m *GetMetricsRequest) String() string { return proto.CompactTextString(m) }
+func (*GetMetricsRequest) ProtoMessage()    {}
+func (*GetMetricsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{48}
+}
+
+func (m *GetMetricsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetMetricsRequest.Unmarshal(m, b)
+}
+func (m *GetMetricsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetMetricsRequest.Marshal(b, m, deterministic)
+}
+func (m *GetMetricsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetMetricsRequest.Merge(m, src)
+}
+func (m *GetMetricsRequest) XXX_Size() int {
+	return xxx_messageInfo_GetMetricsRequest.Size(m)
+}
+func (m *GetMetricsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetMetricsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetMetricsRequest proto.InternalMessageInfo
+
+func (m *GetMetricsRequest) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+func (m *GetMetricsRequest) GetWorkerIds() []string {
+	if m != nil {
+		return m.WorkerIds
+	}
+	return nil
+}
+
+func (m *GetMetricsRequest) GetMetricsNames() []string {
+	if m != nil {
+		return m.MetricsNames
+	}
+	return nil
+}
+
+type GetMetricsReply struct {
+	MetricsLogSets       []*MetricsLogSet `protobuf:"bytes,1,rep,name=metrics_log_sets,json=metricsLogSets,proto3" json:"metrics_log_sets,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
+}
+
+func (m *GetMetricsReply) Reset()         { *m = GetMetricsReply{} }
+func (m *GetMetricsReply) String() string { return proto.CompactTextString(m) }
+func (*GetMetricsReply) ProtoMessage()    {}
+func (*GetMetricsReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{49}
+}
+
+func (m *GetMetricsReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetMetricsReply.Unmarshal(m, b)
+}
+func (m *GetMetricsReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetMetricsReply.Marshal(b, m, deterministic)
+}
+func (m *GetMetricsReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetMetricsReply.Merge(m, src)
+}
+func (m *GetMetricsReply) XXX_Size() int {
+	return xxx_messageInfo_GetMetricsReply.Size(m)
+}
+func (m *GetMetricsReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetMetricsReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetMetricsReply proto.InternalMessageInfo
+
+func (m *GetMetricsReply) GetMetricsLogSets() []*MetricsLogSet {
+	if m != nil {
+		return m.MetricsLogSets
+	}
+	return nil
+}
+
+type ReportMetricsLogsRequest struct {
+	StudyId              string           `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	MetricsLogSets       []*MetricsLogSet `protobuf:"bytes,3,rep,name=metrics_log_sets,json=metricsLogSets,proto3" json:"metrics_log_sets,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
+}
+
+func (m *ReportMetricsLogsRequest) Reset()         { *m = ReportMetricsLogsRequest{} }
+func (m *ReportMetricsLogsRequest) String() string { return proto.CompactTextString(m) }
+func (*ReportMetricsLogsRequest) ProtoMessage()    {}
+func (*ReportMetricsLogsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{50}
+}
+
+func (m *ReportMetricsLogsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ReportMetricsLogsRequest.Unmarshal(m, b)
+}
+func (m *ReportMetricsLogsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ReportMetricsLogsRequest.Marshal(b, m, deterministic)
+}
+func (m *ReportMetricsLogsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ReportMetricsLogsRequest.Merge(m, src)
+}
+func (m *ReportMetricsLogsRequest) XXX_Size() int {
+	return xxx_messageInfo_ReportMetricsLogsRequest.Size(m)
+}
+func (m *ReportMetricsLogsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ReportMetricsLogsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ReportMetricsLogsRequest proto.InternalMessageInfo
+
+func (m *ReportMetricsLogsRequest) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+func (m *ReportMetricsLogsRequest) GetMetricsLogSets() []*MetricsLogSet {
+	if m != nil {
+		return m.MetricsLogSets
+	}
+	return nil
+}
+
+type ReportMetricsLogsReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ReportMetricsLogsReply) Reset()         { *m = ReportMetricsLogsReply{} }
+func (m *ReportMetricsLogsReply) String() string { return proto.CompactTextString(m) }
+func (*ReportMetricsLogsReply) ProtoMessage()    {}
+func (*ReportMetricsLogsReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{51}
+}
+
+func (m *ReportMetricsLogsReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ReportMetricsLogsReply.Unmarshal(m, b)
+}
+func (m *ReportMetricsLogsReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ReportMetricsLogsReply.Marshal(b, m, deterministic)
+}
+func (m *ReportMetricsLogsReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ReportMetricsLogsReply.Merge(m, src)
+}
+func (m *ReportMetricsLogsReply) XXX_Size() int {
+	return xxx_messageInfo_ReportMetricsLogsReply.Size(m)
+}
+func (m *ReportMetricsLogsReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ReportMetricsLogsReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ReportMetricsLogsReply proto.InternalMessageInfo
+
+type ModelInfo struct {
+	StudyName            string       `protobuf:"bytes,1,opt,name=study_name,json=studyName,proto3" json:"study_name,omitempty"`
+	WorkerId             string       `protobuf:"bytes,2,opt,name=worker_id,json=workerId,proto3" json:"worker_id,omitempty"`
+	Parameters           []*Parameter `protobuf:"bytes,3,rep,name=parameters,proto3" json:"parameters,omitempty"`
+	Metrics              []*Metrics   `protobuf:"bytes,4,rep,name=metrics,proto3" json:"metrics,omitempty"`
+	ModelPath            string       `protobuf:"bytes,5,opt,name=model_path,json=modelPath,proto3" json:"model_path,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
+	XXX_unrecognized     []byte       `json:"-"`
+	XXX_sizecache        int32        `json:"-"`
+}
+
+func (m *ModelInfo) Reset()         { *m = ModelInfo{} }
+func (m *ModelInfo) String() string { return proto.CompactTextString(m) }
+func (*ModelInfo) ProtoMessage()    {}
+func (*ModelInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{52}
+}
+
+func (m *ModelInfo) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ModelInfo.Unmarshal(m, b)
+}
+func (m *ModelInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ModelInfo.Marshal(b, m, deterministic)
+}
+func (m *ModelInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ModelInfo.Merge(m, src)
+}
+func (m *ModelInfo) XXX_Size() int {
+	return xxx_messageInfo_ModelInfo.Size(m)
+}
+func (m *ModelInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_ModelInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ModelInfo proto.InternalMessageInfo
+
+func (m *ModelInfo) GetStudyName() string {
+	if m != nil {
+		return m.StudyName
+	}
+	return ""
+}
+
+func (m *ModelInfo) GetWorkerId() string {
+	if m != nil {
+		return m.WorkerId
+	}
+	return ""
+}
+
+func (m *ModelInfo) GetParameters() []*Parameter {
+	if m != nil {
+		return m.Parameters
+	}
+	return nil
+}
+
+func (m *ModelInfo) GetMetrics() []*Metrics {
+	if m != nil {
+		return m.Metrics
+	}
+	return nil
+}
+
+func (m *ModelInfo) GetModelPath() string {
+	if m != nil {
+		return m.ModelPath
+	}
+	return ""
+}
+
+type DataSetInfo struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Path                 string   `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DataSetInfo) Reset()         { *m = DataSetInfo{} }
+func (m *DataSetInfo) String() string { return proto.CompactTextString(m) }
+func (*DataSetInfo) ProtoMessage()    {}
+func (*DataSetInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{53}
+}
+
+func (m *DataSetInfo) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DataSetInfo.Unmarshal(m, b)
+}
+func (m *DataSetInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DataSetInfo.Marshal(b, m, deterministic)
+}
+func (m *DataSetInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DataSetInfo.Merge(m, src)
+}
+func (m *DataSetInfo) XXX_Size() int {
+	return xxx_messageInfo_DataSetInfo.Size(m)
+}
+func (m *DataSetInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_DataSetInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DataSetInfo proto.InternalMessageInfo
+
+func (m *DataSetInfo) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *DataSetInfo) GetPath() string {
+	if m != nil {
+		return m.Path
+	}
+	return ""
+}
+
+type SetSuggestionParametersRequest struct {
+	StudyId              string                 `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	SuggestionAlgorithm  string                 `protobuf:"bytes,2,opt,name=suggestion_algorithm,json=suggestionAlgorithm,proto3" json:"suggestion_algorithm,omitempty"`
+	ParamId              string                 `protobuf:"bytes,3,opt,name=param_id,json=paramId,proto3" json:"param_id,omitempty"`
+	SuggestionParameters []*SuggestionParameter `protobuf:"bytes,4,rep,name=suggestion_parameters,json=suggestionParameters,proto3" json:"suggestion_parameters,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
+	XXX_unrecognized     []byte                 `json:"-"`
+	XXX_sizecache        int32                  `json:"-"`
+}
+
+func (m *SetSuggestionParametersRequest) Reset()         { *m = SetSuggestionParametersRequest{} }
+func (m *SetSuggestionParametersRequest) String() string { return proto.CompactTextString(m) }
+func (*SetSuggestionParametersRequest) ProtoMessage()    {}
+func (*SetSuggestionParametersRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{54}
+}
+
+func (m *SetSuggestionParametersRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SetSuggestionParametersRequest.Unmarshal(m, b)
+}
+func (m *SetSuggestionParametersRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SetSuggestionParametersRequest.Marshal(b, m, deterministic)
+}
+func (m *SetSuggestionParametersRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetSuggestionParametersRequest.Merge(m, src)
+}
+func (m *SetSuggestionParametersRequest) XXX_Size() int {
+	return xxx_messageInfo_SetSuggestionParametersRequest.Size(m)
+}
+func (m *SetSuggestionParametersRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetSuggestionParametersRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetSuggestionParametersRequest proto.InternalMessageInfo
+
+func (m *SetSuggestionParametersRequest) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+func (m *SetSuggestionParametersRequest) GetSuggestionAlgorithm() string {
+	if m != nil {
+		return m.SuggestionAlgorithm
+	}
+	return ""
+}
+
+func (m *SetSuggestionParametersRequest) GetParamId() string {
+	if m != nil {
+		return m.ParamId
+	}
+	return ""
+}
+
+func (m *SetSuggestionParametersRequest) GetSuggestionParameters() []*SuggestionParameter {
+	if m != nil {
+		return m.SuggestionParameters
+	}
+	return nil
+}
+
+type SetSuggestionParametersReply struct {
+	ParamId              string   `protobuf:"bytes,1,opt,name=param_id,json=paramId,proto3" json:"param_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SetSuggestionParametersReply) Reset()         { *m = SetSuggestionParametersReply{} }
+func (m *SetSuggestionParametersReply) String() string { return proto.CompactTextString(m) }
+func (*SetSuggestionParametersReply) ProtoMessage()    {}
+func (*SetSuggestionParametersReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{55}
+}
+
+func (m *SetSuggestionParametersReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SetSuggestionParametersReply.Unmarshal(m, b)
+}
+func (m *SetSuggestionParametersReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SetSuggestionParametersReply.Marshal(b, m, deterministic)
+}
+func (m *SetSuggestionParametersReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetSuggestionParametersReply.Merge(m, src)
+}
+func (m *SetSuggestionParametersReply) XXX_Size() int {
+	return xxx_messageInfo_SetSuggestionParametersReply.Size(m)
+}
+func (m *SetSuggestionParametersReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetSuggestionParametersReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetSuggestionParametersReply proto.InternalMessageInfo
+
+func (m *SetSuggestionParametersReply) GetParamId() string {
+	if m != nil {
+		return m.ParamId
+	}
+	return ""
+}
+
+type GetSuggestionParametersRequest struct {
+	ParamId              string   `protobuf:"bytes,1,opt,name=param_id,json=paramId,proto3" json:"param_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetSuggestionParametersRequest) Reset()         { *m = GetSuggestionParametersRequest{} }
+func (m *GetSuggestionParametersRequest) String() string { return proto.CompactTextString(m) }
+func (*GetSuggestionParametersRequest) ProtoMessage()    {}
+func (*GetSuggestionParametersRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{56}
+}
+
+func (m *GetSuggestionParametersRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetSuggestionParametersRequest.Unmarshal(m, b)
+}
+func (m *GetSuggestionParametersRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetSuggestionParametersRequest.Marshal(b, m, deterministic)
+}
+func (m *GetSuggestionParametersRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetSuggestionParametersRequest.Merge(m, src)
+}
+func (m *GetSuggestionParametersRequest) XXX_Size() int {
+	return xxx_messageInfo_GetSuggestionParametersRequest.Size(m)
+}
+func (m *GetSuggestionParametersRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetSuggestionParametersRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetSuggestionParametersRequest proto.InternalMessageInfo
+
+func (m *GetSuggestionParametersRequest) GetParamId() string {
+	if m != nil {
+		return m.ParamId
+	}
+	return ""
+}
+
+type GetSuggestionParametersReply struct {
+	SuggestionParameters []*SuggestionParameter `protobuf:"bytes,1,rep,name=suggestion_parameters,json=suggestionParameters,proto3" json:"suggestion_parameters,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
+	XXX_unrecognized     []byte                 `json:"-"`
+	XXX_sizecache        int32                  `json:"-"`
+}
+
+func (m *GetSuggestionParametersReply) Reset()         { *m = GetSuggestionParametersReply{} }
+func (m *GetSuggestionParametersReply) String() string { return proto.CompactTextString(m) }
+func (*GetSuggestionParametersReply) ProtoMessage()    {}
+func (*GetSuggestionParametersReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{57}
+}
+
+func (m *GetSuggestionParametersReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetSuggestionParametersReply.Unmarshal(m, b)
+}
+func (m *GetSuggestionParametersReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetSuggestionParametersReply.Marshal(b, m, deterministic)
+}
+func (m *GetSuggestionParametersReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetSuggestionParametersReply.Merge(m, src)
+}
+func (m *GetSuggestionParametersReply) XXX_Size() int {
+	return xxx_messageInfo_GetSuggestionParametersReply.Size(m)
+}
+func (m *GetSuggestionParametersReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetSuggestionParametersReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetSuggestionParametersReply proto.InternalMessageInfo
+
+func (m *GetSuggestionParametersReply) GetSuggestionParameters() []*SuggestionParameter {
+	if m != nil {
+		return m.SuggestionParameters
+	}
+	return nil
+}
+
+type GetSuggestionParameterListRequest struct {
+	StudyId              string   `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetSuggestionParameterListRequest) Reset()         { *m = GetSuggestionParameterListRequest{} }
+func (m *GetSuggestionParameterListRequest) String() string { return proto.CompactTextString(m) }
+func (*GetSuggestionParameterListRequest) ProtoMessage()    {}
+func (*GetSuggestionParameterListRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{58}
+}
+
+func (m *GetSuggestionParameterListRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetSuggestionParameterListRequest.Unmarshal(m, b)
+}
+func (m *GetSuggestionParameterListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetSuggestionParameterListRequest.Marshal(b, m, deterministic)
+}
+func (m *GetSuggestionParameterListRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetSuggestionParameterListRequest.Merge(m, src)
+}
+func (m *GetSuggestionParameterListRequest) XXX_Size() int {
+	return xxx_messageInfo_GetSuggestionParameterListRequest.Size(m)
+}
+func (m *GetSuggestionParameterListRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetSuggestionParameterListRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetSuggestionParameterListRequest proto.InternalMessageInfo
+
+func (m *GetSuggestionParameterListRequest) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+type SuggestionParameterSet struct {
+	ParamId              string                 `protobuf:"bytes,1,opt,name=param_id,json=paramId,proto3" json:"param_id,omitempty"`
+	SuggestionAlgorithm  string                 `protobuf:"bytes,2,opt,name=suggestion_algorithm,json=suggestionAlgorithm,proto3" json:"suggestion_algorithm,omitempty"`
+	SuggestionParameters []*SuggestionParameter `protobuf:"bytes,3,rep,name=suggestion_parameters,json=suggestionParameters,proto3" json:"suggestion_parameters,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
+	XXX_unrecognized     []byte                 `json:"-"`
+	XXX_sizecache        int32                  `json:"-"`
+}
+
+func (m *SuggestionParameterSet) Reset()         { *m = SuggestionParameterSet{} }
+func (m *SuggestionParameterSet) String() string { return proto.CompactTextString(m) }
+func (*SuggestionParameterSet) ProtoMessage()    {}
+func (*SuggestionParameterSet) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{59}
+}
+
+func (m *SuggestionParameterSet) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SuggestionParameterSet.Unmarshal(m, b)
+}
+func (m *SuggestionParameterSet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SuggestionParameterSet.Marshal(b, m, deterministic)
+}
+func (m *SuggestionParameterSet) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SuggestionParameterSet.Merge(m, src)
+}
+func (m *SuggestionParameterSet) XXX_Size() int {
+	return xxx_messageInfo_SuggestionParameterSet.Size(m)
+}
+func (m *SuggestionParameterSet) XXX_DiscardUnknown() {
+	xxx_messageInfo_SuggestionParameterSet.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SuggestionParameterSet proto.InternalMessageInfo
+
+func (m *SuggestionParameterSet) GetParamId() string {
+	if m != nil {
+		return m.ParamId
+	}
+	return ""
+}
+
+func (m *SuggestionParameterSet) GetSuggestionAlgorithm() string {
+	if m != nil {
+		return m.SuggestionAlgorithm
+	}
+	return ""
+}
+
+func (m *SuggestionParameterSet) GetSuggestionParameters() []*SuggestionParameter {
+	if m != nil {
+		return m.SuggestionParameters
+	}
+	return nil
+}
+
+type GetSuggestionParameterListReply struct {
+	SuggestionParameterSets []*SuggestionParameterSet `protobuf:"bytes,1,rep,name=suggestion_parameter_sets,json=suggestionParameterSets,proto3" json:"suggestion_parameter_sets,omitempty"`
+	XXX_NoUnkeyedLiteral    struct{}                  `json:"-"`
+	XXX_unrecognized        []byte                    `json:"-"`
+	XXX_sizecache           int32                     `json:"-"`
+}
+
+func (m *GetSuggestionParameterListReply) Reset()         { *m = GetSuggestionParameterListReply{} }
+func (m *GetSuggestionParameterListReply) String() string { return proto.CompactTextString(m) }
+func (*GetSuggestionParameterListReply) ProtoMessage()    {}
+func (*GetSuggestionParameterListReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{60}
+}
+
+func (m *GetSuggestionParameterListReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetSuggestionParameterListReply.Unmarshal(m, b)
+}
+func (m *GetSuggestionParameterListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetSuggestionParameterListReply.Marshal(b, m, deterministic)
+}
+func (m *GetSuggestionParameterListReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetSuggestionParameterListReply.Merge(m, src)
+}
+func (m *GetSuggestionParameterListReply) XXX_Size() int {
+	return xxx_messageInfo_GetSuggestionParameterListReply.Size(m)
+}
+func (m *GetSuggestionParameterListReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetSuggestionParameterListReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetSuggestionParameterListReply proto.InternalMessageInfo
+
+func (m *GetSuggestionParameterListReply) GetSuggestionParameterSets() []*SuggestionParameterSet {
+	if m != nil {
+		return m.SuggestionParameterSets
+	}
+	return nil
+}
+
+type StopSuggestionRequest struct {
+	StudyId              string   `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *StopSuggestionRequest) Reset()         { *m = StopSuggestionRequest{} }
+func (m *StopSuggestionRequest) String() string { return proto.CompactTextString(m) }
+func (*StopSuggestionRequest) ProtoMessage()    {}
+func (*StopSuggestionRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{61}
+}
+
+func (m *StopSuggestionRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StopSuggestionRequest.Unmarshal(m, b)
+}
+func (m *StopSuggestionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StopSuggestionRequest.Marshal(b, m, deterministic)
+}
+func (m *StopSuggestionRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StopSuggestionRequest.Merge(m, src)
+}
+func (m *StopSuggestionRequest) XXX_Size() int {
+	return xxx_messageInfo_StopSuggestionRequest.Size(m)
+}
+func (m *StopSuggestionRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_StopSuggestionRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StopSuggestionRequest proto.InternalMessageInfo
+
+func (m *StopSuggestionRequest) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+type StopSuggestionReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *StopSuggestionReply) Reset()         { *m = StopSuggestionReply{} }
+func (m *StopSuggestionReply) String() string { return proto.CompactTextString(m) }
+func (*StopSuggestionReply) ProtoMessage()    {}
+func (*StopSuggestionReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{62}
+}
+
+func (m *StopSuggestionReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StopSuggestionReply.Unmarshal(m, b)
+}
+func (m *StopSuggestionReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StopSuggestionReply.Marshal(b, m, deterministic)
+}
+func (m *StopSuggestionReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StopSuggestionReply.Merge(m, src)
+}
+func (m *StopSuggestionReply) XXX_Size() int {
+	return xxx_messageInfo_StopSuggestionReply.Size(m)
+}
+func (m *StopSuggestionReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_StopSuggestionReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StopSuggestionReply proto.InternalMessageInfo
+
+type SetEarlyStoppingParametersRequest struct {
+	StudyId                 string                    `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	EarlyStoppingAlgorithm  string                    `protobuf:"bytes,2,opt,name=early_stopping_algorithm,json=earlyStoppingAlgorithm,proto3" json:"early_stopping_algorithm,omitempty"`
+	ParamId                 string                    `protobuf:"bytes,3,opt,name=param_id,json=paramId,proto3" json:"param_id,omitempty"`
+	EarlyStoppingParameters []*EarlyStoppingParameter `protobuf:"bytes,4,rep,name=early_stopping_parameters,json=earlyStoppingParameters,proto3" json:"early_stopping_parameters,omitempty"`
+	XXX_NoUnkeyedLiteral    struct{}                  `json:"-"`
+	XXX_unrecognized        []byte                    `json:"-"`
+	XXX_sizecache           int32                     `json:"-"`
+}
+
+func (m *SetEarlyStoppingParametersRequest) Reset()         { *m = SetEarlyStoppingParametersRequest{} }
+func (m *SetEarlyStoppingParametersRequest) String() string { return proto.CompactTextString(m) }
+func (*SetEarlyStoppingParametersRequest) ProtoMessage()    {}
+func (*SetEarlyStoppingParametersRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{63}
+}
+
+func (m *SetEarlyStoppingParametersRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SetEarlyStoppingParametersRequest.Unmarshal(m, b)
+}
+func (m *SetEarlyStoppingParametersRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SetEarlyStoppingParametersRequest.Marshal(b, m, deterministic)
+}
+func (m *SetEarlyStoppingParametersRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetEarlyStoppingParametersRequest.Merge(m, src)
+}
+func (m *SetEarlyStoppingParametersRequest) XXX_Size() int {
+	return xxx_messageInfo_SetEarlyStoppingParametersRequest.Size(m)
+}
+func (m *SetEarlyStoppingParametersRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetEarlyStoppingParametersRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetEarlyStoppingParametersRequest proto.InternalMessageInfo
+
+func (m *SetEarlyStoppingParametersRequest) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+func (m *SetEarlyStoppingParametersRequest) GetEarlyStoppingAlgorithm() string {
+	if m != nil {
+		return m.EarlyStoppingAlgorithm
+	}
+	return ""
+}
+
+func (m *SetEarlyStoppingParametersRequest) GetParamId() string {
+	if m != nil {
+		return m.ParamId
+	}
+	return ""
+}
+
+func (m *SetEarlyStoppingParametersRequest) GetEarlyStoppingParameters() []*EarlyStoppingParameter {
+	if m != nil {
+		return m.EarlyStoppingParameters
+	}
+	return nil
+}
+
+type SetEarlyStoppingParametersReply struct {
+	ParamId              string   `protobuf:"bytes,1,opt,name=param_id,json=paramId,proto3" json:"param_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SetEarlyStoppingParametersReply) Reset()         { *m = SetEarlyStoppingParametersReply{} }
+func (m *SetEarlyStoppingParametersReply) String() string { return proto.CompactTextString(m) }
+func (*SetEarlyStoppingParametersReply) ProtoMessage()    {}
+func (*SetEarlyStoppingParametersReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{64}
+}
+
+func (m *SetEarlyStoppingParametersReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SetEarlyStoppingParametersReply.Unmarshal(m, b)
+}
+func (m *SetEarlyStoppingParametersReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SetEarlyStoppingParametersReply.Marshal(b, m, deterministic)
+}
+func (m *SetEarlyStoppingParametersReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetEarlyStoppingParametersReply.Merge(m, src)
+}
+func (m *SetEarlyStoppingParametersReply) XXX_Size() int {
+	return xxx_messageInfo_SetEarlyStoppingParametersReply.Size(m)
+}
+func (m *SetEarlyStoppingParametersReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetEarlyStoppingParametersReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetEarlyStoppingParametersReply proto.InternalMessageInfo
+
+func (m *SetEarlyStoppingParametersReply) GetParamId() string {
+	if m != nil {
+		return m.ParamId
+	}
+	return ""
+}
+
+type GetEarlyStoppingParametersRequest struct {
+	ParamId              string   `protobuf:"bytes,1,opt,name=param_id,json=paramId,proto3" json:"param_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetEarlyStoppingParametersRequest) Reset()         { *m = GetEarlyStoppingParametersRequest{} }
+func (m *GetEarlyStoppingParametersRequest) String() string { return proto.CompactTextString(m) }
+func (*GetEarlyStoppingParametersRequest) ProtoMessage()    {}
+func (*GetEarlyStoppingParametersRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{65}
+}
+
+func (m *GetEarlyStoppingParametersRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetEarlyStoppingParametersRequest.Unmarshal(m, b)
+}
+func (m *GetEarlyStoppingParametersRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetEarlyStoppingParametersRequest.Marshal(b, m, deterministic)
+}
+func (m *GetEarlyStoppingParametersRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetEarlyStoppingParametersRequest.Merge(m, src)
+}
+func (m *GetEarlyStoppingParametersRequest) XXX_Size() int {
+	return xxx_messageInfo_GetEarlyStoppingParametersRequest.Size(m)
+}
+func (m *GetEarlyStoppingParametersRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetEarlyStoppingParametersRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetEarlyStoppingParametersRequest proto.InternalMessageInfo
+
+func (m *GetEarlyStoppingParametersRequest) GetParamId() string {
+	if m != nil {
+		return m.ParamId
+	}
+	return ""
+}
+
+type GetEarlyStoppingParametersReply struct {
+	EarlyStoppingParameters []*EarlyStoppingParameter `protobuf:"bytes,1,rep,name=early_stopping_parameters,json=earlyStoppingParameters,proto3" json:"early_stopping_parameters,omitempty"`
+	XXX_NoUnkeyedLiteral    struct{}                  `json:"-"`
+	XXX_unrecognized        []byte                    `json:"-"`
+	XXX_sizecache           int32                     `json:"-"`
+}
+
+func (m *GetEarlyStoppingParametersReply) Reset()         { *m = GetEarlyStoppingParametersReply{} }
+func (m *GetEarlyStoppingParametersReply) String() string { return proto.CompactTextString(m) }
+func (*GetEarlyStoppingParametersReply) ProtoMessage()    {}
+func (*GetEarlyStoppingParametersReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{66}
+}
+
+func (m *GetEarlyStoppingParametersReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetEarlyStoppingParametersReply.Unmarshal(m, b)
+}
+func (m *GetEarlyStoppingParametersReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetEarlyStoppingParametersReply.Marshal(b, m, deterministic)
+}
+func (m *GetEarlyStoppingParametersReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetEarlyStoppingParametersReply.Merge(m, src)
+}
+func (m *GetEarlyStoppingParametersReply) XXX_Size() int {
+	return xxx_messageInfo_GetEarlyStoppingParametersReply.Size(m)
+}
+func (m *GetEarlyStoppingParametersReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetEarlyStoppingParametersReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetEarlyStoppingParametersReply proto.InternalMessageInfo
+
+func (m *GetEarlyStoppingParametersReply) GetEarlyStoppingParameters() []*EarlyStoppingParameter {
+	if m != nil {
+		return m.EarlyStoppingParameters
+	}
+	return nil
+}
+
+type GetEarlyStoppingParameterListRequest struct {
+	StudyId              string   `protobuf:"bytes,1,opt,name=study_id,json=studyId,proto3" json:"study_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetEarlyStoppingParameterListRequest) Reset()         { *m = GetEarlyStoppingParameterListRequest{} }
+func (m *GetEarlyStoppingParameterListRequest) String() string { return proto.CompactTextString(m) }
+func (*GetEarlyStoppingParameterListRequest) ProtoMessage()    {}
+func (*GetEarlyStoppingParameterListRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{67}
+}
+
+func (m *GetEarlyStoppingParameterListRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetEarlyStoppingParameterListRequest.Unmarshal(m, b)
+}
+func (m *GetEarlyStoppingParameterListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetEarlyStoppingParameterListRequest.Marshal(b, m, deterministic)
+}
+func (m *GetEarlyStoppingParameterListRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetEarlyStoppingParameterListRequest.Merge(m, src)
+}
+func (m *GetEarlyStoppingParameterListRequest) XXX_Size() int {
+	return xxx_messageInfo_GetEarlyStoppingParameterListRequest.Size(m)
+}
+func (m *GetEarlyStoppingParameterListRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetEarlyStoppingParameterListRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetEarlyStoppingParameterListRequest proto.InternalMessageInfo
+
+func (m *GetEarlyStoppingParameterListRequest) GetStudyId() string {
+	if m != nil {
+		return m.StudyId
+	}
+	return ""
+}
+
+type EarlyStoppingParameterSet struct {
+	ParamId                 string                    `protobuf:"bytes,1,opt,name=param_id,json=paramId,proto3" json:"param_id,omitempty"`
+	EarlyStoppingAlgorithm  string                    `protobuf:"bytes,2,opt,name=early_stopping_algorithm,json=earlyStoppingAlgorithm,proto3" json:"early_stopping_algorithm,omitempty"`
+	EarlyStoppingParameters []*EarlyStoppingParameter `protobuf:"bytes,3,rep,name=early_stopping_parameters,json=earlyStoppingParameters,proto3" json:"early_stopping_parameters,omitempty"`
+	XXX_NoUnkeyedLiteral    struct{}                  `json:"-"`
+	XXX_unrecognized        []byte                    `json:"-"`
+	XXX_sizecache           int32                     `json:"-"`
+}
+
+func (m *EarlyStoppingParameterSet) Reset()         { *m = EarlyStoppingParameterSet{} }
+func (m *EarlyStoppingParameterSet) String() string { return proto.CompactTextString(m) }
+func (*EarlyStoppingParameterSet) ProtoMessage()    {}
+func (*EarlyStoppingParameterSet) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{68}
+}
+
+func (m *EarlyStoppingParameterSet) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_EarlyStoppingParameterSet.Unmarshal(m, b)
+}
+func (m *EarlyStoppingParameterSet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_EarlyStoppingParameterSet.Marshal(b, m, deterministic)
+}
+func (m *EarlyStoppingParameterSet) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EarlyStoppingParameterSet.Merge(m, src)
+}
+func (m *EarlyStoppingParameterSet) XXX_Size() int {
+	return xxx_messageInfo_EarlyStoppingParameterSet.Size(m)
+}
+func (m *EarlyStoppingParameterSet) XXX_DiscardUnknown() {
+	xxx_messageInfo_EarlyStoppingParameterSet.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EarlyStoppingParameterSet proto.InternalMessageInfo
+
+func (m *EarlyStoppingParameterSet) GetParamId() string {
+	if m != nil {
+		return m.ParamId
+	}
+	return ""
+}
+
+func (m *EarlyStoppingParameterSet) GetEarlyStoppingAlgorithm() string {
+	if m != nil {
+		return m.EarlyStoppingAlgorithm
+	}
+	return ""
+}
+
+func (m *EarlyStoppingParameterSet) GetEarlyStoppingParameters() []*EarlyStoppingParameter {
+	if m != nil {
+		return m.EarlyStoppingParameters
+	}
+	return nil
+}
+
+type GetEarlyStoppingParameterListReply struct {
+	EarlyStoppingParameterSets []*EarlyStoppingParameterSet `protobuf:"bytes,1,rep,name=early_stopping_parameter_sets,json=earlyStoppingParameterSets,proto3" json:"early_stopping_parameter_sets,omitempty"`
+	XXX_NoUnkeyedLiteral       struct{}                     `json:"-"`
+	XXX_unrecognized           []byte                       `json:"-"`
+	XXX_sizecache              int32                        `json:"-"`
+}
+
+func (m *GetEarlyStoppingParameterListReply) Reset()         { *m = GetEarlyStoppingParameterListReply{} }
+func (m *GetEarlyStoppingParameterListReply) String() string { return proto.CompactTextString(m) }
+func (*GetEarlyStoppingParameterListReply) ProtoMessage()    {}
+func (*GetEarlyStoppingParameterListReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_23a2d42ab756d553, []int{69}
+}
+
+func (m *GetEarlyStoppingParameterListReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetEarlyStoppingParameterListReply.Unmarshal(m, b)
+}
+func (m *GetEarlyStoppingParameterListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetEarlyStoppingParameterListReply.Marshal(b, m, deterministic)
+}
+func (m *GetEarlyStoppingParameterListReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetEarlyStoppingParameterListReply.Merge(m, src)
+}
+func (m *GetEarlyStoppingParameterListReply) XXX_Size() int {
+	return xxx_messageInfo_GetEarlyStoppingParameterListReply.Size(m)
+}
+func (m *GetEarlyStoppingParameterListReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetEarlyStoppingParameterListReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetEarlyStoppingParameterListReply proto.InternalMessageInfo
+
+func (m *GetEarlyStoppingParameterListReply) GetEarlyStoppingParameterSets() []*EarlyStoppingParameterSet {
+	if m != nil {
+		return m.EarlyStoppingParameterSets
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterEnum("db.ParameterType", ParameterType_name, ParameterType_value)
 	proto.RegisterEnum("db.OptimizationType", OptimizationType_name, OptimizationType_value)
-	proto.RegisterType((*Operation)(nil), "db.Operation")
-	proto.RegisterType((*Operation_ParameterConfigs)(nil), "db.Operation.ParameterConfigs")
+	proto.RegisterEnum("db.State", State_name, State_value)
+	proto.RegisterType((*FeasibleSpace)(nil), "db.FeasibleSpace")
+	proto.RegisterType((*SelectOneReply)(nil), "db.SelectOneReply")
+	proto.RegisterType((*SelectOneRequest)(nil), "db.SelectOneRequest")
+	proto.RegisterType((*ParameterConfig)(nil), "db.ParameterConfig")
+	proto.RegisterType((*Parameter)(nil), "db.Parameter")
+	proto.RegisterType((*MetricsLogSet)(nil), "db.MetricsLogSet")
+	proto.RegisterType((*Metrics)(nil), "db.Metrics")
+	proto.RegisterType((*MetricsValueTime)(nil), "db.MetricsValueTime")
+	proto.RegisterType((*MetricsLog)(nil), "db.MetricsLog")
+	proto.RegisterType((*SuggestionParameter)(nil), "db.SuggestionParameter")
+	proto.RegisterType((*EarlyStoppingParameter)(nil), "db.EarlyStoppingParameter")
+	proto.RegisterType((*Tag)(nil), "db.Tag")
+	proto.RegisterType((*StudyOverview)(nil), "db.StudyOverview")
+	proto.RegisterType((*Trial)(nil), "db.Trial")
+	proto.RegisterType((*Worker)(nil), "db.Worker")
 	proto.RegisterType((*NasConfig)(nil), "db.NasConfig")
 	proto.RegisterType((*NasConfig_Operations)(nil), "db.NasConfig.Operations")
 	proto.RegisterType((*GraphConfig)(nil), "db.GraphConfig")
-	proto.RegisterType((*HelloRequest)(nil), "db.HelloRequest")
-	proto.RegisterType((*HelloReply)(nil), "db.HelloReply")
-	proto.RegisterType((*ParameterConfig)(nil), "db.ParameterConfig")
-	proto.RegisterType((*Tag)(nil), "db.Tag")
-	proto.RegisterType((*FeasibleSpace)(nil), "db.FeasibleSpace")
+	proto.RegisterType((*Operation)(nil), "db.Operation")
+	proto.RegisterType((*Operation_ParameterConfigs)(nil), "db.Operation.ParameterConfigs")
 	proto.RegisterType((*StudyConfig)(nil), "db.StudyConfig")
 	proto.RegisterType((*StudyConfig_ParameterConfigs)(nil), "db.StudyConfig.ParameterConfigs")
 	proto.RegisterType((*CreateStudyRequest)(nil), "db.CreateStudyRequest")
 	proto.RegisterType((*CreateStudyReply)(nil), "db.CreateStudyReply")
+	proto.RegisterType((*DeleteStudyRequest)(nil), "db.DeleteStudyRequest")
+	proto.RegisterType((*DeleteStudyReply)(nil), "db.DeleteStudyReply")
 	proto.RegisterType((*GetStudyRequest)(nil), "db.GetStudyRequest")
 	proto.RegisterType((*GetStudyReply)(nil), "db.GetStudyReply")
+	proto.RegisterType((*GetStudyListRequest)(nil), "db.GetStudyListRequest")
+	proto.RegisterType((*GetStudyListReply)(nil), "db.GetStudyListReply")
+	proto.RegisterType((*CreateTrialRequest)(nil), "db.CreateTrialRequest")
+	proto.RegisterType((*CreateTrialReply)(nil), "db.CreateTrialReply")
+	proto.RegisterType((*GetTrialsRequest)(nil), "db.GetTrialsRequest")
+	proto.RegisterType((*GetTrialsReply)(nil), "db.GetTrialsReply")
+	proto.RegisterType((*GetTrialRequest)(nil), "db.GetTrialRequest")
+	proto.RegisterType((*GetTrialReply)(nil), "db.GetTrialReply")
+	proto.RegisterType((*RegisterWorkerRequest)(nil), "db.RegisterWorkerRequest")
+	proto.RegisterType((*RegisterWorkerReply)(nil), "db.RegisterWorkerReply")
+	proto.RegisterType((*StopWorkersRequest)(nil), "db.StopWorkersRequest")
+	proto.RegisterType((*StopWorkersReply)(nil), "db.StopWorkersReply")
+	proto.RegisterType((*GetWorkersRequest)(nil), "db.GetWorkersRequest")
+	proto.RegisterType((*GetWorkersReply)(nil), "db.GetWorkersReply")
+	proto.RegisterType((*UpdateWorkerStateRequest)(nil), "db.UpdateWorkerStateRequest")
+	proto.RegisterType((*UpdateWorkerStateReply)(nil), "db.UpdateWorkerStateReply")
+	proto.RegisterType((*GetWorkerFullInfoRequest)(nil), "db.GetWorkerFullInfoRequest")
+	proto.RegisterType((*WorkerFullInfo)(nil), "db.WorkerFullInfo")
+	proto.RegisterType((*GetWorkerFullInfoReply)(nil), "db.GetWorkerFullInfoReply")
+	proto.RegisterType((*GetSuggestionsRequest)(nil), "db.GetSuggestionsRequest")
+	proto.RegisterType((*GetSuggestionsReply)(nil), "db.GetSuggestionsReply")
+	proto.RegisterType((*GetShouldStopWorkersRequest)(nil), "db.GetShouldStopWorkersRequest")
+	proto.RegisterType((*GetShouldStopWorkersReply)(nil), "db.GetShouldStopWorkersReply")
+	proto.RegisterType((*GetMetricsRequest)(nil), "db.GetMetricsRequest")
+	proto.RegisterType((*GetMetricsReply)(nil), "db.GetMetricsReply")
+	proto.RegisterType((*ReportMetricsLogsRequest)(nil), "db.ReportMetricsLogsRequest")
+	proto.RegisterType((*ReportMetricsLogsReply)(nil), "db.ReportMetricsLogsReply")
+	proto.RegisterType((*ModelInfo)(nil), "db.ModelInfo")
+	proto.RegisterType((*DataSetInfo)(nil), "db.DataSetInfo")
+	proto.RegisterType((*SetSuggestionParametersRequest)(nil), "db.SetSuggestionParametersRequest")
+	proto.RegisterType((*SetSuggestionParametersReply)(nil), "db.SetSuggestionParametersReply")
+	proto.RegisterType((*GetSuggestionParametersRequest)(nil), "db.GetSuggestionParametersRequest")
+	proto.RegisterType((*GetSuggestionParametersReply)(nil), "db.GetSuggestionParametersReply")
+	proto.RegisterType((*GetSuggestionParameterListRequest)(nil), "db.GetSuggestionParameterListRequest")
+	proto.RegisterType((*SuggestionParameterSet)(nil), "db.SuggestionParameterSet")
+	proto.RegisterType((*GetSuggestionParameterListReply)(nil), "db.GetSuggestionParameterListReply")
+	proto.RegisterType((*StopSuggestionRequest)(nil), "db.StopSuggestionRequest")
+	proto.RegisterType((*StopSuggestionReply)(nil), "db.StopSuggestionReply")
+	proto.RegisterType((*SetEarlyStoppingParametersRequest)(nil), "db.SetEarlyStoppingParametersRequest")
+	proto.RegisterType((*SetEarlyStoppingParametersReply)(nil), "db.SetEarlyStoppingParametersReply")
+	proto.RegisterType((*GetEarlyStoppingParametersRequest)(nil), "db.GetEarlyStoppingParametersRequest")
+	proto.RegisterType((*GetEarlyStoppingParametersReply)(nil), "db.GetEarlyStoppingParametersReply")
+	proto.RegisterType((*GetEarlyStoppingParameterListRequest)(nil), "db.GetEarlyStoppingParameterListRequest")
+	proto.RegisterType((*EarlyStoppingParameterSet)(nil), "db.EarlyStoppingParameterSet")
+	proto.RegisterType((*GetEarlyStoppingParameterListReply)(nil), "db.GetEarlyStoppingParameterListReply")
 }
 
 func init() { proto.RegisterFile("dbif.proto", fileDescriptor_23a2d42ab756d553) }
 
 var fileDescriptor_23a2d42ab756d553 = []byte{
-	// 892 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x55, 0xdd, 0x6e, 0xe2, 0x56,
-	0x10, 0x8e, 0x81, 0x04, 0x3c, 0x86, 0xc4, 0x4c, 0x51, 0xe5, 0xa5, 0x6a, 0x8b, 0xac, 0xaa, 0x8a,
-	0x76, 0x37, 0xb4, 0xa2, 0xbd, 0xd8, 0x5e, 0xf4, 0x82, 0x25, 0x6c, 0x62, 0x6d, 0x02, 0x91, 0x71,
-	0xfa, 0x7b, 0x81, 0x8e, 0xe1, 0x84, 0x3a, 0x32, 0xb6, 0xeb, 0x63, 0xb6, 0x25, 0x0f, 0xd1, 0x17,
-	0xe9, 0x4d, 0x2f, 0xfa, 0x02, 0x7d, 0xb3, 0xea, 0x8c, 0x31, 0xc6, 0x6c, 0xb4, 0xaa, 0xaa, 0xbd,
-	0xf3, 0x7c, 0x33, 0xe7, 0x3b, 0x33, 0xdf, 0xcc, 0x1c, 0x03, 0xcc, 0x5d, 0xef, 0xae, 0x1b, 0xc5,
-	0x61, 0x12, 0x62, 0x69, 0xee, 0x9a, 0xff, 0x28, 0xa0, 0x8e, 0x23, 0x1e, 0xb3, 0xc4, 0x0b, 0x03,
-	0xfc, 0x0c, 0x1a, 0x61, 0x66, 0x38, 0xeb, 0x88, 0x1b, 0x4a, 0x47, 0x39, 0x55, 0xed, 0x22, 0x88,
-	0xaf, 0xa1, 0x19, 0xb1, 0x98, 0x2d, 0x79, 0xc2, 0xe3, 0xe9, 0x2c, 0x0c, 0xee, 0xbc, 0x85, 0x30,
-	0x4a, 0x1d, 0xe5, 0x54, 0xeb, 0x7d, 0xd2, 0x9d, 0xbb, 0xdd, 0x2d, 0x5f, 0xf7, 0x26, 0x0b, 0x1b,
-	0xa4, 0x51, 0xb6, 0x1e, 0xed, 0x21, 0xed, 0x3e, 0xe8, 0xfb, 0x51, 0x78, 0x06, 0xd5, 0x8c, 0x56,
-	0xe9, 0x94, 0x4f, 0xb5, 0xde, 0x07, 0x92, 0x76, 0x2f, 0xcc, 0xce, 0x62, 0xcc, 0xbf, 0x15, 0x50,
-	0x47, 0x4c, 0xa4, 0x30, 0xf6, 0xa0, 0xbe, 0x88, 0x59, 0xf4, 0xcb, 0x26, 0x33, 0x2a, 0x41, 0xeb,
-	0x9d, 0x48, 0x86, 0x0b, 0x89, 0x6f, 0x4e, 0x6b, 0x8b, 0xdc, 0xc0, 0x17, 0x00, 0xdb, 0x12, 0xb3,
-	0x52, 0x0c, 0x79, 0x62, 0x4b, 0x9b, 0x17, 0x25, 0xec, 0x9d, 0xd8, 0xf6, 0x37, 0x00, 0xb9, 0x07,
-	0x9f, 0x81, 0xba, 0xf5, 0x6d, 0x52, 0x6f, 0x14, 0x14, 0xb1, 0x73, 0xbf, 0xe9, 0x83, 0xb6, 0x93,
-	0x10, 0x7e, 0x0c, 0x10, 0xac, 0x96, 0x53, 0x9f, 0xad, 0x79, 0x2c, 0x28, 0xeb, 0x43, 0x5b, 0x0d,
-	0x56, 0xcb, 0x2b, 0x02, 0xa4, 0xdb, 0x0b, 0xa2, 0x55, 0x32, 0x15, 0xde, 0x03, 0x37, 0x4a, 0x9d,
-	0xb2, 0x74, 0x13, 0x32, 0xf1, 0x1e, 0x38, 0x7e, 0x0a, 0x5a, 0xb8, 0x4a, 0xb6, 0xfe, 0x32, 0xf9,
-	0x21, 0x85, 0x64, 0x80, 0x69, 0x42, 0xfd, 0x92, 0xfb, 0x7e, 0x68, 0xf3, 0x5f, 0x57, 0x5c, 0x24,
-	0x88, 0x50, 0x09, 0xd8, 0x32, 0xeb, 0x30, 0x7d, 0x9b, 0x9f, 0x03, 0x6c, 0x62, 0x22, 0x7f, 0x8d,
-	0x06, 0x54, 0x97, 0x5c, 0x08, 0xb6, 0xc8, 0x82, 0x32, 0xd3, 0xfc, 0x43, 0x81, 0x93, 0xbd, 0x6e,
-	0x3c, 0xc6, 0x87, 0x2f, 0xe0, 0x38, 0x1f, 0x94, 0x44, 0xce, 0x93, 0x94, 0xf6, 0xb8, 0xd7, 0x2c,
-	0xb4, 0x53, 0xce, 0x94, 0xdd, 0x88, 0x76, 0x4d, 0x3c, 0x83, 0xda, 0x1d, 0x67, 0xc2, 0x73, 0x7d,
-	0x59, 0x8b, 0x6c, 0x07, 0x9d, 0x79, 0xb5, 0xc1, 0x26, 0x11, 0x9b, 0x71, 0x7b, 0x1b, 0x62, 0x7e,
-	0x01, 0x65, 0x87, 0x3d, 0x9e, 0x43, 0x0b, 0x0e, 0xdf, 0x30, 0x7f, 0x95, 0x5e, 0xad, 0xda, 0xa9,
-	0x61, 0xfe, 0x0c, 0x8d, 0x02, 0x17, 0xea, 0x50, 0x5e, 0xb2, 0xdf, 0x37, 0x27, 0xe5, 0x27, 0x21,
-	0x5e, 0xb0, 0x39, 0x26, 0x3f, 0x25, 0xbd, 0xef, 0x89, 0x84, 0xc4, 0x55, 0x6d, 0xfa, 0x96, 0x98,
-	0x48, 0x78, 0x64, 0x54, 0xd2, 0x2b, 0xe5, 0xb7, 0xf9, 0x57, 0x05, 0xb4, 0x49, 0xb2, 0x9a, 0xaf,
-	0xdf, 0x21, 0x4d, 0x0b, 0x0e, 0xc3, 0xdf, 0x02, 0x1e, 0x67, 0x69, 0x91, 0x81, 0x7d, 0x68, 0x86,
-	0x51, 0xe2, 0x2d, 0xbd, 0x07, 0x1a, 0x91, 0x54, 0xb3, 0x32, 0x69, 0xd6, 0x4a, 0xe7, 0x28, 0x77,
-	0x92, 0x6c, 0x7a, 0xb8, 0x87, 0xe0, 0xb3, 0x3d, 0x8a, 0x45, 0xc8, 0x7c, 0xca, 0x4e, 0x29, 0x06,
-	0x5f, 0x84, 0xcc, 0xc7, 0xeb, 0xc7, 0x36, 0xf9, 0x90, 0xf4, 0xee, 0xc8, 0xfb, 0x76, 0xaa, 0xf8,
-	0x0f, 0xbb, 0x8c, 0x67, 0x80, 0x6c, 0x36, 0xe3, 0x42, 0x4c, 0x23, 0x1e, 0x2f, 0x3d, 0x21, 0x68,
-	0x9d, 0x8e, 0x48, 0xae, 0x66, 0xea, 0xb9, 0xc9, 0x1d, 0xf8, 0x11, 0x54, 0x12, 0xb6, 0x10, 0x46,
-	0x95, 0x16, 0xa5, 0x2a, 0x2f, 0x74, 0xd8, 0xc2, 0x26, 0x10, 0xbf, 0x84, 0x56, 0xe8, 0xde, 0xf3,
-	0x59, 0xe2, 0xbd, 0xe1, 0x53, 0x6a, 0xda, 0x94, 0x44, 0xac, 0x91, 0x5e, 0xb8, 0xf5, 0x7d, 0x27,
-	0x5d, 0x23, 0x29, 0x29, 0xcd, 0x6b, 0x12, 0x7b, 0x33, 0x61, 0xa8, 0x74, 0x65, 0x66, 0x4a, 0xb1,
-	0xef, 0x43, 0xd7, 0x9a, 0x1b, 0x90, 0x8a, 0x4d, 0x06, 0x3e, 0x07, 0x08, 0x98, 0xc8, 0x9e, 0x09,
-	0x8d, 0xaa, 0x6e, 0x14, 0x96, 0xde, 0x56, 0x83, 0xed, 0xb3, 0xf2, 0x04, 0x6a, 0xf7, 0xa1, 0x9b,
-	0x76, 0xa4, 0x9e, 0xae, 0xc3, 0x7d, 0xe8, 0x4a, 0xc9, 0xdf, 0xc7, 0x13, 0x76, 0x09, 0x38, 0x88,
-	0x39, 0x4b, 0x38, 0x29, 0x9e, 0xed, 0x68, 0x0f, 0xea, 0x42, 0xda, 0x8f, 0x3c, 0x65, 0x3b, 0x9d,
-	0xb1, 0x35, 0x91, 0x1b, 0xe6, 0x19, 0xe8, 0x05, 0x26, 0xb9, 0xc9, 0x4f, 0xa0, 0x96, 0xf2, 0x78,
-	0xf3, 0x6c, 0x95, 0xc9, 0xb6, 0xe6, 0xe6, 0x73, 0x38, 0xb9, 0xe0, 0x49, 0xe1, 0xd6, 0x77, 0x44,
-	0x0f, 0xa0, 0x91, 0x47, 0x4b, 0xe6, 0xff, 0x91, 0xe1, 0xd3, 0x5b, 0x68, 0x14, 0x76, 0x1f, 0x75,
-	0xa8, 0xdf, 0x8e, 0x5e, 0x8f, 0xc6, 0xdf, 0x8f, 0xa6, 0xce, 0x8f, 0x37, 0x43, 0xfd, 0x00, 0x01,
-	0x8e, 0xce, 0xc7, 0xb7, 0x2f, 0xaf, 0x86, 0xba, 0x82, 0x55, 0x28, 0x5b, 0x23, 0x47, 0x2f, 0x61,
-	0x1d, 0x6a, 0xe7, 0xd6, 0x64, 0x60, 0x0f, 0x9d, 0xa1, 0x5e, 0xc6, 0x13, 0xd0, 0x06, 0x7d, 0x67,
-	0x78, 0x31, 0xb6, 0xad, 0x41, 0xff, 0x4a, 0xaf, 0x3c, 0xbd, 0x04, 0x7d, 0x7f, 0x3d, 0xd0, 0x80,
-	0x56, 0xc6, 0x3c, 0xbe, 0x71, 0xac, 0x6b, 0xeb, 0xa7, 0xbe, 0x63, 0x8d, 0x47, 0xfa, 0x81, 0x24,
-	0xbb, 0xb6, 0x46, 0x12, 0x91, 0x77, 0x48, 0xab, 0xff, 0x43, 0x6a, 0x95, 0x7a, 0x7f, 0x2a, 0x50,
-	0x39, 0x7f, 0x69, 0xbd, 0xc2, 0x2e, 0xd4, 0x26, 0x6c, 0x4d, 0x4f, 0x22, 0xea, 0xb2, 0xa6, 0xdd,
-	0x17, 0xb4, 0x7d, 0xbc, 0x83, 0x44, 0xfe, 0xda, 0x3c, 0xc0, 0x6f, 0x41, 0xdb, 0xd1, 0x1e, 0x3f,
-	0x94, 0x01, 0x6f, 0xb7, 0xb5, 0xdd, 0x7a, 0x0b, 0x4f, 0x8f, 0x7f, 0x0d, 0xb5, 0x4c, 0x5d, 0xa4,
-	0x71, 0xd9, 0xeb, 0x4c, 0xbb, 0x59, 0x04, 0xe9, 0x94, 0x7b, 0x44, 0x3f, 0xf3, 0xaf, 0xfe, 0x0d,
-	0x00, 0x00, 0xff, 0xff, 0x3d, 0x11, 0x3a, 0x8a, 0xda, 0x07, 0x00, 0x00,
+	// 2470 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x1a, 0x4d, 0x77, 0xdb, 0xc6,
+	0x51, 0x20, 0x45, 0x49, 0x1c, 0x7e, 0x08, 0x5a, 0x7d, 0x51, 0xb4, 0x65, 0xcb, 0x88, 0x9d, 0xfa,
+	0x39, 0x96, 0x92, 0xd0, 0xcd, 0x8b, 0x13, 0x27, 0x69, 0x65, 0x89, 0x66, 0xf8, 0x4c, 0x91, 0x7a,
+	0x20, 0x6d, 0xa7, 0xe9, 0x81, 0x85, 0xc4, 0x15, 0x0d, 0x07, 0x24, 0x50, 0x2c, 0x68, 0x47, 0xfe,
+	0x01, 0xbd, 0xb5, 0x3d, 0xe5, 0xd4, 0x3f, 0xd1, 0x43, 0xde, 0xeb, 0xa5, 0x97, 0xde, 0x7a, 0xe9,
+	0xa9, 0x87, 0xfe, 0x88, 0xfe, 0x89, 0xbe, 0xdd, 0xc5, 0xc7, 0x02, 0x04, 0x40, 0x46, 0x4d, 0x72,
+	0xc3, 0xce, 0xf7, 0xcc, 0xee, 0xcc, 0xce, 0x2c, 0x09, 0x30, 0x38, 0xd3, 0x2f, 0x0e, 0x2c, 0xdb,
+	0x74, 0x4c, 0x94, 0x19, 0x9c, 0x29, 0xbf, 0x85, 0xd2, 0x13, 0xac, 0x11, 0xfd, 0xcc, 0xc0, 0x5d,
+	0x4b, 0x3b, 0xc7, 0x48, 0x86, 0xec, 0x48, 0xfb, 0xb6, 0x22, 0xed, 0x49, 0x77, 0xf3, 0x2a, 0xfd,
+	0x64, 0x10, 0x7d, 0x5c, 0xc9, 0xb8, 0x10, 0x7d, 0x8c, 0x10, 0x2c, 0x1a, 0x3a, 0x71, 0x2a, 0xd9,
+	0xbd, 0xec, 0xdd, 0xbc, 0xca, 0xbe, 0x29, 0x8c, 0x38, 0xd8, 0xaa, 0x2c, 0x32, 0x32, 0xf6, 0xad,
+	0xc8, 0x50, 0xee, 0x62, 0x03, 0x9f, 0x3b, 0x9d, 0x31, 0x56, 0xb1, 0x65, 0x5c, 0x2a, 0x08, 0x64,
+	0x01, 0xf2, 0xfb, 0x09, 0x26, 0x8e, 0xf2, 0x27, 0x09, 0x56, 0x4f, 0x35, 0x5b, 0x1b, 0x61, 0x07,
+	0xdb, 0x47, 0xe6, 0xf8, 0x42, 0x1f, 0x52, 0x69, 0x63, 0x6d, 0x84, 0x5d, 0x33, 0xd8, 0x37, 0x7a,
+	0x08, 0x65, 0xcb, 0x23, 0xeb, 0x3b, 0x97, 0x16, 0x66, 0x26, 0x95, 0x6b, 0x6b, 0x07, 0x83, 0xb3,
+	0x03, 0x5f, 0x40, 0xef, 0xd2, 0xc2, 0x6a, 0xc9, 0x12, 0x97, 0x68, 0x1f, 0x56, 0x2e, 0x5c, 0x27,
+	0x2b, 0xd9, 0x3d, 0xe9, 0x6e, 0x81, 0xf3, 0x84, 0x1c, 0x57, 0x7d, 0x12, 0xc5, 0x84, 0xbc, 0x2f,
+	0xee, 0x47, 0xb6, 0x64, 0x03, 0x72, 0xaf, 0x35, 0x63, 0xc2, 0xcd, 0xc8, 0xab, 0x7c, 0xa1, 0xfc,
+	0x59, 0x82, 0xd2, 0x09, 0x76, 0x6c, 0xfd, 0x9c, 0xb4, 0xcc, 0x61, 0x17, 0x3b, 0xe8, 0x1a, 0xe4,
+	0xdf, 0x98, 0xf6, 0x37, 0xd8, 0xee, 0xeb, 0x03, 0x57, 0xf5, 0x0a, 0x07, 0x34, 0x07, 0xe8, 0x43,
+	0x28, 0x8e, 0x38, 0x75, 0xdf, 0x30, 0x87, 0xa4, 0x92, 0xd9, 0xcb, 0xde, 0x2d, 0xd4, 0xca, 0x54,
+	0x79, 0x20, 0x45, 0x2d, 0x8c, 0xfc, 0x6f, 0x82, 0x0e, 0xa0, 0xe4, 0xca, 0x23, 0x8e, 0xe6, 0x4c,
+	0x08, 0xd3, 0x5f, 0xae, 0xe5, 0x29, 0x4f, 0xd7, 0xd1, 0x1c, 0xac, 0x16, 0x39, 0xbe, 0xcb, 0xd0,
+	0xca, 0x03, 0x58, 0x76, 0x45, 0xc5, 0x06, 0xc0, 0x77, 0x23, 0x23, 0xba, 0xf1, 0x19, 0xc8, 0x2e,
+	0xd3, 0x73, 0xba, 0xee, 0xe9, 0x23, 0x4c, 0xb9, 0x1d, 0x3d, 0xe0, 0xa6, 0xdf, 0x09, 0xdc, 0x6d,
+	0x80, 0xc0, 0xfa, 0x58, 0xad, 0xf7, 0x61, 0x89, 0x91, 0x7a, 0x1e, 0x6f, 0x08, 0x1e, 0xfb, 0x1a,
+	0x55, 0x97, 0x46, 0xf9, 0x15, 0xac, 0x77, 0x27, 0xc3, 0x21, 0x26, 0x8e, 0x6e, 0x8e, 0xd3, 0xf7,
+	0x33, 0xde, 0xa0, 0xc7, 0xb0, 0x55, 0xd7, 0x6c, 0xe3, 0xb2, 0xeb, 0x98, 0x96, 0xa5, 0x8f, 0x87,
+	0x57, 0x91, 0xf1, 0x3e, 0x64, 0x7b, 0xda, 0xf0, 0x07, 0x30, 0x7c, 0x03, 0xa5, 0xae, 0x33, 0x19,
+	0x5c, 0x76, 0x5e, 0x63, 0xfb, 0xb5, 0x8e, 0xdf, 0x24, 0xb1, 0x9a, 0x6f, 0xc6, 0xd8, 0xf6, 0x58,
+	0xd9, 0x02, 0x95, 0x21, 0xa3, 0x0f, 0xdc, 0x83, 0x95, 0xd1, 0x07, 0x68, 0x0f, 0x0a, 0x03, 0x4c,
+	0xce, 0x6d, 0xdd, 0xa2, 0x11, 0x70, 0x13, 0x53, 0x04, 0x29, 0x7f, 0x93, 0x20, 0xd7, 0xb3, 0x75,
+	0xcd, 0x40, 0x3b, 0xb0, 0xe2, 0xd0, 0x8f, 0xe0, 0xb8, 0x2d, 0xb3, 0x75, 0x73, 0x40, 0x51, 0x84,
+	0x5a, 0x44, 0x51, 0x5c, 0xdf, 0x32, 0x5b, 0x37, 0x07, 0xa8, 0x06, 0xc1, 0xf1, 0xee, 0x13, 0xcc,
+	0x0b, 0x42, 0xa1, 0x56, 0x0a, 0xa5, 0x81, 0x5a, 0xf4, 0x69, 0xe8, 0xc9, 0xfe, 0x05, 0xac, 0x9a,
+	0x67, 0xaf, 0xf0, 0xb9, 0xa3, 0xbf, 0xc6, 0x7d, 0x1e, 0x00, 0x6e, 0x59, 0xd9, 0x07, 0xb3, 0xbd,
+	0x44, 0xd7, 0x60, 0xd1, 0xd1, 0x86, 0xa4, 0x92, 0x63, 0x32, 0x97, 0xa9, 0xcc, 0x9e, 0x36, 0x54,
+	0x19, 0x50, 0xf9, 0xb7, 0x04, 0x4b, 0x2f, 0xd8, 0x81, 0x4d, 0x4f, 0x95, 0x14, 0xe3, 0x45, 0x97,
+	0xb3, 0x61, 0x97, 0x11, 0x2c, 0xd2, 0x6c, 0xf5, 0x6a, 0x19, 0xcd, 0x70, 0x74, 0x0b, 0x96, 0xdc,
+	0xd4, 0xc9, 0x45, 0x53, 0xc7, 0x45, 0x20, 0x05, 0x8a, 0x3d, 0x3c, 0xb2, 0x0c, 0xcd, 0xc1, 0xa7,
+	0x9a, 0xf3, 0xb2, 0xb2, 0xc4, 0xd8, 0x8b, 0x8e, 0x00, 0xf3, 0xbd, 0x5a, 0x8e, 0xf3, 0xea, 0x7b,
+	0x09, 0xf2, 0x6d, 0x8d, 0xb8, 0x35, 0xb0, 0x06, 0xc5, 0xa1, 0xad, 0x59, 0x2f, 0xfb, 0xe7, 0x6c,
+	0xcd, 0x7c, 0x2b, 0xd4, 0x56, 0x29, 0x4b, 0x83, 0xc2, 0x39, 0x99, 0x5a, 0x18, 0x06, 0x0b, 0xf4,
+	0x10, 0xc0, 0xb4, 0xb0, 0xad, 0xd1, 0xed, 0x25, 0xcc, 0xe3, 0x42, 0xad, 0x42, 0x39, 0x7c, 0xb1,
+	0x07, 0x1d, 0x1f, 0xaf, 0x0a, 0xb4, 0xd5, 0x4f, 0x00, 0x02, 0x0c, 0x7a, 0x0f, 0xf2, 0x3e, 0xae,
+	0x22, 0x05, 0xbb, 0xea, 0x93, 0xa8, 0x01, 0x5e, 0x31, 0xa0, 0x20, 0x18, 0x84, 0x76, 0x01, 0xc6,
+	0x93, 0x51, 0xdf, 0xd0, 0x2e, 0xb1, 0x4d, 0x98, 0xd5, 0x39, 0x35, 0x3f, 0x9e, 0x8c, 0x5a, 0x0c,
+	0x40, 0xd1, 0xfa, 0xd8, 0x9a, 0x38, 0x7d, 0xa2, 0xbf, 0xc5, 0x2c, 0x93, 0x73, 0x6a, 0x9e, 0x41,
+	0xba, 0xfa, 0x5b, 0x8c, 0x6e, 0x42, 0xc1, 0x9c, 0x38, 0x3e, 0x3e, 0xcb, 0xf0, 0xc0, 0x41, 0x94,
+	0x40, 0xf9, 0x87, 0x04, 0x79, 0xdf, 0x0c, 0x74, 0x1b, 0x4a, 0xbe, 0x21, 0x6c, 0xcf, 0xf8, 0x09,
+	0x08, 0x03, 0xd1, 0x53, 0x58, 0x0b, 0x0e, 0x2a, 0x0f, 0xa7, 0x17, 0x9d, 0x1b, 0x21, 0xb7, 0x0e,
+	0x22, 0x17, 0x11, 0x51, 0x65, 0x2b, 0x02, 0xa9, 0x1e, 0x82, 0x1c, 0xa5, 0x42, 0xfb, 0xb0, 0xec,
+	0x89, 0xe5, 0xd1, 0x5a, 0x0f, 0xe5, 0x80, 0xbb, 0x55, 0x1e, 0x8d, 0xf2, 0xd7, 0x45, 0x28, 0xb0,
+	0x34, 0x4f, 0xb9, 0xee, 0xe2, 0x93, 0xfc, 0x10, 0xd6, 0x4c, 0xcb, 0xd1, 0x47, 0xfa, 0x5b, 0x66,
+	0x2f, 0xbf, 0x7d, 0x78, 0x31, 0xdf, 0xe0, 0x9e, 0x04, 0x48, 0x76, 0x01, 0xc9, 0x66, 0x04, 0x82,
+	0xde, 0x8b, 0x88, 0x18, 0x9a, 0x9a, 0xc1, 0x8e, 0xba, 0x14, 0x26, 0x6e, 0x98, 0x9a, 0x81, 0x4e,
+	0xe2, 0x22, 0x97, 0x63, 0x91, 0xdb, 0xe3, 0x19, 0xe0, 0x7b, 0x31, 0x47, 0xec, 0xd0, 0x3e, 0x20,
+	0xed, 0xfc, 0x1c, 0x13, 0xd2, 0xb7, 0xb0, 0x3d, 0xd2, 0x09, 0x61, 0xe7, 0x74, 0x89, 0xf5, 0x11,
+	0x6b, 0x1c, 0x73, 0x1a, 0x20, 0x52, 0xb3, 0x05, 0x7d, 0x00, 0x1b, 0x91, 0x4a, 0xd2, 0x67, 0x41,
+	0x5c, 0x61, 0xf1, 0x42, 0xe1, 0x72, 0xd2, 0xa6, 0x21, 0xad, 0xc0, 0xb2, 0x7b, 0x29, 0x56, 0xf2,
+	0x4c, 0xa5, 0xb7, 0xa4, 0xc1, 0x7e, 0x65, 0x9e, 0x35, 0x07, 0x15, 0xe0, 0xc1, 0x66, 0x0b, 0x74,
+	0x1f, 0x60, 0xac, 0x11, 0x2f, 0xff, 0x0a, 0xcc, 0xeb, 0x52, 0x28, 0x9b, 0xd4, 0xfc, 0xd8, 0xcf,
+	0xd7, 0x1d, 0x58, 0x79, 0x65, 0x9e, 0xf1, 0x1d, 0x29, 0xf2, 0x82, 0xf2, 0xca, 0x3c, 0xa3, 0x21,
+	0xff, 0x31, 0x8e, 0xcc, 0x97, 0x80, 0x8e, 0x6c, 0xac, 0x39, 0x98, 0x45, 0xdc, 0xed, 0x9d, 0x68,
+	0x8d, 0xe0, 0xf5, 0x6d, 0xba, 0x46, 0x08, 0x3b, 0xa3, 0x16, 0x48, 0xb0, 0x50, 0xf6, 0x41, 0x0e,
+	0x49, 0xb2, 0x8c, 0xcb, 0x50, 0x9d, 0x94, 0x42, 0x75, 0x52, 0x79, 0x1f, 0xd0, 0x31, 0x36, 0x70,
+	0x44, 0x71, 0x0a, 0xc3, 0x3e, 0xc8, 0x21, 0x86, 0x19, 0xf2, 0xef, 0xc3, 0x6a, 0x03, 0x3b, 0xf3,
+	0x0a, 0x3f, 0x82, 0x52, 0x40, 0x4d, 0x25, 0x5f, 0x25, 0x02, 0x9b, 0xb0, 0xee, 0x09, 0x69, 0xe9,
+	0xc4, 0xf1, 0x1a, 0xd1, 0x0e, 0xac, 0x85, 0xc1, 0x54, 0xfe, 0xa7, 0xb0, 0xca, 0xe5, 0x9b, 0xee,
+	0x8d, 0xec, 0x6d, 0xd7, 0x9a, 0xaf, 0xc2, 0xbb, 0xab, 0xd5, 0x32, 0x11, 0x97, 0x44, 0xf9, 0xc8,
+	0xdb, 0x33, 0x76, 0xc9, 0x7a, 0xde, 0xdd, 0x84, 0x1c, 0xbb, 0x68, 0x5c, 0x53, 0xd9, 0x45, 0xc2,
+	0x09, 0x38, 0x3c, 0xd8, 0x20, 0x97, 0xcd, 0x0d, 0x60, 0xc2, 0x05, 0x4d, 0xc9, 0x1b, 0xd8, 0x61,
+	0xb4, 0x64, 0x8e, 0x08, 0x3e, 0x80, 0xb2, 0x40, 0x4e, 0x65, 0xdf, 0x82, 0x25, 0x26, 0xcb, 0xf3,
+	0x4c, 0xb0, 0xc8, 0x45, 0xb8, 0x9b, 0x14, 0x72, 0x23, 0xc5, 0xa2, 0x0f, 0xd8, 0x26, 0x09, 0xd6,
+	0xcf, 0x74, 0xf9, 0x11, 0x6c, 0xaa, 0x78, 0xa8, 0x13, 0x07, 0xdb, 0xfc, 0x5a, 0xf7, 0xb4, 0x28,
+	0xb0, 0xc4, 0x2f, 0x73, 0x97, 0x15, 0x28, 0xab, 0x4b, 0xe2, 0x62, 0x94, 0x1a, 0xac, 0x47, 0x99,
+	0xa9, 0xd2, 0xb4, 0xc6, 0x40, 0x31, 0x01, 0xd1, 0xbe, 0x8e, 0xd3, 0xcf, 0x11, 0x36, 0x7a, 0x6d,
+	0xf9, 0xd2, 0x78, 0x03, 0x9a, 0x57, 0xf3, 0x9e, 0x38, 0x42, 0xaf, 0x2d, 0x9d, 0x56, 0x8a, 0x91,
+	0x45, 0x4f, 0x3e, 0xab, 0xc8, 0x2b, 0x2a, 0xe8, 0xe4, 0xc8, 0x85, 0xb0, 0xc9, 0x47, 0x54, 0x48,
+	0xa7, 0xa1, 0x0b, 0x76, 0xe0, 0xe6, 0xb7, 0x41, 0x0c, 0x79, 0x26, 0xdc, 0xb2, 0x84, 0x9c, 0xcd,
+	0x46, 0x9c, 0xfd, 0x98, 0xed, 0x9e, 0xa8, 0x1a, 0xdd, 0x86, 0x65, 0x8e, 0xf6, 0x36, 0x5d, 0x0c,
+	0xac, 0x87, 0x52, 0xbe, 0x86, 0xca, 0x33, 0x6b, 0xa0, 0x39, 0xf8, 0x85, 0x3f, 0x1c, 0x78, 0x63,
+	0x5b, 0x7a, 0xdf, 0x15, 0x74, 0x4b, 0x99, 0x84, 0x6e, 0x49, 0xa9, 0xc0, 0x56, 0x8c, 0x6c, 0x1a,
+	0x96, 0xef, 0x24, 0xa8, 0xf8, 0xf6, 0x3e, 0x99, 0x18, 0x46, 0x73, 0x7c, 0x61, 0xfe, 0x74, 0xe1,
+	0x41, 0xef, 0xc2, 0xaa, 0x39, 0x36, 0x2e, 0xfb, 0xb4, 0x49, 0x23, 0x0e, 0x9d, 0xa9, 0xd8, 0x75,
+	0xb8, 0xa2, 0x96, 0x28, 0xb8, 0xc5, 0xa0, 0x2d, 0x73, 0xa8, 0xfc, 0x45, 0x82, 0x72, 0xd8, 0x28,
+	0x7a, 0x3c, 0x5f, 0xcc, 0x38, 0x9e, 0xd3, 0x5d, 0x72, 0x66, 0x76, 0x97, 0x1c, 0x1d, 0xf1, 0xb2,
+	0x33, 0x47, 0x3c, 0xe5, 0x2b, 0xd8, 0x8a, 0x09, 0x1a, 0xdd, 0xeb, 0x2f, 0x60, 0xcd, 0x75, 0xfe,
+	0x62, 0x62, 0x18, 0x7d, 0x7d, 0x7c, 0x61, 0x7a, 0xbb, 0x8e, 0x02, 0x7b, 0x7d, 0x9e, 0xd5, 0x37,
+	0xa1, 0x35, 0x51, 0xfe, 0x25, 0xc1, 0x26, 0x2d, 0x8c, 0xfe, 0x34, 0x35, 0xcf, 0x59, 0xfd, 0x10,
+	0x36, 0x88, 0xcf, 0xd0, 0xd7, 0x8c, 0xa1, 0x69, 0xeb, 0xce, 0xcb, 0x91, 0xbb, 0x31, 0xeb, 0x01,
+	0xee, 0xd0, 0x43, 0xa1, 0x3b, 0x50, 0xb6, 0xb9, 0xe0, 0xfe, 0x78, 0x32, 0x3a, 0xc3, 0x36, 0xdb,
+	0xa9, 0x9c, 0x5a, 0x72, 0xa1, 0x6d, 0x06, 0x44, 0xb7, 0xa1, 0x6c, 0x98, 0xc3, 0xbe, 0x90, 0x8d,
+	0x8b, 0x2c, 0x1b, 0x8b, 0x86, 0x39, 0x7c, 0xe1, 0x27, 0xe4, 0x0e, 0xac, 0xb0, 0x88, 0x52, 0xd3,
+	0x72, 0xdc, 0x34, 0xb6, 0x6e, 0x0e, 0x94, 0x87, 0xbc, 0xfc, 0x8b, 0xee, 0xcc, 0x59, 0x06, 0xff,
+	0x28, 0xc1, 0x35, 0xca, 0xfa, 0xd2, 0x9c, 0x18, 0x83, 0x1f, 0x56, 0x3f, 0x1e, 0x42, 0x05, 0xd3,
+	0x69, 0xb2, 0x4f, 0xdc, 0x71, 0x72, 0x2a, 0x26, 0x5b, 0x58, 0x9c, 0x36, 0x83, 0xb0, 0xa4, 0x78,
+	0x72, 0x0a, 0x3b, 0xf1, 0xe6, 0x50, 0x7f, 0x1e, 0xc0, 0x16, 0x61, 0x18, 0xa6, 0x52, 0x8c, 0x97,
+	0xc4, 0xe2, 0xb5, 0x4e, 0x22, 0x7c, 0xcd, 0x01, 0x51, 0x6c, 0x56, 0x92, 0xdc, 0x33, 0xf6, 0xff,
+	0x97, 0xc5, 0x77, 0xa0, 0xe4, 0x9d, 0x63, 0xda, 0x9b, 0x11, 0xf7, 0xc9, 0xc8, 0x3b, 0xdc, 0xb4,
+	0x2b, 0x23, 0x4a, 0x9b, 0x95, 0x27, 0x5f, 0x27, 0xb5, 0xfd, 0x11, 0xc8, 0xc2, 0xf9, 0xa7, 0x59,
+	0x13, 0xba, 0x76, 0x43, 0x8f, 0x25, 0x6a, 0x79, 0x24, 0x2e, 0xa9, 0x0f, 0x15, 0x15, 0x5b, 0xa6,
+	0xed, 0x04, 0x64, 0xf3, 0xb8, 0x12, 0xa7, 0x33, 0x3b, 0xaf, 0xce, 0x0a, 0x6c, 0xc5, 0xe8, 0xa4,
+	0xd5, 0xec, 0xef, 0x12, 0xe4, 0x4f, 0xcc, 0x01, 0xe6, 0x05, 0x63, 0x17, 0x80, 0xeb, 0x17, 0xfa,
+	0xfd, 0x3c, 0x83, 0xb0, 0x0e, 0x35, 0x54, 0xa7, 0x32, 0x91, 0x3a, 0xb5, 0x0f, 0xe0, 0x17, 0x09,
+	0x12, 0x3f, 0x6b, 0x0b, 0x04, 0xe8, 0x4e, 0xd0, 0xed, 0x2e, 0x32, 0xda, 0x82, 0xe0, 0x46, 0xd0,
+	0xfa, 0xee, 0x02, 0x8c, 0xa8, 0x79, 0x7d, 0x8b, 0xce, 0xac, 0xfc, 0x80, 0xe5, 0x19, 0x84, 0x0e,
+	0xac, 0xca, 0x47, 0x50, 0x38, 0xd6, 0x1c, 0xad, 0x8b, 0x1d, 0x66, 0x7f, 0xdc, 0xa4, 0x82, 0x60,
+	0x91, 0xf1, 0x72, 0x7b, 0xd9, 0xb7, 0xf2, 0x1f, 0x09, 0x6e, 0x74, 0xc5, 0x24, 0xf3, 0x6d, 0xfc,
+	0x89, 0x8a, 0x87, 0x98, 0x25, 0xd9, 0x50, 0x96, 0xa0, 0x16, 0x6c, 0x0a, 0xd2, 0x84, 0x10, 0xf2,
+	0xb0, 0x6c, 0xb3, 0xbb, 0x69, 0xda, 0x50, 0x55, 0xb0, 0x21, 0xb0, 0x5e, 0xf9, 0x04, 0xae, 0x27,
+	0x3a, 0xe6, 0x76, 0x6a, 0xbe, 0x21, 0x52, 0x38, 0x5d, 0x1f, 0xc1, 0x8d, 0xc6, 0xcc, 0x98, 0x24,
+	0x31, 0x1b, 0x70, 0xbd, 0x91, 0xa6, 0x37, 0xd1, 0x4b, 0xe9, 0x2a, 0x5e, 0x7e, 0x01, 0xb7, 0xe2,
+	0xb5, 0x09, 0x0d, 0x73, 0x5a, 0x97, 0xf9, 0xbd, 0x04, 0x5b, 0x31, 0xdc, 0xf4, 0x6e, 0x4b, 0xf6,
+	0xf1, 0x2a, 0xfb, 0x9e, 0xe8, 0x76, 0xf6, 0x2a, 0x6e, 0x5f, 0xc2, 0xcd, 0x34, 0xb7, 0x69, 0x9c,
+	0x9f, 0xc3, 0x4e, 0x9c, 0x42, 0xb1, 0x46, 0x55, 0x13, 0x94, 0xd2, 0xc2, 0xb1, 0x4d, 0x62, 0xe1,
+	0x44, 0xa9, 0xc1, 0x26, 0x2d, 0xc5, 0x01, 0xdb, 0x1c, 0x51, 0xde, 0x84, 0xf5, 0x28, 0x0f, 0x2d,
+	0x39, 0xff, 0x95, 0xe0, 0x56, 0x17, 0x3b, 0xf1, 0xaf, 0x97, 0x3f, 0xdf, 0x65, 0x15, 0x49, 0xc3,
+	0xe7, 0xb0, 0x13, 0x11, 0x3a, 0x95, 0x8a, 0x2c, 0x70, 0xf1, 0x66, 0xab, 0xdb, 0x38, 0xde, 0x1d,
+	0xe5, 0x33, 0xb8, 0x99, 0xe6, 0xec, 0x8c, 0x9c, 0xe4, 0x07, 0x7d, 0x76, 0xa8, 0x92, 0xf8, 0xf9,
+	0x89, 0x49, 0xd5, 0x9e, 0xea, 0xb8, 0x74, 0x75, 0xc7, 0x0f, 0xe1, 0x76, 0xa2, 0xea, 0x39, 0xd3,
+	0xf4, 0x9f, 0x12, 0xec, 0xc4, 0x0b, 0x98, 0x91, 0xa9, 0x57, 0x3f, 0x21, 0xa9, 0xd1, 0xc8, 0x5e,
+	0x3d, 0x1a, 0x7f, 0x90, 0x40, 0x99, 0x11, 0x0e, 0xba, 0x19, 0xbf, 0x83, 0xdd, 0x24, 0xf5, 0x62,
+	0x0a, 0xef, 0x26, 0x9b, 0x40, 0xb3, 0xb8, 0x8a, 0x93, 0x50, 0xe4, 0xde, 0x33, 0x28, 0x85, 0x7e,
+	0x03, 0x42, 0x32, 0x14, 0x9f, 0xb5, 0x9f, 0xb6, 0x3b, 0x2f, 0xda, 0xfd, 0xde, 0x6f, 0x4e, 0xeb,
+	0xf2, 0x02, 0x02, 0x58, 0x3a, 0xee, 0x3c, 0x7b, 0xdc, 0xaa, 0xcb, 0x12, 0x5a, 0x86, 0x6c, 0xb3,
+	0xdd, 0x93, 0x33, 0xa8, 0x08, 0x2b, 0xc7, 0xcd, 0xee, 0x91, 0x5a, 0xef, 0xd5, 0xe5, 0x2c, 0x5a,
+	0x85, 0xc2, 0xd1, 0x61, 0xaf, 0xde, 0xe8, 0xa8, 0xcd, 0xa3, 0xc3, 0x96, 0xbc, 0x78, 0xef, 0x4b,
+	0x90, 0xa3, 0x8f, 0x7b, 0xa8, 0x02, 0x1b, 0x9e, 0xe4, 0xce, 0x69, 0xaf, 0x79, 0xd2, 0xfc, 0xfa,
+	0xb0, 0xd7, 0xec, 0xb4, 0xe5, 0x05, 0x2a, 0xec, 0xa4, 0xd9, 0xa6, 0x10, 0xaa, 0x83, 0xae, 0x0e,
+	0xbf, 0xe2, 0xab, 0xcc, 0xbd, 0x06, 0xe4, 0xd8, 0xb4, 0x85, 0x0a, 0xb0, 0x7c, 0x5a, 0x6f, 0x1f,
+	0x37, 0xdb, 0x0d, 0x79, 0x81, 0x2e, 0xd4, 0x67, 0xed, 0x36, 0x5d, 0x48, 0xa8, 0x04, 0xf9, 0xa3,
+	0xce, 0xc9, 0x69, 0xab, 0xde, 0xab, 0x1f, 0xcb, 0x19, 0x6a, 0xef, 0xd3, 0x66, 0xab, 0x55, 0x3f,
+	0x96, 0xb3, 0x28, 0x0f, 0xb9, 0xba, 0xaa, 0x76, 0x54, 0xf9, 0xdb, 0xda, 0x77, 0x45, 0x58, 0x3c,
+	0x7e, 0xdc, 0x7c, 0x82, 0x3e, 0x87, 0x82, 0xf0, 0xa4, 0x84, 0xb6, 0x68, 0xf0, 0xa6, 0x5f, 0xab,
+	0xaa, 0x1b, 0x53, 0x70, 0x5a, 0xad, 0x16, 0xd0, 0x2f, 0x61, 0xc5, 0x7b, 0x78, 0x41, 0xec, 0x15,
+	0x2c, 0xf2, 0x20, 0x54, 0x5d, 0x0b, 0x03, 0x39, 0xd7, 0xe7, 0x50, 0x10, 0xde, 0x99, 0xb8, 0xd2,
+	0xe9, 0x97, 0x2a, 0xae, 0x34, 0xfa, 0x20, 0xa5, 0x2c, 0xa0, 0x5f, 0x43, 0x51, 0x7c, 0xed, 0x41,
+	0xdb, 0xa2, 0x0e, 0x21, 0x7d, 0xaa, 0x9b, 0xd3, 0x08, 0xdf, 0x00, 0xe1, 0x9d, 0x46, 0xf4, 0x5a,
+	0x7c, 0x28, 0x11, 0xbd, 0x0e, 0x9e, 0x44, 0x94, 0x05, 0xf4, 0x31, 0xe4, 0xfd, 0x87, 0x18, 0xb4,
+	0xe1, 0x2a, 0x09, 0x3d, 0xe3, 0x54, 0x51, 0x04, 0x2a, 0x86, 0x8b, 0x2b, 0x5d, 0x17, 0x29, 0xa2,
+	0xe1, 0x0a, 0xa9, 0x7b, 0x02, 0xe5, 0xf0, 0x2b, 0x09, 0xda, 0xa1, 0x64, 0xb1, 0xcf, 0x2e, 0xd5,
+	0xed, 0x38, 0x14, 0x97, 0xf3, 0x29, 0x40, 0xf0, 0x98, 0x80, 0xbc, 0xe0, 0x84, 0x07, 0xa1, 0xea,
+	0x7a, 0x14, 0xcc, 0x79, 0x3b, 0xb0, 0x36, 0x35, 0xf3, 0xa3, 0xeb, 0x94, 0x36, 0xe9, 0x99, 0xa1,
+	0x5a, 0x4d, 0xc0, 0xfa, 0x02, 0xa7, 0x86, 0x5e, 0x2e, 0x30, 0xe9, 0x01, 0x81, 0x0b, 0x8c, 0x9f,
+	0x94, 0x7d, 0xef, 0xbc, 0xdf, 0x3e, 0x3d, 0xef, 0xc2, 0xf3, 0x90, 0xef, 0x9d, 0x38, 0xb2, 0x28,
+	0x0b, 0x48, 0x83, 0xed, 0x84, 0xce, 0x10, 0x29, 0xac, 0x23, 0x48, 0xed, 0xfd, 0xaa, 0x7b, 0xa9,
+	0x34, 0xbe, 0x8a, 0x46, 0x9a, 0x8a, 0xc6, 0x1c, 0x2a, 0x1a, 0xe9, 0x2a, 0x5e, 0x41, 0x35, 0xb9,
+	0x05, 0x42, 0x77, 0x92, 0x25, 0x88, 0x39, 0xf3, 0xce, 0x2c, 0x32, 0x5f, 0x57, 0xf2, 0xd5, 0xcd,
+	0x75, 0xcd, 0xec, 0x63, 0xb8, 0xae, 0x19, 0x1d, 0x80, 0xef, 0x57, 0xaa, 0xae, 0xc6, 0x7c, 0xba,
+	0x1a, 0x33, 0x75, 0x11, 0xd8, 0x4d, 0xbd, 0x8a, 0xd0, 0xdd, 0x54, 0x39, 0x62, 0x24, 0xdf, 0x9d,
+	0x83, 0xd2, 0xcf, 0x85, 0xa9, 0x11, 0x94, 0xe7, 0x42, 0xd2, 0x34, 0xcc, 0x73, 0x21, 0x61, 0x6e,
+	0x65, 0x05, 0xca, 0xff, 0xb3, 0x06, 0x2f, 0x50, 0xd1, 0xff, 0x6e, 0xf0, 0x02, 0x15, 0xf9, 0x8f,
+	0xc7, 0xc2, 0xd9, 0x12, 0xfb, 0x7f, 0xc9, 0x83, 0xff, 0x05, 0x00, 0x00, 0xff, 0xff, 0x3e, 0x26,
+	0x20, 0x58, 0x6d, 0x22, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -983,9 +3876,63 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type DBIFClient interface {
-	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
 	CreateStudy(ctx context.Context, in *CreateStudyRequest, opts ...grpc.CallOption) (*CreateStudyReply, error)
 	GetStudy(ctx context.Context, in *GetStudyRequest, opts ...grpc.CallOption) (*GetStudyReply, error)
+	//*
+	// Delete a Study from DB by Study ID.
+	DeleteStudy(ctx context.Context, in *DeleteStudyRequest, opts ...grpc.CallOption) (*DeleteStudyReply, error)
+	//*
+	// Get all Study Configs from DB.
+	GetStudyList(ctx context.Context, in *GetStudyListRequest, opts ...grpc.CallOption) (*GetStudyListReply, error)
+	//*
+	// Create a Trial from Trial Config.
+	// Generate a unique ID and store the Trial to DB.
+	CreateTrial(ctx context.Context, in *CreateTrialRequest, opts ...grpc.CallOption) (*CreateTrialReply, error)
+	//*
+	// Get a Trial Configs from DB by ID of Study.
+	GetTrials(ctx context.Context, in *GetTrialsRequest, opts ...grpc.CallOption) (*GetTrialsReply, error)
+	//*
+	// Get a Trial Configuration from DB by ID of Trial.
+	GetTrial(ctx context.Context, in *GetTrialRequest, opts ...grpc.CallOption) (*GetTrialReply, error)
+	//*
+	// Create a Worker from Worker Config.
+	// Generate a unique ID and store the Worker to DB.
+	RegisterWorker(ctx context.Context, in *RegisterWorkerRequest, opts ...grpc.CallOption) (*RegisterWorkerReply, error)
+	//*
+	// Get a Worker Configs and Status from DB by ID of Study, Trial or Worker.
+	GetWorkers(ctx context.Context, in *GetWorkersRequest, opts ...grpc.CallOption) (*GetWorkersReply, error)
+	//*
+	// Update a Status of Worker.
+	UpdateWorkerState(ctx context.Context, in *UpdateWorkerStateRequest, opts ...grpc.CallOption) (*UpdateWorkerStateReply, error)
+	//*
+	// Get full information related to specified Workers.
+	// It includes Worker Config, HyperParameters and Metrics Logs.
+	GetWorkerFullInfo(ctx context.Context, in *GetWorkerFullInfoRequest, opts ...grpc.CallOption) (*GetWorkerFullInfoReply, error)
+	//*
+	// Get metrics of workers.
+	// You can get all logs of metrics since start of the worker.
+	GetMetrics(ctx context.Context, in *GetMetricsRequest, opts ...grpc.CallOption) (*GetMetricsReply, error)
+	//*
+	// Create or Update parameter set for a suggestion service.
+	// If you specify an ID of parameter set, it will update the parameter set by your request.
+	// If you don't specify an ID, it will create a new parameter set for corresponding study and suggestion service.
+	// The parameters are key-value format.
+	SetSuggestionParameters(ctx context.Context, in *SetSuggestionParametersRequest, opts ...grpc.CallOption) (*SetSuggestionParametersReply, error)
+	//*
+	// Get suggestion parameter set from DB specified.
+	GetSuggestionParameters(ctx context.Context, in *GetSuggestionParametersRequest, opts ...grpc.CallOption) (*GetSuggestionParametersReply, error)
+	//*
+	// Get all suggestion parameter sets from DB.
+	GetSuggestionParameterList(ctx context.Context, in *GetSuggestionParameterListRequest, opts ...grpc.CallOption) (*GetSuggestionParameterListReply, error)
+	SetEarlyStoppingParameters(ctx context.Context, in *SetEarlyStoppingParametersRequest, opts ...grpc.CallOption) (*SetEarlyStoppingParametersReply, error)
+	GetEarlyStoppingParameters(ctx context.Context, in *GetEarlyStoppingParametersRequest, opts ...grpc.CallOption) (*GetEarlyStoppingParametersReply, error)
+	GetEarlyStoppingParameterList(ctx context.Context, in *GetEarlyStoppingParameterListRequest, opts ...grpc.CallOption) (*GetEarlyStoppingParameterListReply, error)
+	//*
+	// Report a logs of metrics for workers.
+	// The logs for each worker must have timestamp and must be ordered in time series.
+	// When the log you reported are already reported before, it will be dismissed and get no error.
+	ReportMetricsLogs(ctx context.Context, in *ReportMetricsLogsRequest, opts ...grpc.CallOption) (*ReportMetricsLogsReply, error)
+	SelectOne(ctx context.Context, in *SelectOneRequest, opts ...grpc.CallOption) (*SelectOneReply, error)
 }
 
 type dBIFClient struct {
@@ -994,15 +3941,6 @@ type dBIFClient struct {
 
 func NewDBIFClient(cc *grpc.ClientConn) DBIFClient {
 	return &dBIFClient{cc}
-}
-
-func (c *dBIFClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
-	out := new(HelloReply)
-	err := c.cc.Invoke(ctx, "/db.DBIF/SayHello", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *dBIFClient) CreateStudy(ctx context.Context, in *CreateStudyRequest, opts ...grpc.CallOption) (*CreateStudyReply, error) {
@@ -1023,33 +3961,231 @@ func (c *dBIFClient) GetStudy(ctx context.Context, in *GetStudyRequest, opts ...
 	return out, nil
 }
 
+func (c *dBIFClient) DeleteStudy(ctx context.Context, in *DeleteStudyRequest, opts ...grpc.CallOption) (*DeleteStudyReply, error) {
+	out := new(DeleteStudyReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/DeleteStudy", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) GetStudyList(ctx context.Context, in *GetStudyListRequest, opts ...grpc.CallOption) (*GetStudyListReply, error) {
+	out := new(GetStudyListReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/GetStudyList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) CreateTrial(ctx context.Context, in *CreateTrialRequest, opts ...grpc.CallOption) (*CreateTrialReply, error) {
+	out := new(CreateTrialReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/CreateTrial", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) GetTrials(ctx context.Context, in *GetTrialsRequest, opts ...grpc.CallOption) (*GetTrialsReply, error) {
+	out := new(GetTrialsReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/GetTrials", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) GetTrial(ctx context.Context, in *GetTrialRequest, opts ...grpc.CallOption) (*GetTrialReply, error) {
+	out := new(GetTrialReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/GetTrial", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) RegisterWorker(ctx context.Context, in *RegisterWorkerRequest, opts ...grpc.CallOption) (*RegisterWorkerReply, error) {
+	out := new(RegisterWorkerReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/RegisterWorker", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) GetWorkers(ctx context.Context, in *GetWorkersRequest, opts ...grpc.CallOption) (*GetWorkersReply, error) {
+	out := new(GetWorkersReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/GetWorkers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) UpdateWorkerState(ctx context.Context, in *UpdateWorkerStateRequest, opts ...grpc.CallOption) (*UpdateWorkerStateReply, error) {
+	out := new(UpdateWorkerStateReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/UpdateWorkerState", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) GetWorkerFullInfo(ctx context.Context, in *GetWorkerFullInfoRequest, opts ...grpc.CallOption) (*GetWorkerFullInfoReply, error) {
+	out := new(GetWorkerFullInfoReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/GetWorkerFullInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) GetMetrics(ctx context.Context, in *GetMetricsRequest, opts ...grpc.CallOption) (*GetMetricsReply, error) {
+	out := new(GetMetricsReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/GetMetrics", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) SetSuggestionParameters(ctx context.Context, in *SetSuggestionParametersRequest, opts ...grpc.CallOption) (*SetSuggestionParametersReply, error) {
+	out := new(SetSuggestionParametersReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/SetSuggestionParameters", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) GetSuggestionParameters(ctx context.Context, in *GetSuggestionParametersRequest, opts ...grpc.CallOption) (*GetSuggestionParametersReply, error) {
+	out := new(GetSuggestionParametersReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/GetSuggestionParameters", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) GetSuggestionParameterList(ctx context.Context, in *GetSuggestionParameterListRequest, opts ...grpc.CallOption) (*GetSuggestionParameterListReply, error) {
+	out := new(GetSuggestionParameterListReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/GetSuggestionParameterList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) SetEarlyStoppingParameters(ctx context.Context, in *SetEarlyStoppingParametersRequest, opts ...grpc.CallOption) (*SetEarlyStoppingParametersReply, error) {
+	out := new(SetEarlyStoppingParametersReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/SetEarlyStoppingParameters", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) GetEarlyStoppingParameters(ctx context.Context, in *GetEarlyStoppingParametersRequest, opts ...grpc.CallOption) (*GetEarlyStoppingParametersReply, error) {
+	out := new(GetEarlyStoppingParametersReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/GetEarlyStoppingParameters", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) GetEarlyStoppingParameterList(ctx context.Context, in *GetEarlyStoppingParameterListRequest, opts ...grpc.CallOption) (*GetEarlyStoppingParameterListReply, error) {
+	out := new(GetEarlyStoppingParameterListReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/GetEarlyStoppingParameterList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) ReportMetricsLogs(ctx context.Context, in *ReportMetricsLogsRequest, opts ...grpc.CallOption) (*ReportMetricsLogsReply, error) {
+	out := new(ReportMetricsLogsReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/ReportMetricsLogs", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBIFClient) SelectOne(ctx context.Context, in *SelectOneRequest, opts ...grpc.CallOption) (*SelectOneReply, error) {
+	out := new(SelectOneReply)
+	err := c.cc.Invoke(ctx, "/db.DBIF/SelectOne", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DBIFServer is the server API for DBIF service.
 type DBIFServer interface {
-	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
 	CreateStudy(context.Context, *CreateStudyRequest) (*CreateStudyReply, error)
 	GetStudy(context.Context, *GetStudyRequest) (*GetStudyReply, error)
+	//*
+	// Delete a Study from DB by Study ID.
+	DeleteStudy(context.Context, *DeleteStudyRequest) (*DeleteStudyReply, error)
+	//*
+	// Get all Study Configs from DB.
+	GetStudyList(context.Context, *GetStudyListRequest) (*GetStudyListReply, error)
+	//*
+	// Create a Trial from Trial Config.
+	// Generate a unique ID and store the Trial to DB.
+	CreateTrial(context.Context, *CreateTrialRequest) (*CreateTrialReply, error)
+	//*
+	// Get a Trial Configs from DB by ID of Study.
+	GetTrials(context.Context, *GetTrialsRequest) (*GetTrialsReply, error)
+	//*
+	// Get a Trial Configuration from DB by ID of Trial.
+	GetTrial(context.Context, *GetTrialRequest) (*GetTrialReply, error)
+	//*
+	// Create a Worker from Worker Config.
+	// Generate a unique ID and store the Worker to DB.
+	RegisterWorker(context.Context, *RegisterWorkerRequest) (*RegisterWorkerReply, error)
+	//*
+	// Get a Worker Configs and Status from DB by ID of Study, Trial or Worker.
+	GetWorkers(context.Context, *GetWorkersRequest) (*GetWorkersReply, error)
+	//*
+	// Update a Status of Worker.
+	UpdateWorkerState(context.Context, *UpdateWorkerStateRequest) (*UpdateWorkerStateReply, error)
+	//*
+	// Get full information related to specified Workers.
+	// It includes Worker Config, HyperParameters and Metrics Logs.
+	GetWorkerFullInfo(context.Context, *GetWorkerFullInfoRequest) (*GetWorkerFullInfoReply, error)
+	//*
+	// Get metrics of workers.
+	// You can get all logs of metrics since start of the worker.
+	GetMetrics(context.Context, *GetMetricsRequest) (*GetMetricsReply, error)
+	//*
+	// Create or Update parameter set for a suggestion service.
+	// If you specify an ID of parameter set, it will update the parameter set by your request.
+	// If you don't specify an ID, it will create a new parameter set for corresponding study and suggestion service.
+	// The parameters are key-value format.
+	SetSuggestionParameters(context.Context, *SetSuggestionParametersRequest) (*SetSuggestionParametersReply, error)
+	//*
+	// Get suggestion parameter set from DB specified.
+	GetSuggestionParameters(context.Context, *GetSuggestionParametersRequest) (*GetSuggestionParametersReply, error)
+	//*
+	// Get all suggestion parameter sets from DB.
+	GetSuggestionParameterList(context.Context, *GetSuggestionParameterListRequest) (*GetSuggestionParameterListReply, error)
+	SetEarlyStoppingParameters(context.Context, *SetEarlyStoppingParametersRequest) (*SetEarlyStoppingParametersReply, error)
+	GetEarlyStoppingParameters(context.Context, *GetEarlyStoppingParametersRequest) (*GetEarlyStoppingParametersReply, error)
+	GetEarlyStoppingParameterList(context.Context, *GetEarlyStoppingParameterListRequest) (*GetEarlyStoppingParameterListReply, error)
+	//*
+	// Report a logs of metrics for workers.
+	// The logs for each worker must have timestamp and must be ordered in time series.
+	// When the log you reported are already reported before, it will be dismissed and get no error.
+	ReportMetricsLogs(context.Context, *ReportMetricsLogsRequest) (*ReportMetricsLogsReply, error)
+	SelectOne(context.Context, *SelectOneRequest) (*SelectOneReply, error)
 }
 
 func RegisterDBIFServer(s *grpc.Server, srv DBIFServer) {
 	s.RegisterService(&_DBIF_serviceDesc, srv)
-}
-
-func _DBIF_SayHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HelloRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBIFServer).SayHello(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/db.DBIF/SayHello",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBIFServer).SayHello(ctx, req.(*HelloRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _DBIF_CreateStudy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1088,14 +4224,334 @@ func _DBIF_GetStudy_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DBIF_DeleteStudy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteStudyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).DeleteStudy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/DeleteStudy",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).DeleteStudy(ctx, req.(*DeleteStudyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_GetStudyList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetStudyListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).GetStudyList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/GetStudyList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).GetStudyList(ctx, req.(*GetStudyListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_CreateTrial_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateTrialRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).CreateTrial(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/CreateTrial",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).CreateTrial(ctx, req.(*CreateTrialRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_GetTrials_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTrialsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).GetTrials(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/GetTrials",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).GetTrials(ctx, req.(*GetTrialsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_GetTrial_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTrialRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).GetTrial(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/GetTrial",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).GetTrial(ctx, req.(*GetTrialRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_RegisterWorker_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterWorkerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).RegisterWorker(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/RegisterWorker",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).RegisterWorker(ctx, req.(*RegisterWorkerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_GetWorkers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetWorkersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).GetWorkers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/GetWorkers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).GetWorkers(ctx, req.(*GetWorkersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_UpdateWorkerState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateWorkerStateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).UpdateWorkerState(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/UpdateWorkerState",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).UpdateWorkerState(ctx, req.(*UpdateWorkerStateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_GetWorkerFullInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetWorkerFullInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).GetWorkerFullInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/GetWorkerFullInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).GetWorkerFullInfo(ctx, req.(*GetWorkerFullInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_GetMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMetricsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).GetMetrics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/GetMetrics",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).GetMetrics(ctx, req.(*GetMetricsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_SetSuggestionParameters_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetSuggestionParametersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).SetSuggestionParameters(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/SetSuggestionParameters",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).SetSuggestionParameters(ctx, req.(*SetSuggestionParametersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_GetSuggestionParameters_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSuggestionParametersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).GetSuggestionParameters(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/GetSuggestionParameters",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).GetSuggestionParameters(ctx, req.(*GetSuggestionParametersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_GetSuggestionParameterList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSuggestionParameterListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).GetSuggestionParameterList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/GetSuggestionParameterList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).GetSuggestionParameterList(ctx, req.(*GetSuggestionParameterListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_SetEarlyStoppingParameters_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetEarlyStoppingParametersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).SetEarlyStoppingParameters(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/SetEarlyStoppingParameters",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).SetEarlyStoppingParameters(ctx, req.(*SetEarlyStoppingParametersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_GetEarlyStoppingParameters_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetEarlyStoppingParametersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).GetEarlyStoppingParameters(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/GetEarlyStoppingParameters",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).GetEarlyStoppingParameters(ctx, req.(*GetEarlyStoppingParametersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_GetEarlyStoppingParameterList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetEarlyStoppingParameterListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).GetEarlyStoppingParameterList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/GetEarlyStoppingParameterList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).GetEarlyStoppingParameterList(ctx, req.(*GetEarlyStoppingParameterListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_ReportMetricsLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReportMetricsLogsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).ReportMetricsLogs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/ReportMetricsLogs",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).ReportMetricsLogs(ctx, req.(*ReportMetricsLogsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBIF_SelectOne_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SelectOneRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBIFServer).SelectOne(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBIF/SelectOne",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBIFServer).SelectOne(ctx, req.(*SelectOneRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _DBIF_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "db.DBIF",
 	HandlerType: (*DBIFServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "SayHello",
-			Handler:    _DBIF_SayHello_Handler,
-		},
 		{
 			MethodName: "CreateStudy",
 			Handler:    _DBIF_CreateStudy_Handler,
@@ -1103,6 +4559,78 @@ var _DBIF_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStudy",
 			Handler:    _DBIF_GetStudy_Handler,
+		},
+		{
+			MethodName: "DeleteStudy",
+			Handler:    _DBIF_DeleteStudy_Handler,
+		},
+		{
+			MethodName: "GetStudyList",
+			Handler:    _DBIF_GetStudyList_Handler,
+		},
+		{
+			MethodName: "CreateTrial",
+			Handler:    _DBIF_CreateTrial_Handler,
+		},
+		{
+			MethodName: "GetTrials",
+			Handler:    _DBIF_GetTrials_Handler,
+		},
+		{
+			MethodName: "GetTrial",
+			Handler:    _DBIF_GetTrial_Handler,
+		},
+		{
+			MethodName: "RegisterWorker",
+			Handler:    _DBIF_RegisterWorker_Handler,
+		},
+		{
+			MethodName: "GetWorkers",
+			Handler:    _DBIF_GetWorkers_Handler,
+		},
+		{
+			MethodName: "UpdateWorkerState",
+			Handler:    _DBIF_UpdateWorkerState_Handler,
+		},
+		{
+			MethodName: "GetWorkerFullInfo",
+			Handler:    _DBIF_GetWorkerFullInfo_Handler,
+		},
+		{
+			MethodName: "GetMetrics",
+			Handler:    _DBIF_GetMetrics_Handler,
+		},
+		{
+			MethodName: "SetSuggestionParameters",
+			Handler:    _DBIF_SetSuggestionParameters_Handler,
+		},
+		{
+			MethodName: "GetSuggestionParameters",
+			Handler:    _DBIF_GetSuggestionParameters_Handler,
+		},
+		{
+			MethodName: "GetSuggestionParameterList",
+			Handler:    _DBIF_GetSuggestionParameterList_Handler,
+		},
+		{
+			MethodName: "SetEarlyStoppingParameters",
+			Handler:    _DBIF_SetEarlyStoppingParameters_Handler,
+		},
+		{
+			MethodName: "GetEarlyStoppingParameters",
+			Handler:    _DBIF_GetEarlyStoppingParameters_Handler,
+		},
+		{
+			MethodName: "GetEarlyStoppingParameterList",
+			Handler:    _DBIF_GetEarlyStoppingParameterList_Handler,
+		},
+		{
+			MethodName: "ReportMetricsLogs",
+			Handler:    _DBIF_ReportMetricsLogs_Handler,
+		},
+		{
+			MethodName: "SelectOne",
+			Handler:    _DBIF_SelectOne_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
