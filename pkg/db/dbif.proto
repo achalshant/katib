@@ -78,12 +78,6 @@ service DBIF {
     rpc GetWorkerFullInfo(GetWorkerFullInfoRequest) returns (GetWorkerFullInfoReply){
       
     };
-    /** 
-     * Get Suggestions from a Suggestion service.
-     */
-    rpc GetSuggestions(GetSuggestionsRequest) returns (GetSuggestionsReply){
-      
-    };
     /**
      * Get metrics of workers.
      * You can get all logs of metrics since start of the worker.
