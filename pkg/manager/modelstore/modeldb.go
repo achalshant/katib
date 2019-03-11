@@ -3,13 +3,15 @@ package modelstore
 import (
 	"context"
 	"fmt"
-	"git.apache.org/thrift.git/lib/go/thrift"
-	"github.com/kubeflow/katib/pkg/api"
-	"github.com/kubeflow/katib/pkg/manager/modelstore/modeldb"
 	"log"
 	"net"
 	"strconv"
 	"strings"
+
+	"git.apache.org/thrift.git/lib/go/thrift"
+	"github.com/kubeflow/katib/pkg/api"
+	"github.com/kubeflow/katib/pkg/db"
+	"github.com/kubeflow/katib/pkg/manager/modelstore/modeldb"
 )
 
 type ModelDB struct {
@@ -82,7 +84,7 @@ func (m *ModelDB) SaveModel(in *api.SaveModelRequest) error {
 	hs := make([]*modeldb.HyperParameter, len(in.Model.Parameters))
 	for i := range in.Model.Parameters {
 		hs[i] = &modeldb.HyperParameter{Name: in.Model.Parameters[i].Name, Value: in.Model.Parameters[i].Value}
-		if in.Model.Parameters[i].ParameterType == api.ParameterType_CATEGORICAL {
+		if in.Model.Parameters[i].ParameterType == db.ParameterType_CATEGORICAL {
 			hs[i].Type = "String"
 		} else {
 			hs[i].Type = "Number"
@@ -153,7 +155,7 @@ func (m *ModelDB) SaveModel(in *api.SaveModelRequest) error {
 }
 
 //GetSavedStudies: Get studies info from ModelDB.
-func (m *ModelDB) GetSavedStudies() ([]*api.StudyOverview, error) {
+func (m *ModelDB) GetSavedStudies() ([]*db.StudyOverview, error) {
 	trans, client, err := m.createSocket()
 	if err != nil {
 		return nil, err
@@ -168,9 +170,9 @@ func (m *ModelDB) GetSavedStudies() ([]*api.StudyOverview, error) {
 		return nil, err
 	}
 
-	ret := make([]*api.StudyOverview, len(pov))
+	ret := make([]*db.StudyOverview, len(pov))
 	for i := range pov {
-		ret[i] = &api.StudyOverview{}
+		ret[i] = &db.StudyOverview{}
 		ret[i].Name = pov[i].Project.Name
 		ret[i].Owner = pov[i].Project.Author
 		ret[i].Description = pov[i].Project.Description
@@ -188,18 +190,18 @@ func (m *ModelDB) convertmdModelToModelInfo(mdm *modeldb.ModelResponse) *api.Mod
 		sn = t[0]
 		mn = t[1]
 	}
-	param := make([]*api.Parameter, len(mdm.Specification.Hyperparameters))
+	param := make([]*db.Parameter, len(mdm.Specification.Hyperparameters))
 	for i := range mdm.Specification.Hyperparameters {
-		param[i] = &api.Parameter{
+		param[i] = &db.Parameter{
 			Name:  mdm.Specification.Hyperparameters[i].Name,
 			Value: mdm.Specification.Hyperparameters[i].Value,
 		}
 
 	}
-	met := []*api.Metrics{}
+	met := []*db.Metrics{}
 	for k, v := range mdm.Metrics {
 		for mk := range v {
-			met = append(met, &api.Metrics{
+			met = append(met, &db.Metrics{
 				Name:  k,
 				Value: strconv.FormatFloat(v[mk], 'f', 4, 64),
 			})
