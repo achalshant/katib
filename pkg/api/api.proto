@@ -43,45 +43,45 @@ service Manager {
      * Create a Trial from Trial Config.
      * Generate a unique ID and store the Trial to DB.
      */
-    rpc CreateTrial(CreateTrialRequest) returns (CreateTrialReply){
+    rpc CreateTrial(db.CreateTrialRequest) returns (db.CreateTrialReply){
         
     };
     /** 
      * Get a Trial Configs from DB by ID of Study.
      */
-    rpc GetTrials(GetTrialsRequest) returns (GetTrialsReply){
+    rpc GetTrials(db.GetTrialsRequest) returns (db.GetTrialsReply){
         
     };
     /**
      * Get a Trial Configuration from DB by ID of Trial.
      */
-    rpc GetTrial(GetTrialRequest) returns (GetTrialReply){
+    rpc GetTrial(db.GetTrialRequest) returns (db.GetTrialReply){
         
     };
     /**
      * Create a Worker from Worker Config.
      * Generate a unique ID and store the Worker to DB.
      */
-    rpc RegisterWorker(RegisterWorkerRequest) returns (RegisterWorkerReply){
+    rpc RegisterWorker(db.RegisterWorkerRequest) returns (db.RegisterWorkerReply){
         
     };
     /** 
      * Get a Worker Configs and Status from DB by ID of Study, Trial or Worker.
      */
-    rpc GetWorkers(GetWorkersRequest) returns (GetWorkersReply){
+    rpc GetWorkers(db.GetWorkersRequest) returns (db.GetWorkersReply){
         
     };
     /** 
      * Update a Status of Worker.
      */
-    rpc UpdateWorkerState(UpdateWorkerStateRequest) returns (UpdateWorkerStateReply){
+    rpc UpdateWorkerState(db.UpdateWorkerStateRequest) returns (db.UpdateWorkerStateReply){
         
     };
     /** 
      * Get full information related to specified Workers.
      * It includes Worker Config, HyperParameters and Metrics Logs.
      */
-    rpc GetWorkerFullInfo(GetWorkerFullInfoRequest) returns (GetWorkerFullInfoReply){
+    rpc GetWorkerFullInfo(db.GetWorkerFullInfoRequest) returns (db.GetWorkerFullInfoReply){
         
     };
     /** 
@@ -97,7 +97,7 @@ service Manager {
      * Get metrics of workers.
      * You can get all logs of metrics since start of the worker.
      */
-    rpc GetMetrics(GetMetricsRequest) returns (GetMetricsReply){
+    rpc GetMetrics(db.GetMetricsRequest) returns (db.GetMetricsReply){
         
     };
     /**
@@ -106,28 +106,28 @@ service Manager {
      * If you don't specify an ID, it will create a new parameter set for corresponding study and suggestion service.
      * The parameters are key-value format.
      */
-    rpc SetSuggestionParameters(SetSuggestionParametersRequest) returns (SetSuggestionParametersReply){
+    rpc SetSuggestionParameters(db.SetSuggestionParametersRequest) returns (db.SetSuggestionParametersReply){
         
     };
     /**
      * Get suggestion parameter set from DB specified.
      */
-    rpc GetSuggestionParameters(GetSuggestionParametersRequest) returns (GetSuggestionParametersReply){
+    rpc GetSuggestionParameters(db.GetSuggestionParametersRequest) returns (db.GetSuggestionParametersReply){
         
     };
     /**
      * Get all suggestion parameter sets from DB.
      */
-    rpc GetSuggestionParameterList(GetSuggestionParameterListRequest) returns (GetSuggestionParameterListReply){
+    rpc GetSuggestionParameterList(db.GetSuggestionParameterListRequest) returns (db.GetSuggestionParameterListReply){
         
     };
-    rpc SetEarlyStoppingParameters(SetEarlyStoppingParametersRequest) returns (SetEarlyStoppingParametersReply){
+    rpc SetEarlyStoppingParameters(db.SetEarlyStoppingParametersRequest) returns (db.SetEarlyStoppingParametersReply){
         
     };
-    rpc GetEarlyStoppingParameters(GetEarlyStoppingParametersRequest) returns (GetEarlyStoppingParametersReply){
+    rpc GetEarlyStoppingParameters(db.GetEarlyStoppingParametersRequest) returns (db.GetEarlyStoppingParametersReply){
         
     };
-    rpc GetEarlyStoppingParameterList(GetEarlyStoppingParameterListRequest) returns (GetEarlyStoppingParameterListReply){
+    rpc GetEarlyStoppingParameterList(db.GetEarlyStoppingParameterListRequest) returns (db.GetEarlyStoppingParameterListReply){
         
     };
     rpc SaveStudy(SaveStudyRequest) returns(SaveStudyReply){
