@@ -8,6 +8,7 @@ It translates gRPC into RESTful JSON APIs.
 */
 package api
 
+/*
 import (
 	"io"
 	"net/http"
@@ -1330,3 +1331,4 @@ var (
 
 	forward_Manager_GetSavedModels_0 = runtime.ForwardResponseMessage
 )
+*/
