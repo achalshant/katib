@@ -218,7 +218,7 @@ func main() {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	dbIf := dbif.NewDBIFClient(conn)
+	dbIf = dbif.NewDBIFClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), 600*time.Second)
 	defer cancel()
 	csresp, err := dbIf.CreateStudy(ctx, &dbif.CreateStudyRequest{StudyConfig: &dbif.StudyConfig{Name: "NewStudy"}})
