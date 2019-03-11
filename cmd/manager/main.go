@@ -183,21 +183,6 @@ func (s *server) GetSavedModel(ctx context.Context, in *api_pb.GetSavedModelRequ
 	return &api_pb.GetSavedModelReply{Model: ret}, err
 }
 
-func (s *server) ValidateSuggestionParameters(ctx context.Context, in *api_pb.ValidateSuggestionParametersRequest) (*api_pb.ValidateSuggestionParametersReply, error) {
-
-	conn, err := grpc.Dial("vizier-suggestion-"+in.SuggestionAlgorithm+":6789", grpc.WithInsecure())
-	if err != nil {
-		return &api_pb.ValidateSuggestionParametersReply{}, err
-	}
-	defer conn.Close()
-
-	c := api_pb.NewSuggestionClient(conn)
-
-	r, err := c.ValidateSuggestionParameters(ctx, in)
-
-	return r, err
-}
-
 func (s *server) Check(ctx context.Context, in *health_pb.HealthCheckRequest) (*health_pb.HealthCheckResponse, error) {
 	resp := health_pb.HealthCheckResponse{
 		Status: health_pb.HealthCheckResponse_SERVING,
