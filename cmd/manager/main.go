@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"log"
+	"net"
 	"time"
 
 	api_pb "github.com/kubeflow/katib/pkg/api"
@@ -18,9 +20,9 @@ import (
 const (
 	address = "dbif-katib:6789"
 )
-
-type server struct {
-}
+const (
+	port = "0.0.0.0:6789"
+)
 
 type server struct {
 	msIf modelstore.ModelStore
@@ -49,7 +51,7 @@ func (s *server) CreateTrial(ctx context.Context, in *dbif.CreateTrialRequest) (
 }
 
 func (s *server) GetTrials(ctx context.Context, in *dbif.GetTrialsRequest) (*dbif.GetTrialsReply, error) {
-	return dbIf.GetTrialList(ctx, in)
+	return dbIf.GetTrials(ctx, in)
 }
 
 func (s *server) GetTrial(ctx context.Context, in *dbif.GetTrialRequest) (*dbif.GetTrialReply, error) {
@@ -181,6 +183,21 @@ func (s *server) GetSavedModel(ctx context.Context, in *api_pb.GetSavedModelRequ
 	return &api_pb.GetSavedModelReply{Model: ret}, err
 }
 
+func (s *server) ValidateSuggestionParameters(ctx context.Context, in *api_pb.ValidateSuggestionParametersRequest) (*api_pb.ValidateSuggestionParametersReply, error) {
+
+	conn, err := grpc.Dial("vizier-suggestion-"+in.SuggestionAlgorithm+":6789", grpc.WithInsecure())
+	if err != nil {
+		return &api_pb.ValidateSuggestionParametersReply{}, err
+	}
+	defer conn.Close()
+
+	c := api_pb.NewSuggestionClient(conn)
+
+	r, err := c.ValidateSuggestionParameters(ctx, in)
+
+	return r, err
+}
+
 func (s *server) Check(ctx context.Context, in *health_pb.HealthCheckRequest) (*health_pb.HealthCheckResponse, error) {
 	resp := health_pb.HealthCheckResponse{
 		Status: health_pb.HealthCheckResponse_SERVING,
@@ -203,6 +220,14 @@ func (s *server) Check(ctx context.Context, in *health_pb.HealthCheckRequest) (*
 
 func main() {
 
+	flag.Parse()
+	var err error
+
+	listener, err := net.Listen("tcp", port)
+	if err != nil {
+		log.Fatalf("Failed to listen: %v", err)
+	}
+
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -221,8 +246,9 @@ func main() {
 		log.Fatalf("could not get study: %v", err)
 	}
 	log.Printf("Study name: %s", gsresp.StudyConfig.Name)
+
+	size := 1<<31 - 1
 	log.Printf("Start Katib manager: %s", port)
-	log.Printf("Hello from Achal's own Katib!")
 	s := grpc.NewServer(grpc.MaxRecvMsgSize(size), grpc.MaxSendMsgSize(size))
 	api_pb.RegisterManagerServer(s, &server{})
 	health_pb.RegisterHealthServer(s, &server{})
