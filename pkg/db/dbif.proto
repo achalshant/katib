@@ -84,9 +84,6 @@ service DBIF {
     rpc GetSuggestions(GetSuggestionsRequest) returns (GetSuggestionsReply){
       
     };
-    rpc GetShouldStopWorkers(GetShouldStopWorkersRequest) returns (GetShouldStopWorkersReply){
-     
-    };
     /**
      * Get metrics of workers.
      * You can get all logs of metrics since start of the worker.
