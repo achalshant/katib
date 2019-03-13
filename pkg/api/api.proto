@@ -5,6 +5,7 @@ syntax = "proto3";
 
 package api;
 
+import "google/api/annotations.proto";
 import "github.com/kubeflow/katib/pkg/db/dbif.proto";
 
 /**
@@ -88,10 +89,16 @@ service Manager {
      * Get Suggestions from a Suggestion service.
      */
     rpc GetSuggestions(GetSuggestionsRequest) returns (GetSuggestionsReply){
-        
+        option (google.api.http) = {
+            post: "/api/Manager/GetSuggestions"
+            body: "*"
+        };
     };
     rpc GetShouldStopWorkers(GetShouldStopWorkersRequest) returns (GetShouldStopWorkersReply){
-        
+        option (google.api.http) = {
+            post: "/api/Manager/GetTrials/GetShouldStopWorkers"
+            body: "*"
+        };
     };
     /**
      * Get metrics of workers.
@@ -131,10 +138,16 @@ service Manager {
         
     };
     rpc SaveStudy(SaveStudyRequest) returns(SaveStudyReply){
-        
+        option (google.api.http) = {
+            post: "/api/Manager/SaveStudy"
+            body: "*"
+        };
     };
     rpc SaveModel(SaveModelRequest) returns(SaveModelReply){
-        
+        option (google.api.http) = {
+            post: "/api/Manager/SaveModel"
+            body: "*"
+        };
     };
     /**
      * Report a logs of metrics for workers.
@@ -145,10 +158,14 @@ service Manager {
         
     };
     rpc GetSavedStudies(GetSavedStudiesRequest) returns(GetSavedStudiesReply){
-        
+        option (google.api.http) = {
+            get: "/api/Manager/GetSavedStudies"
+        };
     };
     rpc GetSavedModels(GetSavedModelsRequest) returns(GetSavedModelsReply){
-        
+         option (google.api.http) = {
+            get: "/api/Manager/GetSavedModels"
+        };
     };
 }
 
