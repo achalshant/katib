@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"time"
 
 	api_pb "github.com/kubeflow/katib/pkg/api"
 	health_pb "github.com/kubeflow/katib/pkg/api/health"
@@ -18,7 +17,7 @@ import (
 )
 
 const (
-	address = "dbif-katib:6789"
+	dbIfaddress = "dbif-katib:6789"
 )
 const (
 	port = "0.0.0.0:6789"
@@ -203,9 +202,6 @@ func (s *server) Check(ctx context.Context, in *health_pb.HealthCheckRequest) (*
 	return &resp, nil
 }
 
-/**
-TODO: Add DB health check and REST endpoints.
-**/
 func main() {
 
 	flag.Parse()
@@ -216,25 +212,12 @@ func main() {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	conn, err := grpc.Dial(dbIfaddress, grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		log.Fatalf("Could not connect to DBIF service: %v", err)
 	}
 	defer conn.Close()
 	dbIf = dbif.NewDBIFClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), 600*time.Second)
-	defer cancel()
-	csresp, err := dbIf.CreateStudy(ctx, &dbif.CreateStudyRequest{StudyConfig: &dbif.StudyConfig{Name: "NewStudy"}})
-	if err != nil {
-		log.Fatalf("could not create study: %v", err)
-	}
-	log.Printf("Study created with id: %s", csresp.StudyId)
-	gsresp, err := dbIf.GetStudy(ctx, &dbif.GetStudyRequest{StudyId: csresp.StudyId})
-	if err != nil {
-		log.Fatalf("could not get study: %v", err)
-	}
-	log.Printf("Study name: %s", gsresp.StudyConfig.Name)
-
 	size := 1<<31 - 1
 	log.Printf("Start Katib manager: %s", port)
 	s := grpc.NewServer(grpc.MaxRecvMsgSize(size), grpc.MaxSendMsgSize(size))
