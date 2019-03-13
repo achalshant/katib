@@ -1,23 +1,23 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: dbif-katib
+  name: dbif-mysql
   namespace: kubeflow
   labels:
     app: vizier
-    component: dbif-katib
+    component: dbif-mysql
 spec:
   replicas: 1
   template:
     metadata:
-      name: dbif-katib
+      name: dbif-mysql
       labels:
         app: vizier
-        component: dbif-katib
+        component: dbif-mysql
     spec:
       containers:
-      - name: dbif-katib
-        image: acshanth/katib-dbif
+      - name: dbif-mysql
+        image: acshanth/dbif-mysql
         ports:
         - name: api
           containerPort: 6789

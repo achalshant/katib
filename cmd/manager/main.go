@@ -16,8 +16,13 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+/**
+To plug in a new data store, implement and run the service and change the
+dbIfaddress to point to the new service.
+**/
+
 const (
-	dbIfaddress = "dbif-katib:6789"
+	dbIfaddress = "dbif-mysql:6789"
 )
 const (
 	port = "0.0.0.0:6789"
@@ -203,15 +208,12 @@ func (s *server) Check(ctx context.Context, in *health_pb.HealthCheckRequest) (*
 }
 
 func main() {
-
 	flag.Parse()
 	var err error
-
 	listener, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
-
 	conn, err := grpc.Dial(dbIfaddress, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Could not connect to DBIF service: %v", err)
