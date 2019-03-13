@@ -6,11 +6,12 @@ package api
 import (
 	context "context"
 	fmt "fmt"
+	math "math"
+
 	proto "github.com/golang/protobuf/proto"
+	db "github.com/kubeflow/katib/pkg/db"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
-	math "math"
-	db "pkg/db"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
