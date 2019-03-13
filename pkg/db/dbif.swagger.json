@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "pkg/api/api.proto",
+    "title": "pkg/db/dbif.proto",
     "version": "version not set"
   },
   "schemes": [
@@ -15,55 +15,390 @@
     "application/json"
   ],
   "paths": {
-    "/api/Manager/GetSavedModels": {
-      "get": {
-        "operationId": "GetSavedModels",
+    "/api/dbif/CreateStudy": {
+      "post": {
+        "operationId": "CreateStudy",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiGetSavedModelsReply"
+              "$ref": "#/definitions/dbCreateStudyReply"
             }
           }
         },
         "parameters": [
           {
-            "name": "study_name",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dbStudyConfig"
+            }
+          }
+        ],
+        "tags": [
+          "DBIF"
+        ]
+      }
+    },
+    "/api/dbif/CreateTrial": {
+      "post": {
+        "summary": "*\nCreate a Trial from Trial Config.\nGenerate a unique ID and store the Trial to DB.",
+        "operationId": "CreateTrial",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dbCreateTrialReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dbTrial"
+            }
+          }
+        ],
+        "tags": [
+          "DBIF"
+        ]
+      }
+    },
+    "/api/dbif/DeleteStudy/{study_id}": {
+      "get": {
+        "summary": "* \nDelete a Study from DB by Study ID.",
+        "operationId": "DeleteStudy",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dbDeleteStudyReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "study_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DBIF"
+        ]
+      }
+    },
+    "/api/dbif/GetEarlyStoppingParameterList/{study_id}": {
+      "get": {
+        "operationId": "GetEarlyStoppingParameterList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dbGetEarlyStoppingParameterListReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "study_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DBIF"
+        ]
+      }
+    },
+    "/api/dbif/GetEarlyStoppingParameters/{param_id}": {
+      "get": {
+        "operationId": "GetEarlyStoppingParameters",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dbGetEarlyStoppingParametersReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "param_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DBIF"
+        ]
+      }
+    },
+    "/api/dbif/GetMetrics": {
+      "post": {
+        "summary": "*\nGet metrics of workers.\nYou can get all logs of metrics since start of the worker.",
+        "operationId": "GetMetrics",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dbGetMetricsReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dbGetMetricsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DBIF"
+        ]
+      }
+    },
+    "/api/dbif/GetStudy/{study_id}": {
+      "get": {
+        "operationId": "GetStudy",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dbGetStudyReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "study_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DBIF"
+        ]
+      }
+    },
+    "/api/dbif/GetStudyList": {
+      "get": {
+        "summary": "*\nGet all Study Configs from DB.",
+        "operationId": "GetStudyList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dbGetStudyListReply"
+            }
+          }
+        },
+        "tags": [
+          "DBIF"
+        ]
+      }
+    },
+    "/api/dbif/GetSuggestionParameterList/{study_id}": {
+      "get": {
+        "summary": "*\nGet all suggestion parameter sets from DB.",
+        "operationId": "GetSuggestionParameterList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dbGetSuggestionParameterListReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "study_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DBIF"
+        ]
+      }
+    },
+    "/api/dbif/GetSuggestionParameters/{param_id}": {
+      "get": {
+        "summary": "*\nGet suggestion parameter set from DB specified.",
+        "operationId": "GetSuggestionParameters",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dbGetSuggestionParametersReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "param_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DBIF"
+        ]
+      }
+    },
+    "/api/dbif/GetTrial/{trial_id}": {
+      "get": {
+        "summary": "*\nGet a Trial Configuration from DB by ID of Trial.",
+        "operationId": "GetTrial",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dbGetTrialReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "trial_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DBIF"
+        ]
+      }
+    },
+    "/api/dbif/GetTrials/{study_id}": {
+      "get": {
+        "summary": "* \nGet a Trial Configs from DB by ID of Study.",
+        "operationId": "GetTrials",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dbGetTrialsReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "study_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "DBIF"
+        ]
+      }
+    },
+    "/api/dbif/GetWorkerFullInfo": {
+      "get": {
+        "summary": "* \nGet full information related to specified Workers.\nIt includes Worker Config, HyperParameters and Metrics Logs.",
+        "operationId": "GetWorkerFullInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dbGetWorkerFullInfoReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "study_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trial_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "worker_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "only_latest_log",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          }
+        ],
+        "tags": [
+          "DBIF"
+        ]
+      }
+    },
+    "/api/dbif/GetWorkers": {
+      "get": {
+        "summary": "* \nGet a Worker Configs and Status from DB by ID of Study, Trial or Worker.",
+        "operationId": "GetWorkers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dbGetWorkersReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "study_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trial_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "worker_id",
             "in": "query",
             "required": false,
             "type": "string"
           }
         ],
         "tags": [
-          "Manager"
+          "DBIF"
         ]
       }
     },
-    "/api/Manager/GetSavedStudies": {
-      "get": {
-        "operationId": "GetSavedStudies",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/apiGetSavedStudiesReply"
-            }
-          }
-        },
-        "tags": [
-          "Manager"
-        ]
-      }
-    },
-    "/api/Manager/GetSuggestions": {
+    "/api/dbif/RegisterWorker": {
       "post": {
-        "summary": "* \nGet Suggestions from a Suggestion service.",
-        "operationId": "GetSuggestions",
+        "summary": "*\nCreate a Worker from Worker Config.\nGenerate a unique ID and store the Worker to DB.",
+        "operationId": "RegisterWorker",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiGetSuggestionsReply"
+              "$ref": "#/definitions/dbRegisterWorkerReply"
             }
           }
         },
@@ -73,23 +408,24 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/apiGetSuggestionsRequest"
+              "$ref": "#/definitions/dbWorker"
             }
           }
         ],
         "tags": [
-          "Manager"
+          "DBIF"
         ]
       }
     },
-    "/api/Manager/GetTrials/GetShouldStopWorkers": {
+    "/api/dbif/ReportMetricsLogs": {
       "post": {
-        "operationId": "GetShouldStopWorkers",
+        "summary": "*\nReport a logs of metrics for workers.\nThe logs for each worker must have timestamp and must be ordered in time series.\nWhen the log you reported are already reported before, it will be dismissed and get no error.",
+        "operationId": "ReportMetricsLogs",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiGetShouldStopWorkersReply"
+              "$ref": "#/definitions/dbReportMetricsLogsReply"
             }
           }
         },
@@ -99,23 +435,23 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/apiGetShouldStopWorkersRequest"
+              "$ref": "#/definitions/dbReportMetricsLogsRequest"
             }
           }
         ],
         "tags": [
-          "Manager"
+          "DBIF"
         ]
       }
     },
-    "/api/Manager/SaveModel": {
+    "/api/dbif/SetEarlyStoppingParameters": {
       "post": {
-        "operationId": "SaveModel",
+        "operationId": "SetEarlyStoppingParameters",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiSaveModelReply"
+              "$ref": "#/definitions/dbSetEarlyStoppingParametersReply"
             }
           }
         },
@@ -125,23 +461,24 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/apiSaveModelRequest"
+              "$ref": "#/definitions/dbSetEarlyStoppingParametersRequest"
             }
           }
         ],
         "tags": [
-          "Manager"
+          "DBIF"
         ]
       }
     },
-    "/api/Manager/SaveStudy": {
+    "/api/dbif/SetSuggestionParameters": {
       "post": {
-        "operationId": "SaveStudy",
+        "summary": "*\nCreate or Update parameter set for a suggestion service.\nIf you specify an ID of parameter set, it will update the parameter set by your request.\nIf you don't specify an ID, it will create a new parameter set for corresponding study and suggestion service.\nThe parameters are key-value format.",
+        "operationId": "SetSuggestionParameters",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiSaveStudyReply"
+              "$ref": "#/definitions/dbSetSuggestionParametersReply"
             }
           }
         },
@@ -151,12 +488,39 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/apiSaveStudyRequest"
+              "$ref": "#/definitions/dbSetSuggestionParametersRequest"
             }
           }
         ],
         "tags": [
-          "Manager"
+          "DBIF"
+        ]
+      }
+    },
+    "/api/dbif/UpdateWorkerState": {
+      "put": {
+        "summary": "* \nUpdate a Status of Worker.",
+        "operationId": "UpdateWorkerState",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dbUpdateWorkerStateReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dbUpdateWorkerStateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DBIF"
         ]
       }
     }
@@ -170,160 +534,6 @@
           "items": {
             "$ref": "#/definitions/dbOperation"
           }
-        }
-      }
-    },
-    "apiDataSetInfo": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "path": {
-          "type": "string"
-        }
-      }
-    },
-    "apiGetSavedModelsReply": {
-      "type": "object",
-      "properties": {
-        "models": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/apiModelInfo"
-          }
-        }
-      }
-    },
-    "apiGetSavedStudiesReply": {
-      "type": "object",
-      "properties": {
-        "studies": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dbStudyOverview"
-          }
-        }
-      }
-    },
-    "apiGetShouldStopWorkersReply": {
-      "type": "object",
-      "properties": {
-        "should_stop_worker_ids": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "apiGetShouldStopWorkersRequest": {
-      "type": "object",
-      "properties": {
-        "study_id": {
-          "type": "string"
-        },
-        "early_stopping_algorithm": {
-          "type": "string"
-        },
-        "param_id": {
-          "type": "string"
-        }
-      }
-    },
-    "apiGetSuggestionsReply": {
-      "type": "object",
-      "properties": {
-        "trials": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dbTrial"
-          }
-        }
-      }
-    },
-    "apiGetSuggestionsRequest": {
-      "type": "object",
-      "properties": {
-        "study_id": {
-          "type": "string"
-        },
-        "suggestion_algorithm": {
-          "type": "string"
-        },
-        "request_number": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "log_worker_ids": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "param_id": {
-          "type": "string"
-        }
-      }
-    },
-    "apiModelInfo": {
-      "type": "object",
-      "properties": {
-        "study_name": {
-          "type": "string"
-        },
-        "worker_id": {
-          "type": "string"
-        },
-        "parameters": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dbParameter"
-          }
-        },
-        "metrics": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dbMetrics"
-          }
-        },
-        "model_path": {
-          "type": "string"
-        }
-      }
-    },
-    "apiSaveModelReply": {
-      "type": "object"
-    },
-    "apiSaveModelRequest": {
-      "type": "object",
-      "properties": {
-        "model": {
-          "$ref": "#/definitions/apiModelInfo"
-        },
-        "data_set": {
-          "$ref": "#/definitions/apiDataSetInfo"
-        },
-        "tensor_board": {
-          "type": "boolean",
-          "format": "boolean"
-        }
-      }
-    },
-    "apiSaveStudyReply": {
-      "type": "object"
-    },
-    "apiSaveStudyRequest": {
-      "type": "object",
-      "properties": {
-        "study_name": {
-          "type": "string"
-        },
-        "owner": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
         }
       }
     },
@@ -433,6 +643,26 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/dbMetricsLogSet"
+          }
+        }
+      }
+    },
+    "dbGetMetricsRequest": {
+      "type": "object",
+      "properties": {
+        "study_id": {
+          "type": "string"
+        },
+        "worker_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metrics_names": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         }
       }
@@ -547,18 +777,6 @@
         }
       },
       "title": "*\nGraphConfig contains a config of DAG"
-    },
-    "dbMetrics": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string"
-        }
-      },
-      "title": "*\nMetrics of a worker"
     },
     "dbMetricsLog": {
       "type": "object",
@@ -705,6 +923,23 @@
     "dbReportMetricsLogsReply": {
       "type": "object"
     },
+    "dbReportMetricsLogsRequest": {
+      "type": "object",
+      "properties": {
+        "study_id": {
+          "type": "string"
+        },
+        "metrics_log_sets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dbMetricsLogSet"
+          }
+        }
+      }
+    },
+    "dbSelectOneReply": {
+      "type": "object"
+    },
     "dbSetEarlyStoppingParametersReply": {
       "type": "object",
       "properties": {
@@ -713,11 +948,51 @@
         }
       }
     },
+    "dbSetEarlyStoppingParametersRequest": {
+      "type": "object",
+      "properties": {
+        "study_id": {
+          "type": "string"
+        },
+        "early_stopping_algorithm": {
+          "type": "string"
+        },
+        "param_id": {
+          "type": "string"
+        },
+        "early_stopping_parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dbEarlyStoppingParameter"
+          }
+        }
+      }
+    },
     "dbSetSuggestionParametersReply": {
       "type": "object",
       "properties": {
         "param_id": {
           "type": "string"
+        }
+      }
+    },
+    "dbSetSuggestionParametersRequest": {
+      "type": "object",
+      "properties": {
+        "study_id": {
+          "type": "string"
+        },
+        "suggestion_algorithm": {
+          "type": "string"
+        },
+        "param_id": {
+          "type": "string"
+        },
+        "suggestion_parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dbSuggestionParameter"
+          }
         }
       }
     },
@@ -885,6 +1160,18 @@
     },
     "dbUpdateWorkerStateReply": {
       "type": "object"
+    },
+    "dbUpdateWorkerStateRequest": {
+      "type": "object",
+      "properties": {
+        "worker_id": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/dbState"
+        }
+      },
+      "description": "* \nUpdate a Status of Worker."
     },
     "dbWorker": {
       "type": "object",

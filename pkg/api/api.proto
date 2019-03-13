@@ -5,8 +5,8 @@ syntax = "proto3";
 
 package api;
 
-import "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api/annotations.proto";
-import "github.com/kubeflow/katib/pkg/db/dbif.proto";
+import "google/api/annotations.proto";
+import "pkg/db/dbif.proto";
 
 /**
  * Service for Main API for Katib
