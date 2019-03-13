@@ -5,7 +5,7 @@ syntax = "proto3";
 
 package db;
 
-import "google/api/annotations.proto";
+import "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api/annotations.proto";
 
 /**
  * Service for Main API for Katib
