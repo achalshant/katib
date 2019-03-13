@@ -194,15 +194,18 @@ func (s *server) Check(ctx context.Context, in *health_pb.HealthCheckRequest) (*
 		return &resp, fmt.Errorf("grpc.health.v1.Health can only be accepted if you specify service name.")
 	}
 
-	// Check if connection to vizier-db is okay since otherwise manager could not serve most of its methods.
-	// _, err := dbIf.SelectOne(ctx, &dbif.SelectOneRequest{})
-	// if err != nil {
-	// 	resp.Status = health_pb.HealthCheckResponse_NOT_SERVING
-	// 	return &resp, fmt.Errorf("Failed to execute `SELECT 1` probe: %v", err)
-	// }
+	//Check if connection to vizier-db is okay since otherwise manager could not serve most of its methods.
+	_, err := dbIf.SelectOne(ctx, &dbif.SelectOneRequest{})
+	if err != nil {
+		resp.Status = health_pb.HealthCheckResponse_NOT_SERVING
+		return &resp, fmt.Errorf("Failed to execute `SELECT 1` probe: %v", err)
+	}
 	return &resp, nil
 }
 
+/**
+TODO: Add DB health check and REST endpoints.
+**/
 func main() {
 
 	flag.Parse()
