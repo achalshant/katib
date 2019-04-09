@@ -17,12 +17,6 @@ service Manager {
     /**
      * Register a Experiment to DB.
      */
-    rpc RegisterExperiment(RegisterExperimentRequest) returns (RegisterExperimentReply){
-        option (google.api.http) = {
-            post: "/api/Manager/RegisterExperiment"
-            body: "experiment"
-        };
-    };
 
     /** 
      * Delete a Experiment from DB by name.
@@ -178,6 +172,15 @@ service Manager {
 service Suggestion {
     rpc GetSuggestions(GetSuggestionsRequest) returns (GetSuggestionsReply);
     rpc ValidateAlgorithmSettings(ValidateAlgorithmSettingsRequest) returns (ValidateAlgorithmSettingsReply);
+}
+
+service DBIF {
+    rpc RegisterExperiment(RegisterExperimentRequest) returns (RegisterExperimentReply){
+        option (google.api.http) = {
+            post: "/api/Manager/RegisterExperiment"
+            body: "experiment"
+        };
+    };
 }
 
 service EarlyStopping {
