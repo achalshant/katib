@@ -326,6 +326,7 @@ message TrialSpec {
     message ParameterAssignments{
         repeated ParameterAssignment assignments = 1;
     }
+    string experiment_name = 1;
     ObjectiveSpec objective = 2;
     ParameterAssignments parameter_assignments = 3;
     string run_spec = 4;

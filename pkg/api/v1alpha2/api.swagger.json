@@ -384,6 +384,9 @@
     "alpha2TrialSpec": {
       "type": "object",
       "properties": {
+        "experiment_name": {
+          "type": "string"
+        },
         "objective": {
           "$ref": "#/definitions/alpha2ObjectiveSpec"
         },
