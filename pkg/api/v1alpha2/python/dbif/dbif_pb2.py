@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='dbif/dbif.proto',
   package='dbif.v1.alpha2',
   syntax='proto3',
-  serialized_pb=_b('\n\x0f\x64\x62if/dbif.proto\x12\x0e\x64\x62if.v1.alpha2\x1a\x1cgoogle/api/annotations.proto\"E\n\rFeasibleSpace\x12\x0b\n\x03max\x18\x01 \x01(\t\x12\x0b\n\x03min\x18\x02 \x01(\t\x12\x0c\n\x04list\x18\x03 \x03(\t\x12\x0c\n\x04step\x18\x04 \x01(\t\"\x8b\x01\n\rParameterSpec\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x35\n\x0eparameter_type\x18\x02 \x01(\x0e\x32\x1d.dbif.v1.alpha2.ParameterType\x12\x35\n\x0e\x66\x65\x61sible_space\x18\x03 \x01(\x0b\x32\x1d.dbif.v1.alpha2.FeasibleSpace\"\x8b\x01\n\rObjectiveSpec\x12+\n\x04type\x18\x01 \x01(\x0e\x32\x1d.dbif.v1.alpha2.ObjectiveType\x12\x0c\n\x04goal\x18\x02 \x01(\x02\x12\x1d\n\x15objective_metric_name\x18\x03 \x01(\t\x12 \n\x18\x61\x64\x64itional_metrics_names\x18\x04 \x03(\t\"/\n\x10\x41lgorithmSetting\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\"\x13\n\x11\x45\x61rlyStoppingSpec\"\xa4\x01\n\rAlgorithmSpec\x12\x16\n\x0e\x61lgorithm_name\x18\x01 \x01(\t\x12;\n\x11\x61lgorithm_setting\x18\x02 \x03(\x0b\x32 .dbif.v1.alpha2.AlgorithmSetting\x12>\n\x13\x65\x61rly_stopping_spec\x18\x03 \x01(\x0b\x32!.dbif.v1.alpha2.EarlyStoppingSpec\"\xb4\x01\n\tNasConfig\x12\x31\n\x0cgraph_config\x18\x01 \x01(\x0b\x32\x1b.dbif.v1.alpha2.GraphConfig\x12\x38\n\noperations\x18\x02 \x01(\x0b\x32$.dbif.v1.alpha2.NasConfig.Operations\x1a:\n\nOperations\x12,\n\toperation\x18\x01 \x03(\x0b\x32\x19.dbif.v1.alpha2.Operation\"L\n\x0bGraphConfig\x12\x12\n\nnum_layers\x18\x01 \x01(\x05\x12\x13\n\x0binput_sizes\x18\x02 \x03(\x05\x12\x14\n\x0coutput_sizes\x18\x03 \x03(\x05\"V\n\tOperation\x12\x16\n\x0eoperation_type\x18\x01 \x01(\t\x12\x31\n\nparameters\x18\x02 \x03(\x0b\x32\x1d.dbif.v1.alpha2.ParameterSpec\"\x9f\x03\n\x0e\x45xperimentSpec\x12\x46\n\x0fparameter_specs\x18\x01 \x01(\x0b\x32-.dbif.v1.alpha2.ExperimentSpec.ParameterSpecs\x12\x30\n\tobjective\x18\x02 \x01(\x0b\x32\x1d.dbif.v1.alpha2.ObjectiveSpec\x12\x30\n\talgorithm\x18\x03 \x01(\x0b\x32\x1d.dbif.v1.alpha2.AlgorithmSpec\x12\x16\n\x0etrial_template\x18\x04 \x01(\t\x12\x1c\n\x14parallel_trial_count\x18\x05 \x01(\x05\x12\x17\n\x0fmax_trial_count\x18\x06 \x01(\x05\x12\x1e\n\x16metrics_collector_type\x18\x07 \x01(\t\x12-\n\nnas_config\x18\x08 \x01(\x0b\x32\x19.dbif.v1.alpha2.NasConfig\x1a\x43\n\x0eParameterSpecs\x12\x31\n\nparameters\x18\x01 \x03(\x0b\x32\x1d.dbif.v1.alpha2.ParameterSpec\"\xec\x01\n\x10\x45xperimentStatus\x12\x12\n\nstart_time\x18\x01 \x01(\t\x12\x17\n\x0f\x63ompletion_time\x18\x02 \x01(\t\x12K\n\tcondition\x18\x03 \x01(\x0e\x32\x38.dbif.v1.alpha2.ExperimentStatus.ExperimentConditionType\"^\n\x17\x45xperimentConditionType\x12\x0b\n\x07\x43REATED\x10\x00\x12\x0b\n\x07RUNNING\x10\x01\x12\x0e\n\nRESTARTING\x10\x02\x12\r\n\tSUCCEEDED\x10\x03\x12\n\n\x06\x46\x41ILED\x10\x04\"\x90\x01\n\nExperiment\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x37\n\x0f\x65xperiment_spec\x18\x02 \x01(\x0b\x32\x1e.dbif.v1.alpha2.ExperimentSpec\x12;\n\x11\x65xperiment_status\x18\x03 \x01(\x0b\x32 .dbif.v1.alpha2.ExperimentStatus\"2\n\x13ParameterAssignment\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\"%\n\x06Metric\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\"G\n\tMetricLog\x12\x12\n\ntime_stamp\x18\x01 \x01(\t\x12&\n\x06metric\x18\x02 \x01(\x0b\x32\x16.dbif.v1.alpha2.Metric\"6\n\x0bObservation\x12\'\n\x07metrics\x18\x01 \x03(\x0b\x32\x16.dbif.v1.alpha2.Metric\"@\n\x0eObservationLog\x12.\n\x0bmetric_logs\x18\x01 \x03(\x0b\x32\x19.dbif.v1.alpha2.MetricLog\"\xd7\x01\n\tTrialSpec\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\x12M\n\x15parameter_assignments\x18\x02 \x01(\x0b\x32..dbif.v1.alpha2.TrialSpec.ParameterAssignments\x12\x10\n\x08run_spec\x18\x03 \x01(\t\x1aP\n\x14ParameterAssignments\x12\x38\n\x0b\x61ssignments\x18\x01 \x03(\x0b\x32#.dbif.v1.alpha2.ParameterAssignment\"\x86\x02\n\x0bTrialStatus\x12\x12\n\nstart_time\x18\x01 \x01(\t\x12\x17\n\x0f\x63ompletion_time\x18\x02 \x01(\t\x12\x41\n\tcondition\x18\x03 \x01(\x0e\x32..dbif.v1.alpha2.TrialStatus.TrialConditionType\x12\x30\n\x0bobservation\x18\x04 \x01(\x0b\x32\x1b.dbif.v1.alpha2.Observation\"U\n\x12TrialConditionType\x12\x0b\n\x07PENDING\x10\x00\x12\x0b\n\x07RUNNING\x10\x01\x12\r\n\tCOMPLETED\x10\x02\x12\n\n\x06KILLED\x10\x03\x12\n\n\x06\x46\x41ILED\x10\x04\"k\n\x05Trial\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\'\n\x04spec\x18\x02 \x01(\x0b\x32\x19.dbif.v1.alpha2.TrialSpec\x12+\n\x06status\x18\x03 \x01(\x0b\x32\x1b.dbif.v1.alpha2.TrialStatus\"K\n\x19RegisterExperimentRequest\x12.\n\nexperiment\x18\x01 \x01(\x0b\x32\x1a.dbif.v1.alpha2.Experiment\"\x19\n\x17RegisterExperimentReply\"2\n\x17\x44\x65leteExperimentRequest\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\"\x17\n\x15\x44\x65leteExperimentReply\"/\n\x14GetExperimentRequest\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\"D\n\x12GetExperimentReply\x12.\n\nexperiment\x18\x01 \x01(\x0b\x32\x1a.dbif.v1.alpha2.Experiment\"^\n\x11\x45xperimentSummary\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\x12\x30\n\x06status\x18\x02 \x01(\x0b\x32 .dbif.v1.alpha2.ExperimentStatus\"\x1a\n\x18GetExperimentListRequest\"Y\n\x16GetExperimentListReply\x12?\n\x14\x65xperiment_summaries\x18\x01 \x03(\x0b\x32!.dbif.v1.alpha2.ExperimentSummary\"n\n\x1dUpdateExperimentStatusRequest\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\x12\x34\n\nnew_status\x18\x02 \x01(\x0b\x32 .dbif.v1.alpha2.ExperimentStatus\"\x1d\n\x1bUpdateExperimentStatusReply\"\x82\x01\n#UpdateAlgorithmExtraSettingsRequest\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\x12\x42\n\x18\x65xtra_algorithm_settings\x18\x02 \x03(\x0b\x32 .dbif.v1.alpha2.AlgorithmSetting\"#\n!UpdateAlgorithmExtraSettingsReply\";\n GetAlgorithmExtraSettingsRequest\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\"d\n\x1eGetAlgorithmExtraSettingsReply\x12\x42\n\x18\x65xtra_algorithm_settings\x18\x01 \x03(\x0b\x32 .dbif.v1.alpha2.AlgorithmSetting\"<\n\x14RegisterTrialRequest\x12$\n\x05trial\x18\x01 \x01(\x0b\x32\x15.dbif.v1.alpha2.Trial\"\x14\n\x12RegisterTrialReply\"(\n\x12\x44\x65leteTrialRequest\x12\x12\n\ntrial_name\x18\x01 \x01(\t\"\x12\n\x10\x44\x65leteTrialReply\">\n\x13GetTrialListRequest\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\x12\x0e\n\x06\x66ilter\x18\x02 \x01(\t\":\n\x11GetTrialListReply\x12%\n\x06trials\x18\x01 \x03(\x0b\x32\x15.dbif.v1.alpha2.Trial\"%\n\x0fGetTrialRequest\x12\x12\n\ntrial_name\x18\x01 \x01(\t\"5\n\rGetTrialReply\x12$\n\x05trial\x18\x01 \x01(\x0b\x32\x15.dbif.v1.alpha2.Trial\"_\n\x18UpdateTrialStatusRequest\x12\x12\n\ntrial_name\x18\x01 \x01(\t\x12/\n\nnew_status\x18\x02 \x01(\x0b\x32\x1b.dbif.v1.alpha2.TrialStatus\"\x18\n\x16UpdateTrialStatusReply\"j\n\x1bReportObservationLogRequest\x12\x12\n\ntrial_name\x18\x01 \x01(\t\x12\x37\n\x0fobservation_log\x18\x02 \x01(\x0b\x32\x1e.dbif.v1.alpha2.ObservationLog\"\x1b\n\x19ReportObservationLogReply\"T\n\x18GetObservationLogRequest\x12\x12\n\ntrial_name\x18\x01 \x01(\t\x12\x12\n\nstart_time\x18\x02 \x01(\t\x12\x10\n\x08\x65nd_time\x18\x03 \x01(\t\"Q\n\x16GetObservationLogReply\x12\x37\n\x0fobservation_log\x18\x01 \x01(\x0b\x32\x1e.dbif.v1.alpha2.ObservationLog\"\x10\n\x0eSelectOneReply\"\x12\n\x10SelectOneRequest*U\n\rParameterType\x12\x10\n\x0cUNKNOWN_TYPE\x10\x00\x12\n\n\x06\x44OUBLE\x10\x01\x12\x07\n\x03INT\x10\x02\x12\x0c\n\x08\x44ISCRETE\x10\x03\x12\x0f\n\x0b\x43\x41TEGORICAL\x10\x04*8\n\rObjectiveType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0c\n\x08MINIMIZE\x10\x01\x12\x0c\n\x08MAXIMIZE\x10\x02\x32\xb9\x11\n\x04\x44\x42IF\x12\x9a\x01\n\x12RegisterExperiment\x12).dbif.v1.alpha2.RegisterExperimentRequest\x1a\'.dbif.v1.alpha2.RegisterExperimentReply\"0\x82\xd3\xe4\x93\x02*\"\x1c/api/DBIF/RegisterExperiment:\nexperiment\x12\x98\x01\n\x10\x44\x65leteExperiment\x12\'.dbif.v1.alpha2.DeleteExperimentRequest\x1a%.dbif.v1.alpha2.DeleteExperimentReply\"4\x82\xd3\xe4\x93\x02.\x12,/api/DBIF/DeleteExperiment/{experiment_name}\x12\x8c\x01\n\rGetExperiment\x12$.dbif.v1.alpha2.GetExperimentRequest\x1a\".dbif.v1.alpha2.GetExperimentReply\"1\x82\xd3\xe4\x93\x02+\x12)/api/DBIF/GetExperiment/{experiment_name}\x12\x8a\x01\n\x11GetExperimentList\x12(.dbif.v1.alpha2.GetExperimentListRequest\x1a&.dbif.v1.alpha2.GetExperimentListReply\"#\x82\xd3\xe4\x93\x02\x1d\x12\x1b/api/DBIF/GetExperimentList\x12\xb3\x01\n\x16UpdateExperimentStatus\x12-.dbif.v1.alpha2.UpdateExperimentStatusRequest\x1a+.dbif.v1.alpha2.UpdateExperimentStatusReply\"=\x82\xd3\xe4\x93\x02\x37\x1a\x32/api/DBIF/UpdateExperimentStatus/{experiment_name}:\x01*\x12\xcb\x01\n\x1cUpdateAlgorithmExtraSettings\x12\x33.dbif.v1.alpha2.UpdateAlgorithmExtraSettingsRequest\x1a\x31.dbif.v1.alpha2.UpdateAlgorithmExtraSettingsReply\"C\x82\xd3\xe4\x93\x02=\x1a\x38/api/DBIF/UpdateAlgorithmExtraSettings/{experiment_name}:\x01*\x12\xbc\x01\n\x19GetAlgorithmExtraSettings\x12\x30.dbif.v1.alpha2.GetAlgorithmExtraSettingsRequest\x1a..dbif.v1.alpha2.GetAlgorithmExtraSettingsReply\"=\x82\xd3\xe4\x93\x02\x37\x12\x35/api/DBIF/GetAlgorithmExtraSettings/{experiment_name}\x12\x81\x01\n\rRegisterTrial\x12$.dbif.v1.alpha2.RegisterTrialRequest\x1a\".dbif.v1.alpha2.RegisterTrialReply\"&\x82\xd3\xe4\x93\x02 \"\x17/api/DBIF/RegisterTrial:\x05trial\x12\x7f\n\x0b\x44\x65leteTrial\x12\".dbif.v1.alpha2.DeleteTrialRequest\x1a .dbif.v1.alpha2.DeleteTrialReply\"*\x82\xd3\xe4\x93\x02$\x12\"/api/DBIF/DeleteTrial/{trial_name}\x12\x88\x01\n\x0cGetTrialList\x12#.dbif.v1.alpha2.GetTrialListRequest\x1a!.dbif.v1.alpha2.GetTrialListReply\"0\x82\xd3\xe4\x93\x02*\x12(/api/DBIF/GetTrialList/{experiment_name}\x12s\n\x08GetTrial\x12\x1f.dbif.v1.alpha2.GetTrialRequest\x1a\x1d.dbif.v1.alpha2.GetTrialReply\"\'\x82\xd3\xe4\x93\x02!\x12\x1f/api/DBIF/GetTrial/{trial_name}\x12\x8d\x01\n\x11UpdateTrialStatus\x12(.dbif.v1.alpha2.UpdateTrialStatusRequest\x1a&.dbif.v1.alpha2.UpdateTrialStatusReply\"&\x82\xd3\xe4\x93\x02 \x1a\x1b/api/DBIF/UpdateTrialStatus:\x01*\x12\x99\x01\n\x14ReportObservationLog\x12+.dbif.v1.alpha2.ReportObservationLogRequest\x1a).dbif.v1.alpha2.ReportObservationLogReply\")\x82\xd3\xe4\x93\x02#\"\x1e/api/DBIF/ReportObservationLog:\x01*\x12\x97\x01\n\x11GetObservationLog\x12(.dbif.v1.alpha2.GetObservationLogRequest\x1a&.dbif.v1.alpha2.GetObservationLogReply\"0\x82\xd3\xe4\x93\x02*\x12(/api/DBIF/GetObservationLog/{trial_name}\x12O\n\tSelectOne\x12 .dbif.v1.alpha2.SelectOneRequest\x1a\x1e.dbif.v1.alpha2.SelectOneReply\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x0f\x64\x62if/dbif.proto\x12\x0e\x64\x62if.v1.alpha2\x1a\x1cgoogle/api/annotations.proto\"E\n\rFeasibleSpace\x12\x0b\n\x03max\x18\x01 \x01(\t\x12\x0b\n\x03min\x18\x02 \x01(\t\x12\x0c\n\x04list\x18\x03 \x03(\t\x12\x0c\n\x04step\x18\x04 \x01(\t\"\x8b\x01\n\rParameterSpec\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x35\n\x0eparameter_type\x18\x02 \x01(\x0e\x32\x1d.dbif.v1.alpha2.ParameterType\x12\x35\n\x0e\x66\x65\x61sible_space\x18\x03 \x01(\x0b\x32\x1d.dbif.v1.alpha2.FeasibleSpace\"\x8a\x01\n\rObjectiveSpec\x12+\n\x04type\x18\x01 \x01(\x0e\x32\x1d.dbif.v1.alpha2.ObjectiveType\x12\x0c\n\x04goal\x18\x02 \x01(\x02\x12\x1d\n\x15objective_metric_name\x18\x03 \x01(\t\x12\x1f\n\x17\x61\x64\x64itional_metric_names\x18\x04 \x03(\t\"/\n\x10\x41lgorithmSetting\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\"\x13\n\x11\x45\x61rlyStoppingSpec\"\xa4\x01\n\rAlgorithmSpec\x12\x16\n\x0e\x61lgorithm_name\x18\x01 \x01(\t\x12;\n\x11\x61lgorithm_setting\x18\x02 \x03(\x0b\x32 .dbif.v1.alpha2.AlgorithmSetting\x12>\n\x13\x65\x61rly_stopping_spec\x18\x03 \x01(\x0b\x32!.dbif.v1.alpha2.EarlyStoppingSpec\"\xb4\x01\n\tNasConfig\x12\x31\n\x0cgraph_config\x18\x01 \x01(\x0b\x32\x1b.dbif.v1.alpha2.GraphConfig\x12\x38\n\noperations\x18\x02 \x01(\x0b\x32$.dbif.v1.alpha2.NasConfig.Operations\x1a:\n\nOperations\x12,\n\toperation\x18\x01 \x03(\x0b\x32\x19.dbif.v1.alpha2.Operation\"L\n\x0bGraphConfig\x12\x12\n\nnum_layers\x18\x01 \x01(\x05\x12\x13\n\x0binput_sizes\x18\x02 \x03(\x05\x12\x14\n\x0coutput_sizes\x18\x03 \x03(\x05\"V\n\tOperation\x12\x16\n\x0eoperation_type\x18\x01 \x01(\t\x12\x31\n\nparameters\x18\x02 \x03(\x0b\x32\x1d.dbif.v1.alpha2.ParameterSpec\"\x9f\x03\n\x0e\x45xperimentSpec\x12\x46\n\x0fparameter_specs\x18\x01 \x01(\x0b\x32-.dbif.v1.alpha2.ExperimentSpec.ParameterSpecs\x12\x30\n\tobjective\x18\x02 \x01(\x0b\x32\x1d.dbif.v1.alpha2.ObjectiveSpec\x12\x30\n\talgorithm\x18\x03 \x01(\x0b\x32\x1d.dbif.v1.alpha2.AlgorithmSpec\x12\x16\n\x0etrial_template\x18\x04 \x01(\t\x12\x1e\n\x16metrics_collector_spec\x18\x05 \x01(\t\x12\x1c\n\x14parallel_trial_count\x18\x06 \x01(\x05\x12\x17\n\x0fmax_trial_count\x18\x07 \x01(\x05\x12-\n\nnas_config\x18\x08 \x01(\x0b\x32\x19.dbif.v1.alpha2.NasConfig\x1a\x43\n\x0eParameterSpecs\x12\x31\n\nparameters\x18\x01 \x03(\x0b\x32\x1d.dbif.v1.alpha2.ParameterSpec\"\xec\x01\n\x10\x45xperimentStatus\x12\x12\n\nstart_time\x18\x01 \x01(\t\x12\x17\n\x0f\x63ompletion_time\x18\x02 \x01(\t\x12K\n\tcondition\x18\x03 \x01(\x0e\x32\x38.dbif.v1.alpha2.ExperimentStatus.ExperimentConditionType\"^\n\x17\x45xperimentConditionType\x12\x0b\n\x07\x43REATED\x10\x00\x12\x0b\n\x07RUNNING\x10\x01\x12\x0e\n\nRESTARTING\x10\x02\x12\r\n\tSUCCEEDED\x10\x03\x12\n\n\x06\x46\x41ILED\x10\x04\"\x90\x01\n\nExperiment\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x37\n\x0f\x65xperiment_spec\x18\x02 \x01(\x0b\x32\x1e.dbif.v1.alpha2.ExperimentSpec\x12;\n\x11\x65xperiment_status\x18\x03 \x01(\x0b\x32 .dbif.v1.alpha2.ExperimentStatus\"2\n\x13ParameterAssignment\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\"%\n\x06Metric\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\"G\n\tMetricLog\x12\x12\n\ntime_stamp\x18\x01 \x01(\t\x12&\n\x06metric\x18\x02 \x01(\x0b\x32\x16.dbif.v1.alpha2.Metric\"6\n\x0bObservation\x12\'\n\x07metrics\x18\x01 \x03(\x0b\x32\x16.dbif.v1.alpha2.Metric\"@\n\x0eObservationLog\x12.\n\x0bmetric_logs\x18\x01 \x03(\x0b\x32\x19.dbif.v1.alpha2.MetricLog\"\x90\x02\n\tTrialSpec\x12\x30\n\tobjective\x18\x02 \x01(\x0b\x32\x1d.dbif.v1.alpha2.ObjectiveSpec\x12M\n\x15parameter_assignments\x18\x03 \x01(\x0b\x32..dbif.v1.alpha2.TrialSpec.ParameterAssignments\x12\x10\n\x08run_spec\x18\x04 \x01(\t\x12\x1e\n\x16metrics_collector_spec\x18\x05 \x01(\t\x1aP\n\x14ParameterAssignments\x12\x38\n\x0b\x61ssignments\x18\x01 \x03(\x0b\x32#.dbif.v1.alpha2.ParameterAssignment\"\x86\x02\n\x0bTrialStatus\x12\x12\n\nstart_time\x18\x01 \x01(\t\x12\x17\n\x0f\x63ompletion_time\x18\x02 \x01(\t\x12\x41\n\tcondition\x18\x03 \x01(\x0e\x32..dbif.v1.alpha2.TrialStatus.TrialConditionType\x12\x30\n\x0bobservation\x18\x04 \x01(\x0b\x32\x1b.dbif.v1.alpha2.Observation\"U\n\x12TrialConditionType\x12\x0b\n\x07PENDING\x10\x00\x12\x0b\n\x07RUNNING\x10\x01\x12\r\n\tCOMPLETED\x10\x02\x12\n\n\x06KILLED\x10\x03\x12\n\n\x06\x46\x41ILED\x10\x04\"k\n\x05Trial\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\'\n\x04spec\x18\x02 \x01(\x0b\x32\x19.dbif.v1.alpha2.TrialSpec\x12+\n\x06status\x18\x03 \x01(\x0b\x32\x1b.dbif.v1.alpha2.TrialStatus\"K\n\x19RegisterExperimentRequest\x12.\n\nexperiment\x18\x01 \x01(\x0b\x32\x1a.dbif.v1.alpha2.Experiment\"\x19\n\x17RegisterExperimentReply\"2\n\x17\x44\x65leteExperimentRequest\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\"\x17\n\x15\x44\x65leteExperimentReply\"/\n\x14GetExperimentRequest\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\"D\n\x12GetExperimentReply\x12.\n\nexperiment\x18\x01 \x01(\x0b\x32\x1a.dbif.v1.alpha2.Experiment\"^\n\x11\x45xperimentSummary\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\x12\x30\n\x06status\x18\x02 \x01(\x0b\x32 .dbif.v1.alpha2.ExperimentStatus\"\x1a\n\x18GetExperimentListRequest\"Y\n\x16GetExperimentListReply\x12?\n\x14\x65xperiment_summaries\x18\x01 \x03(\x0b\x32!.dbif.v1.alpha2.ExperimentSummary\"n\n\x1dUpdateExperimentStatusRequest\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\x12\x34\n\nnew_status\x18\x02 \x01(\x0b\x32 .dbif.v1.alpha2.ExperimentStatus\"\x1d\n\x1bUpdateExperimentStatusReply\"\x82\x01\n#UpdateAlgorithmExtraSettingsRequest\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\x12\x42\n\x18\x65xtra_algorithm_settings\x18\x02 \x03(\x0b\x32 .dbif.v1.alpha2.AlgorithmSetting\"#\n!UpdateAlgorithmExtraSettingsReply\";\n GetAlgorithmExtraSettingsRequest\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\"d\n\x1eGetAlgorithmExtraSettingsReply\x12\x42\n\x18\x65xtra_algorithm_settings\x18\x01 \x03(\x0b\x32 .dbif.v1.alpha2.AlgorithmSetting\"<\n\x14RegisterTrialRequest\x12$\n\x05trial\x18\x01 \x01(\x0b\x32\x15.dbif.v1.alpha2.Trial\"\x14\n\x12RegisterTrialReply\"(\n\x12\x44\x65leteTrialRequest\x12\x12\n\ntrial_name\x18\x01 \x01(\t\"\x12\n\x10\x44\x65leteTrialReply\">\n\x13GetTrialListRequest\x12\x17\n\x0f\x65xperiment_name\x18\x01 \x01(\t\x12\x0e\n\x06\x66ilter\x18\x02 \x01(\t\":\n\x11GetTrialListReply\x12%\n\x06trials\x18\x01 \x03(\x0b\x32\x15.dbif.v1.alpha2.Trial\"%\n\x0fGetTrialRequest\x12\x12\n\ntrial_name\x18\x01 \x01(\t\"5\n\rGetTrialReply\x12$\n\x05trial\x18\x01 \x01(\x0b\x32\x15.dbif.v1.alpha2.Trial\"_\n\x18UpdateTrialStatusRequest\x12\x12\n\ntrial_name\x18\x01 \x01(\t\x12/\n\nnew_status\x18\x02 \x01(\x0b\x32\x1b.dbif.v1.alpha2.TrialStatus\"\x18\n\x16UpdateTrialStatusReply\"j\n\x1bReportObservationLogRequest\x12\x12\n\ntrial_name\x18\x01 \x01(\t\x12\x37\n\x0fobservation_log\x18\x02 \x01(\x0b\x32\x1e.dbif.v1.alpha2.ObservationLog\"\x1b\n\x19ReportObservationLogReply\"T\n\x18GetObservationLogRequest\x12\x12\n\ntrial_name\x18\x01 \x01(\t\x12\x12\n\nstart_time\x18\x02 \x01(\t\x12\x10\n\x08\x65nd_time\x18\x03 \x01(\t\"Q\n\x16GetObservationLogReply\x12\x37\n\x0fobservation_log\x18\x01 \x01(\x0b\x32\x1e.dbif.v1.alpha2.ObservationLog\"\x10\n\x0eSelectOneReply\"\x12\n\x10SelectOneRequest*U\n\rParameterType\x12\x10\n\x0cUNKNOWN_TYPE\x10\x00\x12\n\n\x06\x44OUBLE\x10\x01\x12\x07\n\x03INT\x10\x02\x12\x0c\n\x08\x44ISCRETE\x10\x03\x12\x0f\n\x0b\x43\x41TEGORICAL\x10\x04*8\n\rObjectiveType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0c\n\x08MINIMIZE\x10\x01\x12\x0c\n\x08MAXIMIZE\x10\x02\x32\xb9\x11\n\x04\x44\x42IF\x12\x9a\x01\n\x12RegisterExperiment\x12).dbif.v1.alpha2.RegisterExperimentRequest\x1a\'.dbif.v1.alpha2.RegisterExperimentReply\"0\x82\xd3\xe4\x93\x02*\"\x1c/api/DBIF/RegisterExperiment:\nexperiment\x12\x98\x01\n\x10\x44\x65leteExperiment\x12\'.dbif.v1.alpha2.DeleteExperimentRequest\x1a%.dbif.v1.alpha2.DeleteExperimentReply\"4\x82\xd3\xe4\x93\x02.\x12,/api/DBIF/DeleteExperiment/{experiment_name}\x12\x8c\x01\n\rGetExperiment\x12$.dbif.v1.alpha2.GetExperimentRequest\x1a\".dbif.v1.alpha2.GetExperimentReply\"1\x82\xd3\xe4\x93\x02+\x12)/api/DBIF/GetExperiment/{experiment_name}\x12\x8a\x01\n\x11GetExperimentList\x12(.dbif.v1.alpha2.GetExperimentListRequest\x1a&.dbif.v1.alpha2.GetExperimentListReply\"#\x82\xd3\xe4\x93\x02\x1d\x12\x1b/api/DBIF/GetExperimentList\x12\xb3\x01\n\x16UpdateExperimentStatus\x12-.dbif.v1.alpha2.UpdateExperimentStatusRequest\x1a+.dbif.v1.alpha2.UpdateExperimentStatusReply\"=\x82\xd3\xe4\x93\x02\x37\x1a\x32/api/DBIF/UpdateExperimentStatus/{experiment_name}:\x01*\x12\xcb\x01\n\x1cUpdateAlgorithmExtraSettings\x12\x33.dbif.v1.alpha2.UpdateAlgorithmExtraSettingsRequest\x1a\x31.dbif.v1.alpha2.UpdateAlgorithmExtraSettingsReply\"C\x82\xd3\xe4\x93\x02=\x1a\x38/api/DBIF/UpdateAlgorithmExtraSettings/{experiment_name}:\x01*\x12\xbc\x01\n\x19GetAlgorithmExtraSettings\x12\x30.dbif.v1.alpha2.GetAlgorithmExtraSettingsRequest\x1a..dbif.v1.alpha2.GetAlgorithmExtraSettingsReply\"=\x82\xd3\xe4\x93\x02\x37\x12\x35/api/DBIF/GetAlgorithmExtraSettings/{experiment_name}\x12\x81\x01\n\rRegisterTrial\x12$.dbif.v1.alpha2.RegisterTrialRequest\x1a\".dbif.v1.alpha2.RegisterTrialReply\"&\x82\xd3\xe4\x93\x02 \"\x17/api/DBIF/RegisterTrial:\x05trial\x12\x7f\n\x0b\x44\x65leteTrial\x12\".dbif.v1.alpha2.DeleteTrialRequest\x1a .dbif.v1.alpha2.DeleteTrialReply\"*\x82\xd3\xe4\x93\x02$\x12\"/api/DBIF/DeleteTrial/{trial_name}\x12\x88\x01\n\x0cGetTrialList\x12#.dbif.v1.alpha2.GetTrialListRequest\x1a!.dbif.v1.alpha2.GetTrialListReply\"0\x82\xd3\xe4\x93\x02*\x12(/api/DBIF/GetTrialList/{experiment_name}\x12s\n\x08GetTrial\x12\x1f.dbif.v1.alpha2.GetTrialRequest\x1a\x1d.dbif.v1.alpha2.GetTrialReply\"\'\x82\xd3\xe4\x93\x02!\x12\x1f/api/DBIF/GetTrial/{trial_name}\x12\x8d\x01\n\x11UpdateTrialStatus\x12(.dbif.v1.alpha2.UpdateTrialStatusRequest\x1a&.dbif.v1.alpha2.UpdateTrialStatusReply\"&\x82\xd3\xe4\x93\x02 \x1a\x1b/api/DBIF/UpdateTrialStatus:\x01*\x12\x99\x01\n\x14ReportObservationLog\x12+.dbif.v1.alpha2.ReportObservationLogRequest\x1a).dbif.v1.alpha2.ReportObservationLogReply\")\x82\xd3\xe4\x93\x02#\"\x1e/api/DBIF/ReportObservationLog:\x01*\x12\x97\x01\n\x11GetObservationLog\x12(.dbif.v1.alpha2.GetObservationLogRequest\x1a&.dbif.v1.alpha2.GetObservationLogReply\"0\x82\xd3\xe4\x93\x02*\x12(/api/DBIF/GetObservationLog/{trial_name}\x12O\n\tSelectOne\x12 .dbif.v1.alpha2.SelectOneRequest\x1a\x1e.dbif.v1.alpha2.SelectOneReply\"\x00\x62\x06proto3')
   ,
   dependencies=[google_dot_api_dot_annotations__pb2.DESCRIPTOR,])
 
@@ -54,8 +54,8 @@ _PARAMETERTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=4510,
-  serialized_end=4595,
+  serialized_start=4566,
+  serialized_end=4651,
 )
 _sym_db.RegisterEnumDescriptor(_PARAMETERTYPE)
 
@@ -81,8 +81,8 @@ _OBJECTIVETYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=4597,
-  serialized_end=4653,
+  serialized_start=4653,
+  serialized_end=4709,
 )
 _sym_db.RegisterEnumDescriptor(_OBJECTIVETYPE)
 
@@ -126,8 +126,8 @@ _EXPERIMENTSTATUS_EXPERIMENTCONDITIONTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1567,
-  serialized_end=1661,
+  serialized_start=1566,
+  serialized_end=1660,
 )
 _sym_db.RegisterEnumDescriptor(_EXPERIMENTSTATUS_EXPERIMENTCONDITIONTYPE)
 
@@ -160,8 +160,8 @@ _TRIALSTATUS_TRIALCONDITIONTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2492,
-  serialized_end=2577,
+  serialized_start=2548,
+  serialized_end=2633,
 )
 _sym_db.RegisterEnumDescriptor(_TRIALSTATUS_TRIALCONDITIONTYPE)
 
@@ -292,7 +292,7 @@ _OBJECTIVESPEC = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='additional_metrics_names', full_name='dbif.v1.alpha2.ObjectiveSpec.additional_metrics_names', index=3,
+      name='additional_metric_names', full_name='dbif.v1.alpha2.ObjectiveSpec.additional_metric_names', index=3,
       number=4, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -311,7 +311,7 @@ _OBJECTIVESPEC = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=279,
-  serialized_end=418,
+  serialized_end=417,
 )
 
 
@@ -348,8 +348,8 @@ _ALGORITHMSETTING = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=420,
-  serialized_end=467,
+  serialized_start=419,
+  serialized_end=466,
 )
 
 
@@ -372,8 +372,8 @@ _EARLYSTOPPINGSPEC = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=469,
-  serialized_end=488,
+  serialized_start=468,
+  serialized_end=487,
 )
 
 
@@ -417,8 +417,8 @@ _ALGORITHMSPEC = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=491,
-  serialized_end=655,
+  serialized_start=490,
+  serialized_end=654,
 )
 
 
@@ -448,8 +448,8 @@ _NASCONFIG_OPERATIONS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=780,
-  serialized_end=838,
+  serialized_start=779,
+  serialized_end=837,
 )
 
 _NASCONFIG = _descriptor.Descriptor(
@@ -485,8 +485,8 @@ _NASCONFIG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=658,
-  serialized_end=838,
+  serialized_start=657,
+  serialized_end=837,
 )
 
 
@@ -530,8 +530,8 @@ _GRAPHCONFIG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=840,
-  serialized_end=916,
+  serialized_start=839,
+  serialized_end=915,
 )
 
 
@@ -568,8 +568,8 @@ _OPERATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=918,
-  serialized_end=1004,
+  serialized_start=917,
+  serialized_end=1003,
 )
 
 
@@ -599,8 +599,8 @@ _EXPERIMENTSPEC_PARAMETERSPECS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1355,
-  serialized_end=1422,
+  serialized_start=1354,
+  serialized_end=1421,
 )
 
 _EXPERIMENTSPEC = _descriptor.Descriptor(
@@ -639,23 +639,23 @@ _EXPERIMENTSPEC = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='parallel_trial_count', full_name='dbif.v1.alpha2.ExperimentSpec.parallel_trial_count', index=4,
-      number=5, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      name='metrics_collector_spec', full_name='dbif.v1.alpha2.ExperimentSpec.metrics_collector_spec', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='max_trial_count', full_name='dbif.v1.alpha2.ExperimentSpec.max_trial_count', index=5,
+      name='parallel_trial_count', full_name='dbif.v1.alpha2.ExperimentSpec.parallel_trial_count', index=5,
       number=6, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='metrics_collector_type', full_name='dbif.v1.alpha2.ExperimentSpec.metrics_collector_type', index=6,
-      number=7, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      name='max_trial_count', full_name='dbif.v1.alpha2.ExperimentSpec.max_trial_count', index=6,
+      number=7, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -678,8 +678,8 @@ _EXPERIMENTSPEC = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1007,
-  serialized_end=1422,
+  serialized_start=1006,
+  serialized_end=1421,
 )
 
 
@@ -724,8 +724,8 @@ _EXPERIMENTSTATUS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1425,
-  serialized_end=1661,
+  serialized_start=1424,
+  serialized_end=1660,
 )
 
 
@@ -769,8 +769,8 @@ _EXPERIMENT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1664,
-  serialized_end=1808,
+  serialized_start=1663,
+  serialized_end=1807,
 )
 
 
@@ -807,8 +807,8 @@ _PARAMETERASSIGNMENT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1810,
-  serialized_end=1860,
+  serialized_start=1809,
+  serialized_end=1859,
 )
 
 
@@ -845,8 +845,8 @@ _METRIC = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1862,
-  serialized_end=1899,
+  serialized_start=1861,
+  serialized_end=1898,
 )
 
 
@@ -883,8 +883,8 @@ _METRICLOG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1901,
-  serialized_end=1972,
+  serialized_start=1900,
+  serialized_end=1971,
 )
 
 
@@ -914,8 +914,8 @@ _OBSERVATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1974,
-  serialized_end=2028,
+  serialized_start=1973,
+  serialized_end=2027,
 )
 
 
@@ -945,8 +945,8 @@ _OBSERVATIONLOG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2030,
-  serialized_end=2094,
+  serialized_start=2029,
+  serialized_end=2093,
 )
 
 
@@ -976,8 +976,8 @@ _TRIALSPEC_PARAMETERASSIGNMENTS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2232,
-  serialized_end=2312,
+  serialized_start=2288,
+  serialized_end=2368,
 )
 
 _TRIALSPEC = _descriptor.Descriptor(
@@ -988,22 +988,29 @@ _TRIALSPEC = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='experiment_name', full_name='dbif.v1.alpha2.TrialSpec.experiment_name', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='parameter_assignments', full_name='dbif.v1.alpha2.TrialSpec.parameter_assignments', index=1,
+      name='objective', full_name='dbif.v1.alpha2.TrialSpec.objective', index=0,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
+      name='parameter_assignments', full_name='dbif.v1.alpha2.TrialSpec.parameter_assignments', index=1,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
       name='run_spec', full_name='dbif.v1.alpha2.TrialSpec.run_spec', index=2,
-      number=3, type=9, cpp_type=9, label=1,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='metrics_collector_spec', full_name='dbif.v1.alpha2.TrialSpec.metrics_collector_spec', index=3,
+      number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -1020,8 +1027,8 @@ _TRIALSPEC = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2097,
-  serialized_end=2312,
+  serialized_start=2096,
+  serialized_end=2368,
 )
 
 
@@ -1073,8 +1080,8 @@ _TRIALSTATUS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2315,
-  serialized_end=2577,
+  serialized_start=2371,
+  serialized_end=2633,
 )
 
 
@@ -1118,8 +1125,8 @@ _TRIAL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2579,
-  serialized_end=2686,
+  serialized_start=2635,
+  serialized_end=2742,
 )
 
 
@@ -1149,8 +1156,8 @@ _REGISTEREXPERIMENTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2688,
-  serialized_end=2763,
+  serialized_start=2744,
+  serialized_end=2819,
 )
 
 
@@ -1173,8 +1180,8 @@ _REGISTEREXPERIMENTREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2765,
-  serialized_end=2790,
+  serialized_start=2821,
+  serialized_end=2846,
 )
 
 
@@ -1204,8 +1211,8 @@ _DELETEEXPERIMENTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2792,
-  serialized_end=2842,
+  serialized_start=2848,
+  serialized_end=2898,
 )
 
 
@@ -1228,8 +1235,8 @@ _DELETEEXPERIMENTREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2844,
-  serialized_end=2867,
+  serialized_start=2900,
+  serialized_end=2923,
 )
 
 
@@ -1259,8 +1266,8 @@ _GETEXPERIMENTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2869,
-  serialized_end=2916,
+  serialized_start=2925,
+  serialized_end=2972,
 )
 
 
@@ -1290,8 +1297,8 @@ _GETEXPERIMENTREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2918,
-  serialized_end=2986,
+  serialized_start=2974,
+  serialized_end=3042,
 )
 
 
@@ -1328,8 +1335,8 @@ _EXPERIMENTSUMMARY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2988,
-  serialized_end=3082,
+  serialized_start=3044,
+  serialized_end=3138,
 )
 
 
@@ -1352,8 +1359,8 @@ _GETEXPERIMENTLISTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3084,
-  serialized_end=3110,
+  serialized_start=3140,
+  serialized_end=3166,
 )
 
 
@@ -1383,8 +1390,8 @@ _GETEXPERIMENTLISTREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3112,
-  serialized_end=3201,
+  serialized_start=3168,
+  serialized_end=3257,
 )
 
 
@@ -1421,8 +1428,8 @@ _UPDATEEXPERIMENTSTATUSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3203,
-  serialized_end=3313,
+  serialized_start=3259,
+  serialized_end=3369,
 )
 
 
@@ -1445,8 +1452,8 @@ _UPDATEEXPERIMENTSTATUSREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3315,
-  serialized_end=3344,
+  serialized_start=3371,
+  serialized_end=3400,
 )
 
 
@@ -1483,8 +1490,8 @@ _UPDATEALGORITHMEXTRASETTINGSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3347,
-  serialized_end=3477,
+  serialized_start=3403,
+  serialized_end=3533,
 )
 
 
@@ -1507,8 +1514,8 @@ _UPDATEALGORITHMEXTRASETTINGSREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3479,
-  serialized_end=3514,
+  serialized_start=3535,
+  serialized_end=3570,
 )
 
 
@@ -1538,8 +1545,8 @@ _GETALGORITHMEXTRASETTINGSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3516,
-  serialized_end=3575,
+  serialized_start=3572,
+  serialized_end=3631,
 )
 
 
@@ -1569,8 +1576,8 @@ _GETALGORITHMEXTRASETTINGSREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3577,
-  serialized_end=3677,
+  serialized_start=3633,
+  serialized_end=3733,
 )
 
 
@@ -1600,8 +1607,8 @@ _REGISTERTRIALREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3679,
-  serialized_end=3739,
+  serialized_start=3735,
+  serialized_end=3795,
 )
 
 
@@ -1624,8 +1631,8 @@ _REGISTERTRIALREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3741,
-  serialized_end=3761,
+  serialized_start=3797,
+  serialized_end=3817,
 )
 
 
@@ -1655,8 +1662,8 @@ _DELETETRIALREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3763,
-  serialized_end=3803,
+  serialized_start=3819,
+  serialized_end=3859,
 )
 
 
@@ -1679,8 +1686,8 @@ _DELETETRIALREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3805,
-  serialized_end=3823,
+  serialized_start=3861,
+  serialized_end=3879,
 )
 
 
@@ -1717,8 +1724,8 @@ _GETTRIALLISTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3825,
-  serialized_end=3887,
+  serialized_start=3881,
+  serialized_end=3943,
 )
 
 
@@ -1748,8 +1755,8 @@ _GETTRIALLISTREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3889,
-  serialized_end=3947,
+  serialized_start=3945,
+  serialized_end=4003,
 )
 
 
@@ -1779,8 +1786,8 @@ _GETTRIALREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3949,
-  serialized_end=3986,
+  serialized_start=4005,
+  serialized_end=4042,
 )
 
 
@@ -1810,8 +1817,8 @@ _GETTRIALREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3988,
-  serialized_end=4041,
+  serialized_start=4044,
+  serialized_end=4097,
 )
 
 
@@ -1848,8 +1855,8 @@ _UPDATETRIALSTATUSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4043,
-  serialized_end=4138,
+  serialized_start=4099,
+  serialized_end=4194,
 )
 
 
@@ -1872,8 +1879,8 @@ _UPDATETRIALSTATUSREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4140,
-  serialized_end=4164,
+  serialized_start=4196,
+  serialized_end=4220,
 )
 
 
@@ -1910,8 +1917,8 @@ _REPORTOBSERVATIONLOGREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4166,
-  serialized_end=4272,
+  serialized_start=4222,
+  serialized_end=4328,
 )
 
 
@@ -1934,8 +1941,8 @@ _REPORTOBSERVATIONLOGREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4274,
-  serialized_end=4301,
+  serialized_start=4330,
+  serialized_end=4357,
 )
 
 
@@ -1979,8 +1986,8 @@ _GETOBSERVATIONLOGREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4303,
-  serialized_end=4387,
+  serialized_start=4359,
+  serialized_end=4443,
 )
 
 
@@ -2010,8 +2017,8 @@ _GETOBSERVATIONLOGREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4389,
-  serialized_end=4470,
+  serialized_start=4445,
+  serialized_end=4526,
 )
 
 
@@ -2034,8 +2041,8 @@ _SELECTONEREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4472,
-  serialized_end=4488,
+  serialized_start=4528,
+  serialized_end=4544,
 )
 
 
@@ -2058,8 +2065,8 @@ _SELECTONEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4490,
-  serialized_end=4508,
+  serialized_start=4546,
+  serialized_end=4564,
 )
 
 _PARAMETERSPEC.fields_by_name['parameter_type'].enum_type = _PARAMETERTYPE
@@ -2087,6 +2094,7 @@ _OBSERVATION.fields_by_name['metrics'].message_type = _METRIC
 _OBSERVATIONLOG.fields_by_name['metric_logs'].message_type = _METRICLOG
 _TRIALSPEC_PARAMETERASSIGNMENTS.fields_by_name['assignments'].message_type = _PARAMETERASSIGNMENT
 _TRIALSPEC_PARAMETERASSIGNMENTS.containing_type = _TRIALSPEC
+_TRIALSPEC.fields_by_name['objective'].message_type = _OBJECTIVESPEC
 _TRIALSPEC.fields_by_name['parameter_assignments'].message_type = _TRIALSPEC_PARAMETERASSIGNMENTS
 _TRIALSTATUS.fields_by_name['condition'].enum_type = _TRIALSTATUS_TRIALCONDITIONTYPE
 _TRIALSTATUS.fields_by_name['observation'].message_type = _OBSERVATION
@@ -2550,8 +2558,8 @@ _DBIF = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=4656,
-  serialized_end=6889,
+  serialized_start=4712,
+  serialized_end=6945,
   methods=[
   _descriptor.MethodDescriptor(
     name='RegisterExperiment',
